@@ -128,7 +128,7 @@
     });
   });
 
-  /* Copy buttons (the fragments use these too, and the same #toast) */
+  /* Copy buttons (the page sections use these too, and the same #toast) */
   const toast = $('#toast');
   let tt;
   $$('[data-copy]').forEach((b) => b.addEventListener('click', async () => {
