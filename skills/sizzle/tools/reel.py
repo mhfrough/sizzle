@@ -9,15 +9,15 @@
 
 reel.json (paths are relative to the JSON file unless absolute):
   {
-    "name": "flick-reel",
+    "name": "your-app-reel",
     "root": "..",                        # folder served over HTTP (the page's ../ links must resolve inside it)
-    "page": "promo/flick-reel.html",     # page path inside root
+    "page": "promo/your-app-reel.html",  # page path inside root
     "port": 8123,
     "fps": 30, "scale": 2, "crf": 16,
     "work": "promo/.reel-work",          # frames and stills go in <work>/<name>/ (gitignore it)
-    "out": "videos/flick-reel.mp4",
+    "out": "videos/your-app-reel.mp4",
     "poster_t": 12,
-    "music": {"file": "promo/flick-bgm.mp3", "offset": 54.07, "gain_db": -14, "fade_out": 1.2},
+    "music": {"file": "promo/your-app-bgm.mp3", "offset": 54.07, "gain_db": -14, "fade_out": 1.2},
     "voiceover": {"file": null, "offset": 0.0, "mute": "", "duck_db": -9}
   }
 

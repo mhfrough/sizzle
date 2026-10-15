@@ -1,0 +1,14 @@
+{
+  "name": "sizzle-reel",
+  "root": "..",
+  "page": "promo/sizzle-reel.html",
+  "port": 8147,
+  "fps": 30,
+  "scale": 2,
+  "crf": 16,
+  "work": "promo/.reel-work",
+  "out": "promo/.reel-work/sizzle-reel-4k.mp4",
+  "poster_t": 4.6,
+  "music": { "file": "promo/sizzle-bgm.mp3", "offset": 54.07, "gain_db": -14, "fade_out": 1.2 },
+  "voiceover": { "file": null }
+}

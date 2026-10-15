@@ -1,37 +1,49 @@
-/* Sizzle page: the how-to loop, output index, the cue rail, copy buttons, reveals, GitHub stars. */
+/* Sizzle page: the how-to loop, slates, install tabs, copy buttons, reveals, GitHub stars. */
 (() => {
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 
-  /* How it runs: four scenes on one clock, typed and counted as it goes. Off screen it stops;
-     under reduced motion it never starts and the still list shows instead. */
+  /* How it runs: four scenes on one clock, typed and counted as it goes, with a running timecode.
+     Off screen it stops; under reduced motion it never starts and the still list shows instead. */
   const howto = $('.howto');
   if (howto && 'IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const scenes = $$('.scene', howto), steps = $$('.howto-steps li', howto), LEN = 4000, CHAR = 45;
+    const scenes = $$('.scene', howto), steps = $$('.howto-steps li', howto), tc = $('.howto-tc', howto);
+    const LEN = 4000, CHAR = 45, FPS = 30;
     const typed = $$('[data-type]', howto).map((el) => {
       const text = el.textContent;
       el.innerHTML = '<span class="t-on"></span><span class="t-off"></span>';
       return { el, text, on: el.firstChild, off: el.lastChild, at: +el.dataset.at, scene: el.closest('.scene') };
     });
-    const counts = $$('[data-count]', howto).map((el) => ({ el, at: +el.dataset.at, dur: +el.dataset.dur, to: +el.dataset.to, scene: el.closest('.scene') }));
-    let cur = 0, start = 0, raf = 0;
+    const counts = $$('[data-count]', howto).map((el) => { const s = el.closest('.scene'); return { el, at: +el.dataset.at, dur: +el.dataset.dur, to: +el.dataset.to, scene: s, bar: $('.meter i', s) } });
+    const pad = (n) => String(n).padStart(2, '0');
+    let cur = 0, start = 0, raf = 0, lastF = -1;
+    // Each frame writes only what changed, and at most once per timecode frame (30 fps), so the loop costs
+    // a few small text updates rather than a relayout of every line on every display frame.
     const paint = (ms) => {
+      const f = Math.floor((cur * LEN + ms) / 1000 * FPS);
+      if (f === lastF) return;
+      lastF = f;
       const s = scenes[cur];
       typed.forEach((x) => {
         if (x.scene !== s) return;
         const k = Math.max(0, Math.min(x.text.length, Math.floor((ms - x.at) / CHAR)));
+        if (k === x.k) return;
+        x.k = k;
         x.on.textContent = x.text.slice(0, k); x.off.textContent = x.text.slice(k);
         x.el.classList.toggle('typing', k < x.text.length);
       });
       counts.forEach((c) => {
         if (c.scene !== s) return;
-        const p = Math.max(0, Math.min(1, (ms - c.at) / c.dur));
-        c.el.textContent = String(Math.round(p * c.to)).padStart(3, '0');
-        s.style.setProperty('--p', p);
+        const p = Math.max(0, Math.min(1, (ms - c.at) / c.dur)), v = Math.round(p * c.to);
+        if (v === c.v) return;
+        c.v = v;
+        c.el.textContent = String(v).padStart(3, '0');
+        if (c.bar) c.bar.style.setProperty('--p', p);
       });
+      if (tc) tc.textContent = `00:00:${pad(Math.floor(f / FPS))}:${pad(f % FPS)}`;
     };
     const show = (i) => {
-      cur = i; start = performance.now();
+      cur = i; start = performance.now(); lastF = -1;
       scenes.concat(steps).forEach((el) => el.classList.remove('is-on'));
       void howto.offsetWidth; // restart the scene's own animations
       scenes[i].classList.add('is-on');
@@ -48,6 +60,30 @@
       if (e.isIntersecting) { show(cur); raf = requestAnimationFrame(tick) }
     }).observe(howto);
   }
+
+  /* Slates: an empty <p class="slate"> is filled from data-sc / data-tc / data-label, or from its section's id.
+     Timecodes follow the trailer's beats, so the page reads in the reel's order. A fragment that renders
+     its markup later can call window.sizzleSlates(). */
+  const SLATES = {
+    studio: ['02', '00:00:02:28', 'Cut'],
+    how: ['03', '00:00:09:21', 'Picture lock'],
+    screening: ['04', '00:00:14:06', 'Now showing'],
+  };
+  const fillSlates = () => $$('.slate').forEach((el) => {
+    if (el.children.length || el.textContent.trim()) return;
+    const sec = el.closest('section[id]');
+    const [sc, tc, label] = SLATES[sec && sec.id] || [];
+    const d = el.dataset;
+    const parts = [['sc', 'SC ' + (d.sc || sc || '00')], ['tc', d.tc || tc || '00:00:00:00'], ['label', d.label || label]];
+    parts.forEach(([k, v]) => {
+      if (!v) return;
+      const s = document.createElement('span');
+      s.className = 'slate-' + k; s.textContent = v;
+      el.append(s);
+    });
+  });
+  fillSlates();
+  window.sizzleSlates = fillSlates;
 
   /* Reveal each part once as it enters, staggered inside its section. Never leaves content hidden. */
   const reveals = $$('[data-reveal]');
@@ -70,78 +106,43 @@
     }), 2500));
   } else reveals.forEach((el) => el.classList.add('is-in'));
 
-  /* Output index: one tab per thing a run produces */
-  const tabs = $$('.reels-index [role="tab"]');
+  /* Install tabs: arrow keys, Home and End move between them (automatic activation) */
+  const tabs = $$('.inst-tabs [role="tab"]');
   const select = (tab, focus) => {
     tabs.forEach((t) => {
       const on = t === tab;
       t.setAttribute('aria-selected', on);
       t.tabIndex = on ? 0 : -1;
-      const panel = document.getElementById(t.getAttribute('aria-controls'));
-      if (!on) { panel.hidden = true; const v = $('video', panel); if (v) v.pause(); }
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
     });
-    const panel = document.getElementById(tab.getAttribute('aria-controls'));
-    panel.hidden = false;
-    panel.style.animation = 'none'; void panel.offsetWidth; panel.style.animation = '';
     if (focus) tab.focus();
   };
   tabs.forEach((t, i) => {
     t.addEventListener('click', () => select(t));
     t.addEventListener('keydown', (e) => {
-      const k = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
-      if (k) { e.preventDefault(); select(tabs[(i + k + tabs.length) % tabs.length], true) }
+      const n = tabs.length;
+      const to = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: n - 1 }[e.key];
+      if (to == null) return;
+      e.preventDefault();
+      select(tabs[(to + n) % n], true);
     });
   });
 
-  /* Cue rail: drag, click or use the arrow keys to scrub the reel; notes jump to their cue */
-  const video = $('#cue-video'), rail = $('#rail'), panel = $('.cue-panel');
-  if (video && rail) {
-    video.removeAttribute('controls');
-    const DUR = 25;
-    const notes = $$('.cue-plate .note');
-    const set = (t) => {
-      const p = Math.max(0, Math.min(1, t / DUR));
-      rail.style.setProperty('--p', p);
-      rail.setAttribute('aria-valuenow', (p * DUR).toFixed(1));
-      rail.setAttribute('aria-valuetext', (p * DUR).toFixed(1) + ' seconds');
-      let cur = null;
-      notes.forEach((n) => { if (+n.dataset.t <= t + 0.05) cur = n });
-      notes.forEach((n) => n.classList.toggle('is-on', n === cur));
-    };
-    const seek = (t) => { video.currentTime = Math.max(0, Math.min(DUR - 0.05, t)); set(t) };
-    video.addEventListener('timeupdate', () => set(video.currentTime));
-    let dragging = false;
-    const at = (e) => { const r = rail.getBoundingClientRect(); return (e.clientY - r.top) / r.height * DUR };
-    rail.addEventListener('pointerdown', (e) => { dragging = true; rail.setPointerCapture(e.pointerId); video.pause(); seek(at(e)) });
-    rail.addEventListener('pointermove', (e) => { if (dragging) seek(at(e)) });
-    rail.addEventListener('pointerup', () => { dragging = false });
-    rail.addEventListener('keydown', (e) => {
-      const d = { ArrowDown: 0.5, ArrowRight: 0.5, ArrowUp: -0.5, ArrowLeft: -0.5, PageDown: 2, PageUp: -2 }[e.key];
-      if (d != null) { e.preventDefault(); video.pause(); seek(video.currentTime + d) }
-      if (e.key === 'Home') { e.preventDefault(); seek(0) }
-      if (e.key === 'End') { e.preventDefault(); seek(DUR) }
-    });
-    notes.forEach((n) => n.addEventListener('click', () => { seek(+n.dataset.t); video.play().catch(() => {}) }));
-    video.addEventListener('click', () => (video.paused ? video.play() : video.pause()).catch?.(() => {}));
-    // Play muted when it scrolls into view, pause when it leaves
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(([e]) => { if (e.isIntersecting) video.play().catch(() => {}); else video.pause() }, { threshold: 0.5 }).observe(panel);
-    }
-  }
-
-  /* Copy buttons */
+  /* Copy buttons (the fragments use these too, and the same #toast) */
   const toast = $('#toast');
   let tt;
   $$('[data-copy]').forEach((b) => b.addEventListener('click', async () => {
-    const text = $(b.dataset.copy).textContent.trim();
+    const src = $(b.dataset.copy);
+    const text = src.textContent.trim();
     try { await navigator.clipboard.writeText(text) } catch {
-      const r = document.createRange(); r.selectNodeContents($(b.dataset.copy)); getSelection().removeAllRanges(); getSelection().addRange(r);
+      const r = document.createRange(); r.selectNodeContents(src); getSelection().removeAllRanges(); getSelection().addRange(r);
     }
+    const label = b.dataset.label || (b.dataset.label = b.textContent);
     b.textContent = 'Copied';
     toast.textContent = 'Copied. Paste it into your terminal.';
     toast.classList.add('is-on');
     clearTimeout(tt);
-    tt = setTimeout(() => { toast.classList.remove('is-on'); b.textContent = 'Copy' }, 1800);
+    tt = setTimeout(() => { toast.classList.remove('is-on'); b.textContent = label }, 1800);
   }));
 
   /* GitHub stars: the last known count at once, then GitHub again if that count is over five minutes old

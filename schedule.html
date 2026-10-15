@@ -1,0 +1,340 @@
+    <!-- How it works: the production schedule. A call sheet of seven scenes on the left, the monitor on the right
+         shows what each scene produces. Two scenes are gates that wait for you. schedule.css + schedule.js -->
+    <section class="sched" id="how" aria-labelledby="sched-title">
+      <header class="sc-head" data-reveal>
+        <div class="sc-head-t">
+          <p class="slate" aria-hidden="true"></p>
+          <h2 class="sc-title" id="sched-title"><span>Seven steps.</span> <span>Two of them wait for you.</span></h2>
+        </div>
+        <div class="sc-lede">
+          <p class="sc-lede-1">Nothing renders until you say yes.</p>
+          <p>The agent reads, writes, cuts and checks on its own. Then it stops twice: once for you to lock the picture, once for you to pick the music.</p>
+          <p class="sc-spec" aria-label="Every reel: 25 seconds, 9 by 16, 30 frames per second, 2160 by 3840">
+            <span>25 s</span><span>9:16</span><span>30 fps</span><span>2160 × 3840</span>
+          </p>
+        </div>
+      </header>
+
+      <div class="sc-body">
+        <!-- The call sheet: one row per scene, a tab each -->
+        <div class="sc-sheet">
+          <div class="sc-clap" aria-hidden="true"></div>
+          <p class="sc-cols" aria-hidden="true"><span>Sc.</span><span>Scene</span><span>Cast</span></p>
+          <div class="sc-list" role="tablist" aria-label="Production schedule, seven scenes" aria-orientation="vertical">
+            <button class="sc-row" type="button" role="tab" id="sc-t1" aria-controls="sc-p1" aria-selected="true">
+              <span class="sc-n">01</span>
+              <span class="sc-t"><b>Research</b><span class="sc-sub" aria-hidden="true">Reads the README, HTML, stylesheet, fonts, icons and app code.</span></span>
+              <span class="sc-who" aria-hidden="true">Agent</span>
+            </button>
+            <button class="sc-row" type="button" role="tab" id="sc-t2" aria-controls="sc-p2" aria-selected="false" tabindex="-1">
+              <span class="sc-n">02</span>
+              <span class="sc-t"><b>Script</b><span class="sc-sub" aria-hidden="true">Copy, a shot list with times, and a claims check.</span></span>
+              <span class="sc-who" aria-hidden="true">Agent</span>
+            </button>
+            <button class="sc-row" type="button" role="tab" id="sc-t3" aria-controls="sc-p3" aria-selected="false" tabindex="-1">
+              <span class="sc-n">03</span>
+              <span class="sc-t"><b>Cut</b><span class="sc-sub" aria-hidden="true">An HTML reel from your real interface, every time on one cue list.</span></span>
+              <span class="sc-who" aria-hidden="true">Agent</span>
+            </button>
+            <button class="sc-row" type="button" role="tab" id="sc-t4" aria-controls="sc-p4" aria-selected="false" tabindex="-1">
+              <span class="sc-n">04</span>
+              <span class="sc-t"><b>Dailies</b><span class="sc-sub" aria-hidden="true">Renders key frames to a contact sheet and checks them itself.</span></span>
+              <span class="sc-who" aria-hidden="true">Agent</span>
+            </button>
+            <button class="sc-row is-gate" type="button" role="tab" id="sc-t5" aria-controls="sc-p5" aria-selected="false" tabindex="-1">
+              <span class="sc-n">05</span>
+              <span class="sc-t"><b>Picture lock</b><span class="sc-sub" aria-hidden="true">You watch the preview and the key frames, then approve.</span></span>
+              <span class="sc-who sc-you"><span class="sc-gate">Gate<span class="sr-only">:</span></span> You</span>
+            </button>
+            <button class="sc-row is-gate" type="button" role="tab" id="sc-t6" aria-controls="sc-p6" aria-selected="false" tabindex="-1">
+              <span class="sc-n">06</span>
+              <span class="sc-t"><b>Mix</b><span class="sc-sub" aria-hidden="true">You pick the track and OK the download. The drop lands on the reveal.</span></span>
+              <span class="sc-who sc-you"><span class="sc-gate">Gate<span class="sr-only">:</span></span> You</span>
+            </button>
+            <button class="sc-row" type="button" role="tab" id="sc-t7" aria-controls="sc-p7" aria-selected="false" tabindex="-1">
+              <span class="sc-n">07</span>
+              <span class="sc-t"><b>Print</b><span class="sc-sub" aria-hidden="true">750 frames to a 2160 × 3840 MP4 at −14 LUFS, plus a poster.</span></span>
+              <span class="sc-who" aria-hidden="true">Agent</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- The monitor: what each scene produces -->
+        <div class="sc-mon">
+          <div class="sc-bar">
+            <span class="sc-prog" aria-hidden="true"><i></i></span>
+            <p class="sc-bar-l"><span class="sc-rec" aria-hidden="true"></span>Monitor</p>
+            <p class="sc-bar-tc" aria-hidden="true"><span class="sc-bar-sc">Sc. 01</span> of 07</p>
+            <button class="sc-auto" type="button" hidden>Pause</button>
+          </div>
+
+          <!-- 01 Research -->
+          <div class="sc-panel is-on" id="sc-p1" role="tabpanel" aria-labelledby="sc-t1" tabindex="0" data-step="1">
+            <div class="sc-ph">
+              <p class="sc-ph-t"><span>01</span> Research</p>
+              <p class="sc-file">~/your-app</p>
+            </div>
+            <div class="sc-art sc-a1">
+              <ul class="sc-tree" aria-label="Files the agent reads">
+                <li class="sc-dir" style="--k:0"><code>your-app/</code></li>
+                <li style="--k:1"><code><i aria-hidden="true">├─</i>README.md</code><span>promise, features, what it doesn’t do</span><b aria-label="read">✓</b></li>
+                <li style="--k:2"><code><i aria-hidden="true">├─</i>index.html</code><span>tagline as written, live URL</span><b aria-label="read">✓</b></li>
+                <li style="--k:3"><code><i aria-hidden="true">├─</i>css/app.css</code><span>colour tokens, light and dark</span><b aria-label="read">✓</b></li>
+                <li style="--k:4"><code><i aria-hidden="true">├─</i>fonts/*.woff2</code><span>the font files</span><b aria-label="read">✓</b></li>
+                <li style="--k:5"><code><i aria-hidden="true">├─</i>icons.svg</code><span>the icon set</span><b aria-label="read">✓</b></li>
+                <li style="--k:6"><code><i aria-hidden="true">├─</i>favicon.svg</code><span>the mark</span><b aria-label="read">✓</b></li>
+                <li style="--k:7"><code><i aria-hidden="true">├─</i>og-image.png</code><span>the share image</span><b aria-label="read">✓</b></li>
+                <li style="--k:8"><code><i aria-hidden="true">└─</i>src/render.js</code><span>a renderer the reel can drive</span><b aria-label="read">✓</b></li>
+              </ul>
+              <div class="sc-card">
+                <p class="sc-card-h">Notes before a word is written</p>
+                <dl>
+                  <div style="--k:0"><dt>Promise</dt><dd>The one line, word for word.</dd></div>
+                  <div style="--k:1"><dt>Features</dt><dd>Three to five real ones.</dd></div>
+                  <div style="--k:2"><dt>Not</dt><dd>What it does not do.</dd></div>
+                  <div style="--k:3"><dt>Claims</dt><dd>Only what the code backs.</dd></div>
+                  <div style="--k:4"><dt>Brand</dt><dd>Tokens, fonts, icons, mark, URL.</dd></div>
+                </dl>
+                <p class="sc-card-f">Screenshots are checked for private data. All demo data is invented.</p>
+              </div>
+            </div>
+            <p class="sc-cap">Read, don’t guess. The reel will use your own stylesheet and renderer, so it stays sharp at 4K and can’t drift from the real look.</p>
+          </div>
+
+          <!-- 02 Script -->
+          <div class="sc-panel" id="sc-p2" role="tabpanel" aria-labelledby="sc-t2" tabindex="0" data-step="2">
+            <div class="sc-ph">
+              <p class="sc-ph-t"><span>02</span> Script</p>
+              <p class="sc-file">promo/your-app-reel-script.md</p>
+            </div>
+            <div class="sc-art sc-a2">
+              <div class="sc-paper">
+                <p class="sc-paper-h">Your app reel: shot list</p>
+                <p class="sc-paper-m">25 seconds, 9:16. 1080 × 1920 CSS, rendered at 2160 × 3840, 30 fps.</p>
+                <table class="sc-shots">
+                  <caption class="sr-only">Shot list</caption>
+                  <tbody>
+                    <tr style="--k:0"><th scope="row">0.0–3.0</th><td><b>Hook.</b> Name the pain in one line. Strike out the old workarounds.</td></tr>
+                    <tr style="--k:1"><th scope="row">3.0–5.3</th><td><b>Reveal.</b> Mark, name and the product’s own tagline, full screen.</td></tr>
+                    <tr style="--k:2"><th scope="row">5.3–10</th><td><b>Demo 1.</b> One headline, and the real UI doing it.</td></tr>
+                    <tr style="--k:3"><th scope="row">10–15</th><td><b>Demo 2.</b> One headline, and the real UI doing it.</td></tr>
+                    <tr style="--k:4"><th scope="row">15–19</th><td><b>Proof.</b> The promise, kept.</td></tr>
+                    <tr style="--k:5"><th scope="row">19–25</th><td><b>Call to action.</b> “Try it.” The address types itself. Hold two seconds.</td></tr>
+                  </tbody>
+                </table>
+                <p class="sc-paper-s">Claims check</p>
+                <table class="sc-claims">
+                  <caption class="sr-only">Claims check: every claim on screen and where the product backs it</caption>
+                  <thead><tr><th scope="col">Claim</th><th scope="col">Source</th></tr></thead>
+                  <tbody>
+                    <tr><td>“No sign-up”</td><td>README, Features</td></tr>
+                    <tr><td>“Open source”</td><td>LICENSE (MIT)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="sc-fit" aria-label="Headline check">
+                <p class="sc-fit-h">Headline check</p>
+                <p class="sc-fit-l" style="--k:0;--n:14"><span>Still doing it</span><code>14/16</code></p>
+                <p class="sc-fit-l sc-acc" style="--k:1;--n:13"><span>the slow way?</span><code>13/16</code></p>
+                <ul class="sc-rules">
+                  <li>One idea per headline</li>
+                  <li>Two lines at most</li>
+                  <li>16 characters a line</li>
+                  <li>Every claim traceable</li>
+                </ul>
+              </div>
+            </div>
+            <p class="sc-cap">The proven arc for 25 seconds: hook, reveal, two to four demo beats, proof, call to action. Every claim on screen gets a source in the table.</p>
+          </div>
+
+          <!-- 03 Cut -->
+          <div class="sc-panel" id="sc-p3" role="tabpanel" aria-labelledby="sc-t3" tabindex="0" data-step="3">
+            <div class="sc-ph">
+              <p class="sc-ph-t"><span>03</span> Cut</p>
+              <p class="sc-file">promo/your-app-reel.html</p>
+            </div>
+            <div class="sc-art sc-a3" style="--t:2.95">
+              <div class="sc-tl" aria-hidden="true">
+                <div class="sc-ruler"><span style="--at:0">0</span><span style="--at:5">5</span><span style="--at:10">10</span><span style="--at:15">15</span><span style="--at:20">20</span><span style="--at:25">25 s</span></div>
+                <div class="sc-lane">
+                  <span class="sc-cue" style="--a:.15;--b:2.75" data-a="0" data-b="2.95">Hook</span>
+                  <span class="sc-cue sc-cue-acc" style="--a:2.95;--b:5.05" data-a="2.95" data-b="5.3">Reveal</span>
+                  <span class="sc-cue" style="--a:5.45;--b:10.5" data-a="5.45" data-b="10.5">Demo</span>
+                  <span class="sc-cue" style="--a:10.5;--b:15.5" data-a="10.5" data-b="15.5">Demo 2</span>
+                  <span class="sc-cue" style="--a:15.5;--b:19.5" data-a="15.5" data-b="19.5">Proof</span>
+                  <span class="sc-cue" style="--a:19.5;--b:25" data-a="19.5" data-b="25.1">CTA</span>
+                </div>
+                <div class="sc-ticks"><i style="--at:1.75"></i><i style="--at:5.3"></i><i style="--at:7.2"></i></div>
+                <span class="sc-head-l"><span class="sc-tc">02.95</span></span>
+              </div>
+              <div class="sc-cut">
+                <div class="sc-cut-l">
+                <pre class="sc-code" aria-label="The CUES object from the reel, and one element tied to it"><code><span class="sc-l"><span class="sc-c">var</span> CUES = {</span><span class="sc-l sc-ln" data-a="0" data-b="2.95">  a: .15, strike: 1.75, aOut: 2.75,<span class="sc-cm">     // hook</span></span><span class="sc-l sc-ln is-on" data-a="2.95" data-b="5.3">  wipe: 2.95, wipeOut: 5.05,<span class="sc-cm">            // reveal</span></span><span class="sc-l sc-ln" data-a="5.3" data-b="5.45">  brandIn: 5.3,</span><span class="sc-l sc-ln" data-a="5.45" data-b="15.5">  demo: 5.45, tapA: 7.2, demo2: 10.5,<span class="sc-cm">   // demo beats</span></span><span class="sc-l sc-ln" data-a="15.5" data-b="19.5">  proof: 15.5,<span class="sc-cm">                          // proof</span></span><span class="sc-l sc-ln" data-a="19.5" data-b="25.1">  cta: 19.5,<span class="sc-cm">                            // call to action</span></span><span class="sc-l">  end: 25<span class="sc-cm">                               // reel length</span></span><span class="sc-l">};</span><span class="sc-l sc-gap"> </span><span class="sc-l sc-ln" data-a="5.45" data-b="10.5"><span class="sc-c">&lt;span</span> data-in=<span class="sc-s">"demo"</span> data-out=<span class="sc-s">"demo2"</span><span class="sc-c">&gt;</span>Feature one,<span class="sc-c">&lt;/span&gt;</span></span></code></pre>
+                <dl class="sc-facts">
+                  <div><dt>Canvas</dt><dd>1080 × 1920 CSS, fitted to any preview window</dd></div>
+                  <div><dt>Safe zones</dt><dd>No text in the top 190 px or the bottom 380 px</dd></div>
+                  <div><dt>Real parts</dt><dd>Your stylesheet’s classes, or your renderer driven with scripted data</dd></div>
+                </dl>
+                </div>
+                <div class="sc-pv" aria-hidden="true">
+                  <div class="sc-fr sc-fr-hook" data-a="0" data-b="2.95"><b>Still doing it <em>the slow way?</em></b><i class="sc-chip" style="--r:-5deg">Old workaround</i><i class="sc-chip" style="--r:4deg">Another one</i></div>
+                  <div class="sc-fr sc-fr-reveal is-on" data-a="2.95" data-b="5.3"><span class="sc-mark"></span><b>Product</b><i>Its own tagline</i></div>
+                  <div class="sc-fr sc-fr-demo" data-a="5.3" data-b="10.5"><span class="sc-pill">Product</span><b>Feature one, <em>shown working.</em></b><span class="sc-dev"><i></i><i></i><i class="is-hit"></i><i></i></span><span class="sc-tap"></span></div>
+                  <div class="sc-fr sc-fr-demo" data-a="10.5" data-b="15.5"><span class="sc-pill">Product</span><b>Feature two, <em>just as fast.</em></b><span class="sc-dev"><i></i><i class="is-type"></i><i></i><i></i></span></div>
+                  <div class="sc-fr sc-fr-proof" data-a="15.5" data-b="19.5"><span class="sc-pill">Product</span><b>The promise. <em>Kept.</em></b><span class="sc-pills"><i>No sign-up</i><i>Open source</i><i>Free</i></span></div>
+                  <div class="sc-fr sc-fr-cta" data-a="19.5" data-b="25.1"><span class="sc-mark"></span><b>Try <em>Product.</em></b><span class="sc-url">example.com/product</span></div>
+                </div>
+              </div>
+            </div>
+            <p class="sc-cap">Built from the template: every time lives in <code>CUES</code>, and elements hang off it with <code>data-in</code> and <code>data-out</code>. A retime is one edit, and the preview runs in any browser.</p>
+          </div>
+
+          <!-- 04 Dailies -->
+          <div class="sc-panel" id="sc-p4" role="tabpanel" aria-labelledby="sc-t4" tabindex="0" data-step="4">
+            <div class="sc-ph">
+              <p class="sc-ph-t"><span>04</span> Dailies</p>
+              <p class="sc-file">…/stills/sheet.jpg</p>
+            </div>
+            <div class="sc-art sc-a4">
+              <pre class="sc-term sc-term-1"><code><span class="sc-p">$</span> python reel.py stills promo/reel.json 1.5,4,7,10,13,16,19,23</code></pre>
+              <div class="sc-dailies">
+                <div class="sc-cs" role="img" aria-label="Contact sheet of eight stills: the hook, the reveal, two demo beats, the proof and the call to action. The still at 1.5 seconds was retaken after a stray accent mark was found and fixed.">
+                  <figure class="sc-cell is-retake" style="--k:0"><div class="sc-fr sc-fr-hook"><b>Still doing it <em>the slow way?</em></b><i class="sc-chip" style="--r:-5deg">Old workaround</i><i class="sc-chip" style="--r:4deg">Another one</i><span class="sc-stray"></span></div><figcaption>t1.50</figcaption></figure>
+                  <figure class="sc-cell" style="--k:1"><div class="sc-fr sc-fr-reveal"><span class="sc-mark"></span><b>Product</b><i>Its own tagline</i></div><figcaption>t4.00</figcaption></figure>
+                  <figure class="sc-cell" style="--k:2"><div class="sc-fr sc-fr-demo"><span class="sc-pill">Product</span><b>Feature one, <em>shown working.</em></b><span class="sc-dev"><i></i><i></i><i class="is-hit"></i><i></i></span><span class="sc-tap"></span></div><figcaption>t7.00</figcaption></figure>
+                  <figure class="sc-cell" style="--k:3"><div class="sc-fr sc-fr-demo"><span class="sc-pill">Product</span><b>Feature one, <em>shown working.</em></b><span class="sc-dev"><i></i><i></i><i class="is-hit"></i><i class="is-hit"></i></span></div><figcaption>t10.00</figcaption></figure>
+                  <figure class="sc-cell" style="--k:4"><div class="sc-fr sc-fr-demo"><span class="sc-pill">Product</span><b>Feature two, <em>just as fast.</em></b><span class="sc-dev"><i></i><i class="is-type"></i><i></i><i></i></span></div><figcaption>t13.00</figcaption></figure>
+                  <figure class="sc-cell" style="--k:5"><div class="sc-fr sc-fr-proof"><span class="sc-pill">Product</span><b>The promise. <em>Kept.</em></b><span class="sc-pills"><i>No sign-up</i><i>Open source</i><i>Free</i></span></div><figcaption>t16.00</figcaption></figure>
+                  <figure class="sc-cell" style="--k:6"><div class="sc-fr sc-fr-proof"><span class="sc-pill">Product</span><b>The promise. <em>Kept.</em></b><span class="sc-pills"><i>No sign-up</i><i>Open source</i></span></div><figcaption>t19.00</figcaption></figure>
+                  <figure class="sc-cell" style="--k:7"><div class="sc-fr sc-fr-cta"><span class="sc-mark"></span><b>Try <em>Product.</em></b><span class="sc-url">example.com/product</span></div><figcaption>t23.00</figcaption></figure>
+                </div>
+                <ul class="sc-checks" aria-label="What the agent looks for">
+                  <li class="is-flag" style="--k:0"><b aria-hidden="true">✓</b><span>Stray dots or lines before their cue<em>1 at t1.50, fixed, retaken</em></span></li>
+                  <li style="--k:1"><b aria-hidden="true">✓</b><span>Elements visible too early</span></li>
+                  <li style="--k:2"><b aria-hidden="true">✓</b><span>Overlapping headlines</span></li>
+                  <li style="--k:3"><b aria-hidden="true">✓</b><span>Clipped or overflowing text</span></li>
+                  <li style="--k:4"><b aria-hidden="true">✓</b><span>Unreadable contrast</span></li>
+                  <li style="--k:5"><b aria-hidden="true">✓</b><span>Empty states left empty</span></li>
+                  <li style="--k:6"><b aria-hidden="true">✓</b><span>Console errors</span></li>
+                </ul>
+              </div>
+              <pre class="sc-term sc-term-2"><code>contact sheet …/your-app-reel/stills/sheet.jpg</code></pre>
+            </div>
+            <p class="sc-cap">Before anyone is asked, the agent renders key frames, reads the contact sheet and fixes what it finds. The pitfalls list holds every bug class hit on real reels.</p>
+          </div>
+
+          <!-- 05 Picture lock (gate) -->
+          <div class="sc-panel sc-is-gate" id="sc-p5" role="tabpanel" aria-labelledby="sc-t5" tabindex="0" data-step="5">
+            <div class="sc-ph">
+              <p class="sc-ph-t"><span>05</span> Picture lock</p>
+              <p class="sc-file sc-file-gate">Gate · waits for you</p>
+            </div>
+            <div class="sc-art sc-a5">
+              <div class="sc-view" aria-hidden="true">
+                <div class="sc-fr sc-fr-reveal"><span class="sc-mark"></span><b>Product</b><i>Its own tagline</i></div>
+                <span class="sc-scrub"><i></i></span>
+                <span class="sc-time">00:04 / 00:25</span>
+                <span class="sc-stamp">Picture lock</span>
+              </div>
+              <div class="sc-thread">
+                <p class="sc-who-l">Agent</p>
+                <div class="sc-msg">
+                  <p>The cut is ready. Hook, reveal, two demo beats, proof, call to action: 25 seconds.</p>
+                  <p class="sc-msg-f"><span>Preview</span><code>localhost:8123/promo/your-app-reel.html</code></p>
+                  <p class="sc-msg-f"><span>Key frames</span><code>…/stills/sheet.jpg</code></p>
+                  <p class="sc-ask">Approve it, or tell me what to change?</p>
+                </div>
+                <p class="sc-who-l sc-who-you">You</p>
+                <p class="sc-say">Approved. Lock it.</p>
+                <p class="sc-held">Until this yes: no 4K frames, no music downloaded.</p>
+              </div>
+            </div>
+            <p class="sc-cap">Each gate exists because rework after rendering is expensive. Ask for changes and it goes back to the cut. Ordered several reels? One is approved before the next is started.</p>
+          </div>
+
+          <!-- 06 Mix (gate) -->
+          <div class="sc-panel sc-is-gate" id="sc-p6" role="tabpanel" aria-labelledby="sc-t6" tabindex="0" data-step="6">
+            <div class="sc-ph">
+              <p class="sc-ph-t"><span>06</span> Mix</p>
+              <p class="sc-file sc-file-gate">Gate · asks before downloading</p>
+            </div>
+            <div class="sc-art sc-a6">
+              <div class="sc-short">
+                <p class="sc-short-h">Shortlist · free for commercial use · no Content ID · not AI-generated</p>
+                <ol class="sc-tracks">
+                  <li class="is-pick" style="--k:0"><b>A</b><span>Bright future bass</span><span>1:43</span><span>build, then a drop</span><em>Picked</em></li>
+                  <li style="--k:1"><b>B</b><span>Playful pizzicato</span><span>2:05</span><span>steady, light</span></li>
+                  <li style="--k:2"><b>C</b><span>Warm synth-pop</span><span>2:31</span><span>slow build</span></li>
+                </ol>
+                <span class="sc-stamp sc-stamp-6" aria-hidden="true">Cleared</span>
+                <p class="sc-consent"><span class="sc-q">Download <code>your-app-bgm.mp3</code> from <code>cdn.pixabay.com</code>, about 2.5 MB?</span><span class="sc-yes">Yes, A</span></p>
+              </div>
+              <div class="sc-wave" aria-hidden="true">
+                <div class="sc-w-all">
+                  <svg viewBox="0 0 1030 48" preserveAspectRatio="none" focusable="false">
+                    <defs><clipPath id="sc-win"><rect x="540.7" y="0" width="250" height="48"/></clipPath></defs>
+                    <path class="sc-w-dim" d="M0.0 19.7h3v8.6h-3zM5.0 18.1h3v11.7h-3zM10.0 19.0h3v9.9h-3zM15.0 19.2h3v9.7h-3zM20.0 18.4h3v11.2h-3zM25.0 18.8h3v10.4h-3zM30.0 19.3h3v9.5h-3zM35.0 18.8h3v10.3h-3zM40.0 18.9h3v10.1h-3zM45.0 18.7h3v10.5h-3zM50.0 18.0h3v12.0h-3zM55.0 17.6h3v12.8h-3zM60.0 16.8h3v14.5h-3zM65.0 17.5h3v12.9h-3zM70.0 16.9h3v14.2h-3zM75.0 15.9h3v16.2h-3zM80.0 11.8h3v24.4h-3zM85.0 14.1h3v19.7h-3zM90.0 12.2h3v23.5h-3zM95.0 13.3h3v21.4h-3zM100.0 12.3h3v23.3h-3zM105.0 13.3h3v21.5h-3zM110.0 15.8h3v16.4h-3zM115.0 15.4h3v17.3h-3zM120.0 14.3h3v19.4h-3zM125.0 14.2h3v19.5h-3zM130.0 13.7h3v20.5h-3zM135.0 13.4h3v21.2h-3zM140.0 11.9h3v24.3h-3zM145.0 11.5h3v25.0h-3zM150.0 13.1h3v21.9h-3zM155.0 13.1h3v21.9h-3zM160.0 11.4h3v25.3h-3zM165.0 13.2h3v21.5h-3zM170.0 14.1h3v19.8h-3zM175.0 14.0h3v20.0h-3zM180.0 14.0h3v19.9h-3zM185.0 15.0h3v18.1h-3zM190.0 13.8h3v20.4h-3zM195.0 15.5h3v17.1h-3zM200.0 14.6h3v18.8h-3zM205.0 13.5h3v21.0h-3zM210.0 15.3h3v17.4h-3zM215.0 14.2h3v19.6h-3zM220.0 12.9h3v22.3h-3zM225.0 12.7h3v22.5h-3zM230.0 12.8h3v22.3h-3zM235.0 13.6h3v20.9h-3zM240.0 11.2h3v25.7h-3zM245.0 14.3h3v19.5h-3zM250.0 13.5h3v21.0h-3zM255.0 14.0h3v20.1h-3zM260.0 13.5h3v21.0h-3zM265.0 13.4h3v21.3h-3zM270.0 15.1h3v17.7h-3zM275.0 16.5h3v15.1h-3zM280.0 15.2h3v17.5h-3zM285.0 15.0h3v18.0h-3zM290.0 14.2h3v19.6h-3zM295.0 13.6h3v20.8h-3zM300.0 13.5h3v21.0h-3zM305.0 12.6h3v22.9h-3zM310.0 12.1h3v23.7h-3zM315.0 13.4h3v21.1h-3zM320.0 11.2h3v25.5h-3zM325.0 13.0h3v22.0h-3zM330.0 12.0h3v24.0h-3zM335.0 13.2h3v21.6h-3zM340.0 13.8h3v20.4h-3zM345.0 14.7h3v18.6h-3zM350.0 15.4h3v17.2h-3zM355.0 14.9h3v18.2h-3zM360.0 13.5h3v20.9h-3zM365.0 14.5h3v19.0h-3zM370.0 13.0h3v22.0h-3zM375.0 14.0h3v20.0h-3zM380.0 12.6h3v22.9h-3zM385.0 13.1h3v21.8h-3zM390.0 13.1h3v21.8h-3zM395.0 12.9h3v22.2h-3zM400.0 15.6h3v16.8h-3zM405.0 15.6h3v16.7h-3zM410.0 17.6h3v12.8h-3zM415.0 16.4h3v15.2h-3zM420.0 18.3h3v11.4h-3zM425.0 18.0h3v11.9h-3zM430.0 18.9h3v10.2h-3zM435.0 18.8h3v10.5h-3zM440.0 16.6h3v14.7h-3zM445.0 17.8h3v12.5h-3zM450.0 17.4h3v13.1h-3zM455.0 17.9h3v12.1h-3zM460.0 16.9h3v14.3h-3zM465.0 16.2h3v15.6h-3zM470.0 17.0h3v14.1h-3zM475.0 14.9h3v18.2h-3zM480.0 14.8h3v18.3h-3zM485.0 14.8h3v18.4h-3zM490.0 14.9h3v18.1h-3zM495.0 15.1h3v17.9h-3zM500.0 15.7h3v16.6h-3zM505.0 17.1h3v13.8h-3zM510.0 17.8h3v12.3h-3zM515.0 16.6h3v14.7h-3zM520.0 16.4h3v15.2h-3zM525.0 16.0h3v16.0h-3zM530.0 13.6h3v20.9h-3zM535.0 14.2h3v19.7h-3zM540.0 12.0h3v24.0h-3zM545.0 12.4h3v23.1h-3zM550.0 11.5h3v25.1h-3zM555.0 12.9h3v22.1h-3zM560.0 10.6h3v26.8h-3zM565.0 13.1h3v21.8h-3zM570.0 12.8h3v22.3h-3zM575.0 4.2h3v39.6h-3zM580.0 9.3h3v29.4h-3zM585.0 8.6h3v30.9h-3zM590.0 10.8h3v26.4h-3zM595.0 5.3h3v37.4h-3zM600.0 5.6h3v36.8h-3zM605.0 3.0h3v42.0h-3zM610.0 7.3h3v33.3h-3zM615.0 1.5h3v45.0h-3zM620.0 5.4h3v37.2h-3zM625.0 1.0h3v46.0h-3zM630.0 2.9h3v42.1h-3zM635.0 2.5h3v43.0h-3zM640.0 5.5h3v37.0h-3zM645.0 6.4h3v35.2h-3zM650.0 7.3h3v33.5h-3zM655.0 6.3h3v35.4h-3zM660.0 9.9h3v28.1h-3zM665.0 7.7h3v32.6h-3zM670.0 7.2h3v33.6h-3zM675.0 5.9h3v36.2h-3zM680.0 6.0h3v36.0h-3zM685.0 7.7h3v32.6h-3zM690.0 6.6h3v34.8h-3zM695.0 1.2h3v45.6h-3zM700.0 5.7h3v36.6h-3zM705.0 2.1h3v43.7h-3zM710.0 1.0h3v46.0h-3zM715.0 6.6h3v34.9h-3zM720.0 2.1h3v43.9h-3zM725.0 3.0h3v42.0h-3zM730.0 3.3h3v41.4h-3zM735.0 4.7h3v38.6h-3zM740.0 6.9h3v34.3h-3zM745.0 9.3h3v29.5h-3zM750.0 9.0h3v30.0h-3zM755.0 5.5h3v37.1h-3zM760.0 3.6h3v40.9h-3zM765.0 5.4h3v37.2h-3zM770.0 5.7h3v36.6h-3zM775.0 4.2h3v39.6h-3zM780.0 1.0h3v46.0h-3zM785.0 2.9h3v42.1h-3zM790.0 6.6h3v34.8h-3zM795.0 5.5h3v37.0h-3zM800.0 5.5h3v37.0h-3zM805.0 8.2h3v31.5h-3zM810.0 7.2h3v33.6h-3zM815.0 9.6h3v28.9h-3zM820.0 11.5h3v25.0h-3zM825.0 11.0h3v26.0h-3zM830.0 7.1h3v33.9h-3zM835.0 5.9h3v36.1h-3zM840.0 6.8h3v34.5h-3zM845.0 4.8h3v38.4h-3zM850.0 3.9h3v40.2h-3zM855.0 7.4h3v33.1h-3zM860.0 4.8h3v38.4h-3zM865.0 7.7h3v32.7h-3zM870.0 5.9h3v36.2h-3zM875.0 6.0h3v36.0h-3zM880.0 5.5h3v36.9h-3zM885.0 5.5h3v37.0h-3zM890.0 8.7h3v30.7h-3zM895.0 10.9h3v26.2h-3zM900.0 10.8h3v26.4h-3zM905.0 11.7h3v24.6h-3zM910.0 9.2h3v29.6h-3zM915.0 9.5h3v29.1h-3zM920.0 9.1h3v29.8h-3zM925.0 9.3h3v29.3h-3zM930.0 8.4h3v31.2h-3zM935.0 10.5h3v27.1h-3zM940.0 9.4h3v29.2h-3zM945.0 12.9h3v22.2h-3zM950.0 12.6h3v22.8h-3zM955.0 12.7h3v22.7h-3zM960.0 14.7h3v18.6h-3zM965.0 14.2h3v19.7h-3zM970.0 16.3h3v15.4h-3zM975.0 17.4h3v13.2h-3zM980.0 17.3h3v13.4h-3zM985.0 17.7h3v12.6h-3zM990.0 18.5h3v11.1h-3zM995.0 17.3h3v13.4h-3zM1000.0 17.5h3v13.0h-3zM1005.0 17.8h3v12.5h-3zM1010.0 18.3h3v11.4h-3zM1015.0 19.2h3v9.6h-3zM1020.0 19.5h3v9.0h-3zM1025.0 21.1h3v5.7h-3z"/>
+                    <path class="sc-w-on" clip-path="url(#sc-win)" d="M0.0 19.7h3v8.6h-3zM5.0 18.1h3v11.7h-3zM10.0 19.0h3v9.9h-3zM15.0 19.2h3v9.7h-3zM20.0 18.4h3v11.2h-3zM25.0 18.8h3v10.4h-3zM30.0 19.3h3v9.5h-3zM35.0 18.8h3v10.3h-3zM40.0 18.9h3v10.1h-3zM45.0 18.7h3v10.5h-3zM50.0 18.0h3v12.0h-3zM55.0 17.6h3v12.8h-3zM60.0 16.8h3v14.5h-3zM65.0 17.5h3v12.9h-3zM70.0 16.9h3v14.2h-3zM75.0 15.9h3v16.2h-3zM80.0 11.8h3v24.4h-3zM85.0 14.1h3v19.7h-3zM90.0 12.2h3v23.5h-3zM95.0 13.3h3v21.4h-3zM100.0 12.3h3v23.3h-3zM105.0 13.3h3v21.5h-3zM110.0 15.8h3v16.4h-3zM115.0 15.4h3v17.3h-3zM120.0 14.3h3v19.4h-3zM125.0 14.2h3v19.5h-3zM130.0 13.7h3v20.5h-3zM135.0 13.4h3v21.2h-3zM140.0 11.9h3v24.3h-3zM145.0 11.5h3v25.0h-3zM150.0 13.1h3v21.9h-3zM155.0 13.1h3v21.9h-3zM160.0 11.4h3v25.3h-3zM165.0 13.2h3v21.5h-3zM170.0 14.1h3v19.8h-3zM175.0 14.0h3v20.0h-3zM180.0 14.0h3v19.9h-3zM185.0 15.0h3v18.1h-3zM190.0 13.8h3v20.4h-3zM195.0 15.5h3v17.1h-3zM200.0 14.6h3v18.8h-3zM205.0 13.5h3v21.0h-3zM210.0 15.3h3v17.4h-3zM215.0 14.2h3v19.6h-3zM220.0 12.9h3v22.3h-3zM225.0 12.7h3v22.5h-3zM230.0 12.8h3v22.3h-3zM235.0 13.6h3v20.9h-3zM240.0 11.2h3v25.7h-3zM245.0 14.3h3v19.5h-3zM250.0 13.5h3v21.0h-3zM255.0 14.0h3v20.1h-3zM260.0 13.5h3v21.0h-3zM265.0 13.4h3v21.3h-3zM270.0 15.1h3v17.7h-3zM275.0 16.5h3v15.1h-3zM280.0 15.2h3v17.5h-3zM285.0 15.0h3v18.0h-3zM290.0 14.2h3v19.6h-3zM295.0 13.6h3v20.8h-3zM300.0 13.5h3v21.0h-3zM305.0 12.6h3v22.9h-3zM310.0 12.1h3v23.7h-3zM315.0 13.4h3v21.1h-3zM320.0 11.2h3v25.5h-3zM325.0 13.0h3v22.0h-3zM330.0 12.0h3v24.0h-3zM335.0 13.2h3v21.6h-3zM340.0 13.8h3v20.4h-3zM345.0 14.7h3v18.6h-3zM350.0 15.4h3v17.2h-3zM355.0 14.9h3v18.2h-3zM360.0 13.5h3v20.9h-3zM365.0 14.5h3v19.0h-3zM370.0 13.0h3v22.0h-3zM375.0 14.0h3v20.0h-3zM380.0 12.6h3v22.9h-3zM385.0 13.1h3v21.8h-3zM390.0 13.1h3v21.8h-3zM395.0 12.9h3v22.2h-3zM400.0 15.6h3v16.8h-3zM405.0 15.6h3v16.7h-3zM410.0 17.6h3v12.8h-3zM415.0 16.4h3v15.2h-3zM420.0 18.3h3v11.4h-3zM425.0 18.0h3v11.9h-3zM430.0 18.9h3v10.2h-3zM435.0 18.8h3v10.5h-3zM440.0 16.6h3v14.7h-3zM445.0 17.8h3v12.5h-3zM450.0 17.4h3v13.1h-3zM455.0 17.9h3v12.1h-3zM460.0 16.9h3v14.3h-3zM465.0 16.2h3v15.6h-3zM470.0 17.0h3v14.1h-3zM475.0 14.9h3v18.2h-3zM480.0 14.8h3v18.3h-3zM485.0 14.8h3v18.4h-3zM490.0 14.9h3v18.1h-3zM495.0 15.1h3v17.9h-3zM500.0 15.7h3v16.6h-3zM505.0 17.1h3v13.8h-3zM510.0 17.8h3v12.3h-3zM515.0 16.6h3v14.7h-3zM520.0 16.4h3v15.2h-3zM525.0 16.0h3v16.0h-3zM530.0 13.6h3v20.9h-3zM535.0 14.2h3v19.7h-3zM540.0 12.0h3v24.0h-3zM545.0 12.4h3v23.1h-3zM550.0 11.5h3v25.1h-3zM555.0 12.9h3v22.1h-3zM560.0 10.6h3v26.8h-3zM565.0 13.1h3v21.8h-3zM570.0 12.8h3v22.3h-3zM575.0 4.2h3v39.6h-3zM580.0 9.3h3v29.4h-3zM585.0 8.6h3v30.9h-3zM590.0 10.8h3v26.4h-3zM595.0 5.3h3v37.4h-3zM600.0 5.6h3v36.8h-3zM605.0 3.0h3v42.0h-3zM610.0 7.3h3v33.3h-3zM615.0 1.5h3v45.0h-3zM620.0 5.4h3v37.2h-3zM625.0 1.0h3v46.0h-3zM630.0 2.9h3v42.1h-3zM635.0 2.5h3v43.0h-3zM640.0 5.5h3v37.0h-3zM645.0 6.4h3v35.2h-3zM650.0 7.3h3v33.5h-3zM655.0 6.3h3v35.4h-3zM660.0 9.9h3v28.1h-3zM665.0 7.7h3v32.6h-3zM670.0 7.2h3v33.6h-3zM675.0 5.9h3v36.2h-3zM680.0 6.0h3v36.0h-3zM685.0 7.7h3v32.6h-3zM690.0 6.6h3v34.8h-3zM695.0 1.2h3v45.6h-3zM700.0 5.7h3v36.6h-3zM705.0 2.1h3v43.7h-3zM710.0 1.0h3v46.0h-3zM715.0 6.6h3v34.9h-3zM720.0 2.1h3v43.9h-3zM725.0 3.0h3v42.0h-3zM730.0 3.3h3v41.4h-3zM735.0 4.7h3v38.6h-3zM740.0 6.9h3v34.3h-3zM745.0 9.3h3v29.5h-3zM750.0 9.0h3v30.0h-3zM755.0 5.5h3v37.1h-3zM760.0 3.6h3v40.9h-3zM765.0 5.4h3v37.2h-3zM770.0 5.7h3v36.6h-3zM775.0 4.2h3v39.6h-3zM780.0 1.0h3v46.0h-3zM785.0 2.9h3v42.1h-3zM790.0 6.6h3v34.8h-3zM795.0 5.5h3v37.0h-3zM800.0 5.5h3v37.0h-3zM805.0 8.2h3v31.5h-3zM810.0 7.2h3v33.6h-3zM815.0 9.6h3v28.9h-3zM820.0 11.5h3v25.0h-3zM825.0 11.0h3v26.0h-3zM830.0 7.1h3v33.9h-3zM835.0 5.9h3v36.1h-3zM840.0 6.8h3v34.5h-3zM845.0 4.8h3v38.4h-3zM850.0 3.9h3v40.2h-3zM855.0 7.4h3v33.1h-3zM860.0 4.8h3v38.4h-3zM865.0 7.7h3v32.7h-3zM870.0 5.9h3v36.2h-3zM875.0 6.0h3v36.0h-3zM880.0 5.5h3v36.9h-3zM885.0 5.5h3v37.0h-3zM890.0 8.7h3v30.7h-3zM895.0 10.9h3v26.2h-3zM900.0 10.8h3v26.4h-3zM905.0 11.7h3v24.6h-3zM910.0 9.2h3v29.6h-3zM915.0 9.5h3v29.1h-3zM920.0 9.1h3v29.8h-3zM925.0 9.3h3v29.3h-3zM930.0 8.4h3v31.2h-3zM935.0 10.5h3v27.1h-3zM940.0 9.4h3v29.2h-3zM945.0 12.9h3v22.2h-3zM950.0 12.6h3v22.8h-3zM955.0 12.7h3v22.7h-3zM960.0 14.7h3v18.6h-3zM965.0 14.2h3v19.7h-3zM970.0 16.3h3v15.4h-3zM975.0 17.4h3v13.2h-3zM980.0 17.3h3v13.4h-3zM985.0 17.7h3v12.6h-3zM990.0 18.5h3v11.1h-3zM995.0 17.3h3v13.4h-3zM1000.0 17.5h3v13.0h-3zM1005.0 17.8h3v12.5h-3zM1010.0 18.3h3v11.4h-3zM1015.0 19.2h3v9.6h-3zM1020.0 19.5h3v9.0h-3zM1025.0 21.1h3v5.7h-3z"/>
+                  </svg>
+                  <span class="sc-win"><span>offset 54.07</span></span>
+                  <span class="sc-w-lbl sc-w-l0">0:00</span><span class="sc-w-lbl sc-w-l1">1:43</span>
+                </div>
+                <div class="sc-w-zoom">
+                  <svg viewBox="0 0 1000 72" preserveAspectRatio="none" focusable="false"><path d="M0.0 21.3h3v29.5h-3zM5.0 20.9h3v30.2h-3zM10.0 23.0h3v26.0h-3zM15.0 21.3h3v29.4h-3zM20.0 16.6h3v38.7h-3zM25.0 21.6h3v28.8h-3zM30.0 20.9h3v30.2h-3zM35.0 18.4h3v35.3h-3zM40.0 18.7h3v34.5h-3zM45.0 22.8h3v26.4h-3zM50.0 21.1h3v29.7h-3zM55.0 16.4h3v39.1h-3zM60.0 20.7h3v30.6h-3zM65.0 23.1h3v25.8h-3zM70.0 18.2h3v35.6h-3zM75.0 15.4h3v41.2h-3zM80.0 19.9h3v32.3h-3zM85.0 23.1h3v25.8h-3zM90.0 19.2h3v33.5h-3zM95.0 15.7h3v40.5h-3zM100.0 19.4h3v33.2h-3zM105.0 19.7h3v32.6h-3zM110.0 17.0h3v38.1h-3zM115.0 18.6h3v34.7h-3zM120.0 12.7h3v46.6h-3zM125.0 5.9h3v60.3h-3zM130.0 9.2h3v53.6h-3zM135.0 9.3h3v53.4h-3zM140.0 12.5h3v47.0h-3zM145.0 5.1h3v61.8h-3zM150.0 9.1h3v53.8h-3zM155.0 8.8h3v54.3h-3zM160.0 9.0h3v53.9h-3zM165.0 5.7h3v60.6h-3zM170.0 8.6h3v54.8h-3zM175.0 8.5h3v55.1h-3zM180.0 6.6h3v58.8h-3zM185.0 6.8h3v58.5h-3zM190.0 1.8h3v68.5h-3zM195.0 14.6h3v42.8h-3zM200.0 6.8h3v58.4h-3zM205.0 1.7h3v68.6h-3zM210.0 2.4h3v67.2h-3zM215.0 14.2h3v43.6h-3zM220.0 10.1h3v51.9h-3zM225.0 1.7h3v68.7h-3zM230.0 3.8h3v64.4h-3zM235.0 10.5h3v51.0h-3zM240.0 1.6h3v68.9h-3zM245.0 1.9h3v68.2h-3zM250.0 9.6h3v52.7h-3zM255.0 12.3h3v47.4h-3zM260.0 4.1h3v63.7h-3zM265.0 9.7h3v52.6h-3zM270.0 7.3h3v57.4h-3zM275.0 6.1h3v59.8h-3zM280.0 6.1h3v59.9h-3zM285.0 2.9h3v66.2h-3zM290.0 16.0h3v40.1h-3zM295.0 6.0h3v60.0h-3zM300.0 1.0h3v70.0h-3zM305.0 7.0h3v58.0h-3zM310.0 11.2h3v49.7h-3zM315.0 6.1h3v59.7h-3zM320.0 1.4h3v69.3h-3zM325.0 9.4h3v53.3h-3zM330.0 7.5h3v57.1h-3zM335.0 1.0h3v70.0h-3zM340.0 5.9h3v60.2h-3zM345.0 8.0h3v55.9h-3zM350.0 9.0h3v54.0h-3zM355.0 7.3h3v57.4h-3zM360.0 10.1h3v51.8h-3zM365.0 15.4h3v41.3h-3zM370.0 4.8h3v62.3h-3zM375.0 8.2h3v55.6h-3zM380.0 8.5h3v55.0h-3zM385.0 12.4h3v47.2h-3zM390.0 7.5h3v57.0h-3zM395.0 4.9h3v62.2h-3zM400.0 11.8h3v48.4h-3zM405.0 11.9h3v48.2h-3zM410.0 8.4h3v55.1h-3zM415.0 4.4h3v63.2h-3zM420.0 9.8h3v52.5h-3zM425.0 5.9h3v60.1h-3zM430.0 8.6h3v54.9h-3zM435.0 1.6h3v68.9h-3zM440.0 8.3h3v55.5h-3zM445.0 5.5h3v60.9h-3zM450.0 3.9h3v64.2h-3zM455.0 8.1h3v55.8h-3zM460.0 10.5h3v50.9h-3zM465.0 5.3h3v61.4h-3zM470.0 4.6h3v62.9h-3zM475.0 9.9h3v52.1h-3zM480.0 11.0h3v49.9h-3zM485.0 7.8h3v56.4h-3zM490.0 1.0h3v70.0h-3zM495.0 9.3h3v53.3h-3zM500.0 6.4h3v59.3h-3zM505.0 8.2h3v55.6h-3zM510.0 8.8h3v54.4h-3zM515.0 8.2h3v55.6h-3zM520.0 6.5h3v59.0h-3zM525.0 6.5h3v58.9h-3zM530.0 3.9h3v64.2h-3zM535.0 14.2h3v43.5h-3zM540.0 3.5h3v65.1h-3zM545.0 4.7h3v62.6h-3zM550.0 8.0h3v56.0h-3zM555.0 13.5h3v44.9h-3zM560.0 9.4h3v53.3h-3zM565.0 2.1h3v67.8h-3zM570.0 6.7h3v58.7h-3zM575.0 11.7h3v48.5h-3zM580.0 2.6h3v66.8h-3zM585.0 7.0h3v57.9h-3zM590.0 8.6h3v54.8h-3zM595.0 8.9h3v54.3h-3zM600.0 9.3h3v53.4h-3zM605.0 10.8h3v50.4h-3zM610.0 16.2h3v39.5h-3zM615.0 6.5h3v59.0h-3zM620.0 6.4h3v59.1h-3zM625.0 5.3h3v61.5h-3zM630.0 13.2h3v45.6h-3zM635.0 4.6h3v62.7h-3zM640.0 1.0h3v70.0h-3zM645.0 9.4h3v53.2h-3zM650.0 8.2h3v55.7h-3zM655.0 8.1h3v55.8h-3zM660.0 4.0h3v63.9h-3zM665.0 11.0h3v49.9h-3zM670.0 10.7h3v50.6h-3zM675.0 6.8h3v58.3h-3zM680.0 6.4h3v59.2h-3zM685.0 11.9h3v48.3h-3zM690.0 7.5h3v56.9h-3zM695.0 6.4h3v59.2h-3zM700.0 7.7h3v56.6h-3zM705.0 12.1h3v47.8h-3zM710.0 9.5h3v53.0h-3zM715.0 3.5h3v65.0h-3zM720.0 6.5h3v58.9h-3zM725.0 10.5h3v51.1h-3zM730.0 4.6h3v62.7h-3zM735.0 8.0h3v56.1h-3zM740.0 8.6h3v54.7h-3zM745.0 9.9h3v52.3h-3zM750.0 8.4h3v55.2h-3zM755.0 5.6h3v60.8h-3zM760.0 13.2h3v45.5h-3zM765.0 10.0h3v52.0h-3zM770.0 4.4h3v63.2h-3zM775.0 3.8h3v64.4h-3zM780.0 13.2h3v45.6h-3zM785.0 9.2h3v53.6h-3zM790.0 1.5h3v69.0h-3zM795.0 6.1h3v59.8h-3zM800.0 9.0h3v54.0h-3zM805.0 7.7h3v56.6h-3zM810.0 7.2h3v57.6h-3zM815.0 12.5h3v47.1h-3zM820.0 10.6h3v50.8h-3zM825.0 1.0h3v70.0h-3zM830.0 4.3h3v63.3h-3zM835.0 11.7h3v48.6h-3zM840.0 8.3h3v55.4h-3zM845.0 4.4h3v63.2h-3zM850.0 7.7h3v56.6h-3zM855.0 11.0h3v49.9h-3zM860.0 10.7h3v50.6h-3zM865.0 1.9h3v68.1h-3zM870.0 6.3h3v59.5h-3zM875.0 14.6h3v42.8h-3zM880.0 2.8h3v66.3h-3zM885.0 5.2h3v61.6h-3zM890.0 9.3h3v53.5h-3zM895.0 13.3h3v45.5h-3zM900.0 1.6h3v68.8h-3zM905.0 1.6h3v68.8h-3zM910.0 9.0h3v54.1h-3zM915.0 10.0h3v52.0h-3zM920.0 7.7h3v56.7h-3zM925.0 8.1h3v55.7h-3zM930.0 13.2h3v45.6h-3zM935.0 2.2h3v67.6h-3zM940.0 2.2h3v67.6h-3zM945.0 8.6h3v54.8h-3zM950.0 13.6h3v44.8h-3zM955.0 5.0h3v62.0h-3zM960.0 4.0h3v64.0h-3zM965.0 6.0h3v60.0h-3zM970.0 11.1h3v49.8h-3zM975.0 8.8h3v54.5h-3zM980.0 6.0h3v59.9h-3zM985.0 8.2h3v55.6h-3zM990.0 5.3h3v61.4h-3zM995.0 8.6h3v54.8h-3z"/></svg>
+                  <div class="sc-lane sc-lane-s">
+                    <span class="sc-cue" style="--a:.15;--b:2.75">Hook</span>
+                    <span class="sc-cue sc-cue-acc" style="--a:2.95;--b:5.05">Reveal</span>
+                    <span class="sc-cue" style="--a:5.45;--b:15.5">Demo</span>
+                    <span class="sc-cue" style="--a:15.5;--b:19.5">Proof</span>
+                    <span class="sc-cue" style="--a:19.5;--b:25">CTA</span>
+                  </div>
+                  <span class="sc-drop"><span>Drop · track 57.02 s = reel 2.95 s</span></span>
+                </div>
+              </div>
+              <pre class="sc-term sc-term-6"><code><span class="sc-p">$</span> python -I music_sync.py promo/your-app-bgm.mp3 --cue 2.95 --length 25
+track 103.0s, beat ~0.47s (~128 bpm, or double that)
+<span class="sc-dim sc-m-hide">loudness per second (dBFS): …
+</span>
+hits, and the offset that lands each on the cue at 2.95s:
+<span class="sc-hl">  hit   57.02s  offset   54.07  pre  -14.6 dB  body   -8.9 dB  dips at -  fits yes</span>
+  hit   25.61s  offset   22.66  pre  -11.2 dB  body   -9.4 dB  dips at [12]  fits yes</code></pre>
+            </div>
+            <p class="sc-cap">Music comes only after picture lock, so the cut is final. The offset that puts the drop on the reveal goes into <code>reel.json</code>, under a quieter build beneath the hook.</p>
+          </div>
+
+          <!-- 07 Print -->
+          <div class="sc-panel" id="sc-p7" role="tabpanel" aria-labelledby="sc-t7" tabindex="0" data-step="7">
+            <div class="sc-ph">
+              <p class="sc-ph-t"><span>07</span> Print</p>
+              <p class="sc-file">videos/your-app-reel.mp4</p>
+            </div>
+            <div class="sc-art sc-a7">
+              <div class="sc-counter">
+                <p class="sc-big" aria-label="750 of 750 frames"><span class="sc-big-n" aria-hidden="true">750</span><span class="sc-big-of" aria-hidden="true">/ 750</span></p>
+                <div class="sc-specs">
+                  <span class="sc-meter" aria-hidden="true"><i></i></span>
+                  <p><span>Frames</span>2160 × 3840 JPEG, fake clock</p>
+                  <p><span>Video</span>H.264 High, crf 16</p>
+                  <p><span>Audio</span>AAC 192k, −14 LUFS, under −1 dBTP</p>
+                </div>
+              </div>
+              <pre class="sc-term sc-term-7"><code><span class="sc-p">$</span> python reel.py all promo/reel.json
+<span class="sc-dim">$ node …/render.js frames http://localhost:8123/promo/your-app-reel.html …/frames 30 2
+</span>ready, duration 25
+<span class="sc-log">frame 720 / 750 144s</span>
+<span class="sc-after" style="--k:0">  encoded 750/750 frames (68s)
+</span><span class="sc-after sc-hl" style="--k:1">---- mux summary ----
+</span><span class="sc-after" style="--k:2">output      : …/videos/your-app-reel.mp4 (38.2 MB)
+</span><span class="sc-after" style="--k:3">video       : 2160x3840, 750 frames @ 30 fps, H.264 High crf 16 preset slow
+</span><span class="sc-after" style="--k:4">duration    : <b>25.000 s</b>
+</span><span class="sc-after" style="--k:5">audio       : AAC 48 kHz stereo 192k | VO=no BGM=yes
+</span><span class="sc-after" style="--k:6">loudness    : <b>-14.0 LUFS</b> integrated (BS.1770-4 K-weighted, gated); pre-normalisation -23.2 LUFS, gain +9.2 dB
+</span><span class="sc-after" style="--k:7">peak        : <b>-4.03 dBTP</b> (4x oversampled), -4.31 dBFS sample peak
+</span><span class="sc-after" style="--k:8">elapsed     : 71.4 s
+</span><span class="sc-after" style="--k:9">poster …/videos/your-app-reel.webp from 00240.jpg</span></code></pre>
+            </div>
+            <p class="sc-cap">A fake clock steps the page through every frame, so each animation lands where the timeline says. No ffmpeg: PyAV encodes it. A new track only needs <code>reel.py mux</code>, not new frames.</p>
+          </div>
+        </div>
+      </div>
+    </section>

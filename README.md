@@ -1,15 +1,14 @@
-# Sizzle
+<h1><img src="assets/logo/sizzle-lockup.svg" alt="Sizzle" width="360"></h1>
 
 A 25-second promo reel for your app, cut by your AI agent.
 
 [![Sizzle: your app, now showing](assets/og-image.jpg)](https://mhfrough.github.io/sizzle/)
 
 <p>
-  <a href="https://mhfrough.github.io/sizzle/assets/media/flick-reel.mp4"><img src="assets/media/flick-poster.webp" alt="Flick reel poster" width="240"></a>
-  <a href="https://mhfrough.github.io/sizzle/assets/media/scrawl-reel.mp4"><img src="assets/media/scrawl-poster.webp" alt="Scrawl reel poster" width="240"></a>
+  <a href="https://mhfrough.github.io/sizzle/assets/media/sizzle-reel.mp4"><img src="assets/media/sizzle-poster.webp" alt="Sizzle trailer poster" width="240"></a>
 </p>
 
-Two reels made with Sizzle: Flick and Scrawl. Click a poster to play it.
+The Sizzle trailer, made by Sizzle about itself. Click the poster to play it.
 
 Sizzle is a skill that makes short vertical promo reels (9:16, 20-25 s) for software products. It works
 with any AI agent that can read files and run commands.
@@ -64,20 +63,29 @@ skills/sizzle/
   templates/     starter reel, script template, render config
   tools/         renderer, encoder, music sync, one-command runner
   references/    craft, pitfalls, music, case studies
-index.html       the project page (GitHub Pages), with site.css, site.js and assets/
+index.html       the project page (GitHub Pages), with site.css and site.js
+screening.*      the Screening Room: a three.js cinema that plays the trailer
+studio.*         the Cutting Room: type your app's name and cut a reel in the browser
+schedule.*       the production schedule: the seven steps and their two approval gates
+promo/           the Sizzle trailer, made with Sizzle: reel HTML, script, render config, fonts
+assets/          share image, the trailer, its poster and frames (assets/media/), three.js (assets/vendor/three/)
+                 and the page fonts, Bebas Neue and EB Garamond (assets/fonts/, SIL OFL 1.1)
 install.sh       one-line installer for Claude Code (macOS / Linux)
 install.ps1      one-line installer for Claude Code (Windows)
 ```
 
 ## The page
 
-Static files, no build step. Serve the folder (`python -m http.server 8140`) and open it. The reels on
-the page are web copies (720 x 1280) of the 4K renders in the Flick and Scrawl repositories. Its art
-direction was dealt and checked with [Taste Skill](https://www.tasteskill.dev/).
+Static files, no build step. Serve the folder (`python -m http.server 8140`) and open it. Straight after
+the title, the page screens Sizzle's own trailer, made by running the skill on this repository
+(`promo/`), in a small three.js cinema that loads only when you scroll to it. The page plays a
+web copy (720 x 1280) of the 4K render. Three.js is vendored in `assets/vendor/three/`,
+and so are the fonts, so nothing loads from a CDN. Its art direction was dealt and checked with
+[Taste Skill](https://www.tasteskill.dev/).
 
-Music in the reels: "Upbeat Future Bass - So Easy" by BombinSound and "Start Somewhere Good" by MMAudio,
-both under the Pixabay Content License.
+Music in the trailer: "Upbeat Future Bass - So Easy" by BombinSound, under the Pixabay Content License.
 
 ## Licence
 
-MIT. Made by Mohammad Hamza ([@mhfrough](https://github.com/mhfrough)).
+MIT. Made by Mohammad Hamza ([@mhfrough](https://github.com/mhfrough)). The page fonts, Bebas Neue and
+EB Garamond, are under the SIL Open Font License 1.1; the licence texts are in `assets/fonts/`.

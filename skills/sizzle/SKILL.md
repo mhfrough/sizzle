@@ -143,4 +143,4 @@ Gitignore the work folder and, if the licence forbids redistribution, the music 
 | `references/craft.md` | Story, copy, layout, motion and design rules. |
 | `references/pitfalls.md` | Bugs we hit building real reels, with the fix for each. |
 | `references/music.md` | Sourcing, licence checks, consent, sync and mix. |
-| `references/case-studies.md` | Two finished reels (Flick, Scrawl): what was built and why. |
+| `references/case-studies.md` | Two finished reels: what was built and why. |

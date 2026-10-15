@@ -23,7 +23,7 @@ The thinking behind the reels. Read before writing the script.
 - Headlines: 2 lines max, about 16 characters per line at 100-110 px. Second line is the payoff, in the
   accent colour or the brand's "hand" style.
 - Use the product's own words (README, tagline, UI labels). Don't invent features, numbers or comparisons.
-- Prefer verbs and nouns people say out loud: "Flick it." beats "Seamless peer-to-peer transfer".
+- Prefer verbs and nouns people say out loud: "Send it." beats "Frictionless cross-device content delivery".
 - If a line overflows, cut words before shrinking the type.
 - Write the script so it can double as a voiceover later (short sentences, natural rhythm).
 

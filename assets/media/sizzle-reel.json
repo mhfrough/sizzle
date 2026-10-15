@@ -1,0 +1,151 @@
+{
+  "duration": 25,
+  "fps": 30,
+  "cues": [
+    {
+      "t": 0.15,
+      "name": "Hook",
+      "note": "Nobody reads your README. Workaround tags struck out on the half beats."
+    },
+    {
+      "t": 2.95,
+      "name": "Reveal",
+      "note": "The drop: a bronze gate slams shut. Your agent presents SIZZLE. Your app, now showing."
+    },
+    {
+      "t": 4.88,
+      "name": "Collapse",
+      "note": "The poster and the bronze shrink into the film-frame mark of the Sizzle lockup in the brand bar."
+    },
+    {
+      "t": 5.2,
+      "name": "Install",
+      "note": "npx skills add mhfrough/sizzle, and the skill's files land."
+    },
+    {
+      "t": 7.45,
+      "name": "Ask",
+      "note": "make a promo reel for this app. The agent reads the code."
+    },
+    {
+      "t": 9.7,
+      "name": "Script",
+      "note": "This reel's own shot list writes itself."
+    },
+    {
+      "t": 11.95,
+      "name": "Cut",
+      "note": "The live CUES object prints; each cue drops its block on the timeline."
+    },
+    {
+      "t": 14.2,
+      "name": "Picture lock",
+      "note": "This reel's own contact sheet. Approve. PICTURE LOCK."
+    },
+    {
+      "t": 16.45,
+      "name": "Mix",
+      "note": "The track's real waveform slides until the drop at 57.02 s locks onto the reveal at 2.95 s."
+    },
+    {
+      "t": 18.7,
+      "name": "Print",
+      "note": "Frame 000 to 750 while the reel's frames pass through the gate."
+    },
+    {
+      "t": 21.7,
+      "name": "CTA",
+      "note": "The gate slams again: the Sizzle lockup, the install line, the URL, the billing block."
+    }
+  ],
+  "shotList": [
+    {
+      "t": 0.0,
+      "title": "Hook",
+      "text": "NOBODY READS YOUR README. Your app deserves a trailer. Four workaround tags (README.md, screenshot-final-v3.png, demo.gif, walkthrough.mov) are struck out and fall."
+    },
+    {
+      "t": 2.95,
+      "title": "Reveal",
+      "text": "On the drop, bronze gates slam shut with a flash at the seam. The film-frame mark, YOUR AGENT PRESENTS, SIZZLE, Your app, now showing. The poster collapses into the film-frame mark of the brand bar lockup."
+    },
+    {
+      "t": 5.2,
+      "title": "01 Install",
+      "text": "ONE LINE TO INSTALL. npx skills add mhfrough/sizzle; sizzle added; Claude Code, Codex, Cursor, Gemini CLI, OpenCode; skills/sizzle/ with SKILL.md, templates/, tools/, references/."
+    },
+    {
+      "t": 7.45,
+      "title": "02 Ask",
+      "text": "THEN JUST ASK. \"make a promo reel for this app\". The agent: Reading your code. Writing the script."
+    },
+    {
+      "t": 9.7,
+      "title": "03 Script",
+      "text": "IT WRITES THE SCRIPT. This reel's own shot list types itself, row by row."
+    },
+    {
+      "t": 11.95,
+      "title": "04 Cut",
+      "text": "CUT ON CUE, IN HTML. sizzle-reel.html: the CUES object, the timeline blocks, a 9:16 preview, a playhead."
+    },
+    {
+      "t": 14.2,
+      "title": "05 Picture lock",
+      "text": "YOU APPROVE IT FIRST. The contact sheet of this reel's stills, Approve, PICTURE LOCK."
+    },
+    {
+      "t": 16.45,
+      "title": "06 Mix",
+      "text": "THE DROP HITS THE REVEAL. music_sync.py: hit 57.02 s, offset 54.07, pre -14.6 dB, body -8.9 dB, fits yes."
+    },
+    {
+      "t": 18.7,
+      "title": "07 Print",
+      "text": "RENDERED FRAME BY FRAME. reel.py all: frame 000 to 750; sizzle-reel.mp4, 2160 x 3840, 25 s, -14 LUFS."
+    },
+    {
+      "t": 21.7,
+      "title": "CTA",
+      "text": "A SKILL FOR AI AGENTS. The Sizzle lockup (film-frame mark + SIZZLE). Your app, now showing. npx skills add mhfrough/sizzle. mhfrough.github.io/sizzle."
+    }
+  ],
+  "mixReport": "$ python -I tools/music_sync.py promo/sizzle-bgm.mp3 --cue 2.95 --length 25\ntrack 102.8s, beat ~0.75s (~80 bpm, or double that)\nloudness per second (dBFS):\n     0s   -36   -9   -7   -9   -8   -9   -7   -9   -7   -7   -8   -8   -7   -9   -7   -9   -8   -8   -7   -9\n    20s    -7   -7   -8   -8   -7  -11   -7  -11   -8   -9   -8  -12   -8   -8   -8   -8   -7  -12   -7  -11\n    40s    -8   -9   -7  -12   -7   -8   -8   -8   -8  -10  -14   -9  -13  -16  -10  -14  -19   -7  -13  -13\n    60s   -10   -8   -6   -9   -7   -8   -7   -9   -7   -6   -7   -8  -11   -9   -7  -10   -8   -8   -7  -10\n    80s    -7   -7   -8   -8   -7   -9   -6  -10   -8   -8   -7  -10   -7   -7   -8   -8   -9  -15  -24  -35\n   100s   -49  -59\n\nhits, and the offset that lands each on the cue at 2.95s:\n  hit   57.02s  offset   54.07  pre  -14.6 dB  body   -8.9 dB  dips at -  fits yes\n  hit   60.78s  offset   57.83  pre  -11.3 dB  body   -8.5 dB  dips at -  fits yes\n  hit   75.78s  offset   72.83  pre   -9.4 dB  body   -8.6 dB  dips at -  fits yes\n  hit   34.90s  offset   31.95  pre   -9.4 dB  body  -10.3 dB  dips at [22]  fits yes\n  hit   39.78s  offset   36.83  pre   -9.1 dB  body  -11.1 dB  dips at [20]  fits yes\n\nPrefer: fits=yes, pre quieter than body, dips falling on your scene changes.\n\n$ python tools/reel.py all promo/reel.json   (mux step)\n---- mux summary ----\noutput      : D:\\workspace-personal\\mhfrough_projects\\sizzle\\promo\\.reel-work\\sizzle-reel-4k.mp4 (24.0 MB)\nvideo       : 2160x3840, 750 frames @ 30 fps, H.264 High crf 16 preset slow\nduration    : 25.000 s\naudio       : AAC 48 kHz stereo 192k | VO=no BGM=yes\nloudness    : -14.0 LUFS integrated (BS.1770-4 K-weighted, gated); pre-normalisation -23.2 LUFS, gain +9.2 dB\npeak        : -4.03 dBTP (4x oversampled), -4.12 dBFS sample peak\nelapsed     : 165.0 s",
+  "music": {
+    "title": "Upbeat Future Bass - So Easy",
+    "artist": "BombinSound",
+    "licence": "Pixabay Content License",
+    "url": "https://pixabay.com/music/future-bass-upbeat-future-bass-so-easy-581626/",
+    "offset": 54.07,
+    "hit": 57.02
+  },
+  "frames": [
+    {
+      "src": "assets/media/sizzle-frame-1.webp",
+      "alt": "Hook: NOBODY READS YOUR README, with README.md, screenshot, demo.gif and walkthrough tags struck out in bronze"
+    },
+    {
+      "src": "assets/media/sizzle-frame-2.webp",
+      "alt": "Scene 01, Install: ONE LINE TO INSTALL over a terminal running npx skills add mhfrough/sizzle"
+    },
+    {
+      "src": "assets/media/sizzle-frame-3.webp",
+      "alt": "Scene 04, Cut: CUT ON CUE, IN HTML, with the reel's CUES object, a 9:16 preview and the timeline"
+    },
+    {
+      "src": "assets/media/sizzle-frame-4.webp",
+      "alt": "Scene 05, Picture lock: YOU APPROVE IT FIRST, a contact sheet of the reel's stills stamped PICTURE LOCK"
+    },
+    {
+      "src": "assets/media/sizzle-frame-5.webp",
+      "alt": "Scene 06, Mix: THE DROP HITS THE REVEAL, the track's waveform with the drop at 57.02 s locked to the reveal cue"
+    },
+    {
+      "src": "assets/media/sizzle-frame-6.webp",
+      "alt": "CTA on bronze: the Sizzle lockup (film-frame mark and SIZZLE), Your app, now showing, npx skills add mhfrough/sizzle, mhfrough.github.io/sizzle"
+    }
+  ],
+  "poster": "assets/media/sizzle-poster.webp",
+  "sheet": "assets/media/sizzle-sheet.webp",
+  "video": "assets/media/sizzle-reel.mp4"
+}

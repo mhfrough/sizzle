@@ -4,17 +4,10 @@
     <loc>https://mhfrough.github.io/sizzle/</loc>
     <lastmod>2026-10-15</lastmod>
     <video:video>
-      <video:thumbnail_loc>https://mhfrough.github.io/sizzle/assets/media/flick-poster.webp</video:thumbnail_loc>
-      <video:title>Flick: flick it to the next screen</video:title>
-      <video:description>A 25-second vertical promo reel for Flick, made with the Sizzle skill.</video:description>
-      <video:content_loc>https://mhfrough.github.io/sizzle/assets/media/flick-reel.mp4</video:content_loc>
-      <video:duration>25</video:duration>
-    </video:video>
-    <video:video>
-      <video:thumbnail_loc>https://mhfrough.github.io/sizzle/assets/media/scrawl-poster.webp</video:thumbnail_loc>
-      <video:title>Scrawl: every big idea starts as a scrawl</video:title>
-      <video:description>A 25-second vertical promo reel for Scrawl, made with the Sizzle skill.</video:description>
-      <video:content_loc>https://mhfrough.github.io/sizzle/assets/media/scrawl-reel.mp4</video:content_loc>
+      <video:thumbnail_loc>https://mhfrough.github.io/sizzle/assets/media/sizzle-poster.webp</video:thumbnail_loc>
+      <video:title>Sizzle: your app, now showing</video:title>
+      <video:description>The 25-second trailer for Sizzle, made by Sizzle: the same skill and the same seven steps, pointed at its own repository.</video:description>
+      <video:content_loc>https://mhfrough.github.io/sizzle/assets/media/sizzle-reel.mp4</video:content_loc>
       <video:duration>25</video:duration>
     </video:video>
   </url>
