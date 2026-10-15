@@ -1,7 +1,7 @@
 /* Sizzle: the page is dressed as a film release. Soft black, one bronze accent, poster capitals over a book serif.
    Direction dealt by tasteskill v2 (borrowed category, seed 1287966093). */
 /* Fonts, self-hosted (SIL OFL 1.1, licences in assets/fonts/). EB Garamond is variable: one file covers 400-800. */
-@font-face { font-family: "Bebas Neue"; src: url("assets/fonts/BebasNeue-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Bebas Neue"; src: url("assets/fonts/BebasNeue-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; /* preloaded and small: the headline waits for it rather than reflowing */ }
 @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-latin.woff2") format("woff2"); font-weight: 400 800; font-style: normal; font-display: swap; }
 @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-Italic-latin.woff2") format("woff2"); font-weight: 400 800; font-style: italic; font-display: swap; }
 
