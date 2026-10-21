@@ -1,12 +1,14 @@
 // Render a reel page frame by frame with a fake clock (Playwright + Chromium).
 //
-// usage: node render.js stills <url> <outDir> 1,3.5,7      -> 1080x1920 PNG stills named t<sec>.png
-//        node render.js frames <url> <outDir> [fps=30] [scale=2] -> 00000.jpg, 00001.jpg ... (2160x3840 at scale 2)
+// usage: node render.js stills <url> <outDir> 1,3.5,7 [--size=WxH]          -> PNG stills named t<sec>.png
+//        node render.js frames <url> <outDir> [fps=30] [scale=2] [--size=WxH] -> 00000.jpg, 00001.jpg ...
+// --size is the canvas in CSS pixels (default 1080x1920); frames come out at size x scale (2160x3840 at 2).
+// Both modes also write <outDir>/cues.json (the page's CUES), which reel.py uses to place sound cues.
 //
 // The page must expose:
 //   window.reelReady   a promise that resolves once fonts/assets are in and the scene is built
 //   window.startReel() starts the timeline (removes the paused state, schedules beats)
-//   window.REEL        { duration } in seconds, set before reelReady resolves
+//   window.REEL        { duration, width, height, cues }, set before reelReady resolves
 // and must not autoplay when the URL has ?render (the renderer calls startReel itself).
 //
 // How it stays frame-exact: page.clock fakes Date/setTimeout/requestAnimationFrame, so JS beats fire at
@@ -32,9 +34,13 @@ function loadPlaywright() {
 }
 const { chromium } = loadPlaywright();
 
-const [mode, rawUrl, outDir, a4, a5] = process.argv.slice(2);
+const argv = process.argv.slice(2);
+const sizeArg = argv.find((a) => a.startsWith('--size='));
+const [mode, rawUrl, outDir, a4, a5] = argv.filter((a) => !a.startsWith('--size='));
+const [W, H] = (sizeArg ? sizeArg.slice(7) : '1080x1920').split('x').map(Number);
+if (!(W > 0 && H > 0)) { console.error('bad --size, want WxH like 1080x1920'); process.exit(1); }
 if (!['stills', 'frames'].includes(mode) || !rawUrl || !outDir) {
-  console.error('usage: node render.js stills <url> <outDir> 1,5,9 | node render.js frames <url> <outDir> [fps] [scale]');
+  console.error('usage: node render.js stills <url> <outDir> 1,5,9 [--size=WxH] | node render.js frames <url> <outDir> [fps] [scale] [--size=WxH]');
   process.exit(1);
 }
 const url = rawUrl + (rawUrl.includes('?') ? '&' : '?') + 'render';
@@ -44,7 +50,7 @@ fs.mkdirSync(outDir, { recursive: true });
   // GPU flags help WebGL pages; harmless elsewhere.
   const browser = await chromium.launch({ args: ['--enable-gpu', '--ignore-gpu-blocklist'] });
   const scale = mode === 'frames' ? +(a5 || 2) : 1;
-  const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: scale });
+  const page = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: scale });
   page.on('console', (m) => { if (m.type() === 'error') console.log('[page]', m.text()) });
   page.on('pageerror', (e) => console.log('[pageerror]', e.message));
   await page.clock.install();
@@ -53,6 +59,12 @@ fs.mkdirSync(outDir, { recursive: true });
   await page.evaluate(() => window.reelReady);
   const now = await page.evaluate(() => Date.now());
   await page.clock.pauseAt(now + 1500);
+  const info = await page.evaluate(() => ({ w: window.REEL.width, h: window.REEL.height, cues: window.REEL.cues || {} }));
+  if (info.w && (info.w !== W || info.h !== H)) {
+    console.error(`page canvas is ${info.w}x${info.h} but the render size is ${W}x${H}: set width/height in reel.json to match SIZE`);
+    process.exit(1);
+  }
+  fs.writeFileSync(path.join(outDir, 'cues.json'), JSON.stringify(info.cues, null, 1));
   const dur = await page.evaluate(() => {
     const births = new Map();
     const initial = new Set(document.getAnimations());
@@ -89,7 +101,8 @@ fs.mkdirSync(outDir, { recursive: true });
   const t0 = Date.now();
   for (let f = 0; f < total; f++) {
     const tf = f / fps;
-    const step = (tf - t) * 1000;
+    // whole-millisecond steps from absolute times: fractional runFor steps drift the page clock ~2% fast
+    const step = Math.round(tf * 1000) - Math.round(t * 1000);
     if (step > 0) await page.clock.runFor(step);
     t = tf;
     await page.evaluate((x) => window.__seek(x), tf);

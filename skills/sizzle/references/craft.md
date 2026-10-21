@@ -1,67 +1,63 @@
 # Craft: story, copy, layout, motion, design
 
-The thinking behind the reels. Read before writing the script.
+Principles, not a recipe. The concept and direction decide the shape; these keep any shape working.
 
 ## Story
 
-- **One promise.** A reel sells one sentence (e.g. "send a file to the screen next to you"). Every beat
-  either sets up the pain, shows the promise working, or removes a doubt.
-- **Hook in the first second.** Text is on screen by 0.15 s. Start with the viewer's pain, phrased as a
-  question they'd answer "yes" to ("Still emailing files to yourself?"). Show the workarounds they use
-  today, then strike them out: it makes the pain concrete without a word of explanation.
-- **Reveal at ~3 s.** A full-screen brand moment (colour burst, logo, name, the product's own tagline).
-  This is where the music should hit.
-- **Show, don't list.** Each demo beat is a headline plus the real UI doing exactly that thing: a tap, a
-  file flying across, a shape drawing itself. Three beats is plenty; four is the maximum in 25 s.
-- **Proof before the ask.** One beat that removes the doubt people actually have (privacy, cost,
-  sign-up, lock-in), stated plainly and only if true.
-- **CTA with a hold.** Mark, "Try X.", a short reassurance ("Free, in any browser."), the URL typing
-  itself, and ~2 s of hold so people can read and screenshot it.
+- **One message.** A reel sells one sentence. Every beat sets it up, shows it working, or removes a doubt.
+  If a beat does none of these, cut it.
+- **The first second earns the rest.** Something is on screen and moving by 0.15 s, and it is the most
+  interesting thing you have: a question, a mid-action frame, a number, a sound on black, an object.
+  Vary the kind of opening from recent reels.
+- **A turn.** Every reel has a moment where things change (the reveal, the drop, the answer, the click).
+  The music's hit or the biggest SFX lands there. It does not have to be at 3 s or be a logo.
+- **Show, don't list.** The real UI doing the thing beats a sentence about it. Three moments of use is
+  plenty; four is the most a 25 s reel holds.
+- **Doubt before the ask,** when there is one people really have (privacy, price, sign-up, lock-in),
+  stated plainly and only if true.
+- **An ending people can act on.** Name, the action, where (URL, store, handle), held long enough to read
+  and screenshot (about 2 s). The form of the ending comes from the direction: a typed URL, a pressed
+  button, a loop, a sticker, a sign-off.
 
 ## Copy
 
-- Headlines: 2 lines max, about 16 characters per line at 100-110 px. Second line is the payoff, in the
-  accent colour or the brand's "hand" style.
 - Use the product's own words (README, tagline, UI labels). Don't invent features, numbers or comparisons.
-- Prefer verbs and nouns people say out loud: "Send it." beats "Frictionless cross-device content delivery".
-- If a line overflows, cut words before shrinking the type.
-- Write the script so it can double as a voiceover later (short sentences, natural rhythm).
+- Words people say out loud: "Send it." beats "Frictionless cross-device content delivery".
+- Reading time: about 1 s per 3 words on screen, never under 0.8 s for a line.
+- Line length depends on the type approach: a giant condensed face fits 6-10 characters a line on 9:16; a
+  caption style fits 30. If a line overflows, cut words before shrinking the type.
+- Write so the script can double as a voiceover (short sentences, natural rhythm).
 
-## Layout (1080x1920)
+## Layout
 
-- Persistent brand pill at y≈196 after the reveal: mark, name, a 5-word descriptor.
-- Headline zone y≈320-560, centred. The demo lives below it (y≈600-1450).
-- Safe zones: platform UI covers roughly the top 190 px, the bottom 380 px, and a right-hand column of
-  buttons from y≈1100 down. Nothing that must be read goes there.
-- Devices: a laptop above and a phone in front works for "two screens"; a single centred phone works for
-  mobile-first products; a full-bleed app frame (rail + header) works for canvas/editor apps.
-- Render device screens with CSS `zoom` (crisp text at 4K), not `transform: scale`.
+- Canvas sizes: 9:16 is 1080x1920, 4:5 is 1080x1350, 1:1 is 1080x1080, 16:9 is 1920x1080 (CSS px, rendered 2x).
+- Safe zones on 9:16 platforms: the top ~190 px, the bottom ~380 px and a right-hand column of buttons from
+  y≈1100 down are covered by platform UI. Nothing that must be read goes there. 4:5 and 1:1 feeds crop the
+  caption area only; 16:9 has no overlay.
+- The composition rule from the direction holds for the whole reel; break it once, on purpose, at the turn.
+- Devices are one option among many (full-bleed UI, exploded layers, fragments, a cursor on a desktop).
+  When you use one, render its screen with CSS `zoom` (crisp text at 4K), not `transform: scale`.
 
-## Motion vocabulary
+## Motion
 
-- **Line mask reveal** for headlines: each line slides up out of its own `overflow:hidden` box (1 s,
-  ease-out-expo), leaves upward faster (0.45 s, ease-in). Stagger lines by 0.12 s.
-- **Pop** (`cubic-bezier(.34,1.56,.64,1)`) for chips, pills, icons and arrivals.
-- **Draw-on** for strokes: `pathLength="1"`, `stroke-dasharray:1 2`, animate `stroke-dashoffset` 1 to 0.
-  A pen or cursor following the same path (CSS `offset-path`) makes it feel hand-made.
-- **Flight** for "it moved from here to there": `offset-path` on a cubic curve, lift-hover-fly keyframes,
-  a comet trail of dots with small delays, and a streak path drawn in sync.
-- **Taps**: a translucent dot that presses (scale .78) plus an accent ring that expands. Cursor arrow for
-  desktop clicks.
-- **Transitions between acts**: a brand-colour circle wipe that collapses into the brand pill, a giant
-  highlighter stroke that sweeps the screen, a dark-mode circle reveal from a button. Pick one signature
-  transition per product and reuse it at the CTA.
-- Background life: a subtle pattern (dots, grid), two very slow drifting glows, slow radar rings. Never
-  busy enough to compete with text.
-- Pace: something moves every ~0.5 s, but a headline gets at least ~1.2 s fully on screen.
+- One motion language per reel (`references/direction.md`), with its easing, applied to everything.
+- Hierarchy: the big moment moves the most; everything else moves less so it reads as big.
+- Pace: something moves about every 0.5 s, but a line of copy gets its full reading time still.
+- Stroke draw-on: `pathLength="1"`, `stroke-dasharray:1 2`, animate `stroke-dashoffset` 1 to 0; a pen
+  following the same path (`offset-path`) makes it feel made by hand.
+- Flights ("it moved from here to there"): `offset-path` on a curve, measured in `R.onMeasure`.
+- Taps and clicks: show the press on the frame it happens and sound it there.
+- Transitions are part of the signature: design one for this reel (from the product's icon, its gesture)
+  rather than reusing a stock wipe. `references/techniques/` shows the mechanics.
+- Background life never competes with text.
 
 ## Design
 
-- The product's own palette, fonts and icons only. Copy tokens from its stylesheet; load its font files.
-- Give each product a distinct reel identity: e.g. one dark with an electric accent, the next light paper
-  with a highlighter yellow. Same structure, different feel.
-- Demo data should look real and friendly: plausible device names, a "sunset.jpg 4.2 MB", a short note
-  like "Lunch at 1? Pizza's on me." Never real people's data.
+- The product's palette (in the direction's roles), its fonts unless the direction's type approach
+  replaces the display face, its icons and logo.
+- Demo data looks real and friendly: plausible names, "sunset.jpg 4.2 MB", "Lunch at 1? Pizza's on me."
+  Never real people's data.
 - Dark scenes: inherited text colours don't re-resolve, so set `color:var(--ink)` on the dark container.
-  Highlight-behind-text styles that work on light paper often fail on dark: switch to accent-coloured
-  text with an underline swipe.
+  Highlight-behind-text styles that work on light paper often fail on dark.
+- Before you show anyone: does a frame from this reel look like a frame from the last one? If yes, change
+  the composition or scale of that scene (`fingerprint.py look` checks this).

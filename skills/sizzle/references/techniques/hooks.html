@@ -1,0 +1,347 @@
+<!--
+  Hooks: the first ~3 s. Name the viewer's pain so they answer "yes". Text on screen by ~.15 s.
+  Runs from var(--hook) to var(--hookOut) (+ ~.6 s exit); fully gone before var(--reveal) + .3 s.
+  z-index 6. Prefix: hk-<id>-. Copy here is placeholder: the agent rewrites it from the product's README.
+  Inner pacing scales with the hook's length: --hkLen = hookOut - hook (CSS), or the same from R.at in JS.
+-->
+
+<!-- @block strike-chips -->
+<style>
+.hk-strike{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:6}
+.hk-strike h1{font-family:var(--font-display);font-weight:var(--display-weight);letter-spacing:var(--display-track);text-transform:var(--display-case);
+  font-size:calc(var(--hs,110px) * 1.13);line-height:var(--display-lead,.98);text-align:center}
+.hk-strike h1>span{display:block;overflow:hidden;padding:0 .05em .1em;white-space:nowrap}
+.hk-strike h1>span>i{display:inline-block;font-style:inherit;
+  animation:hkStrikeIn 1s var(--ease-out) calc(var(--hook) + var(--li) * .1s) both, hkStrikeOut .45s var(--ease-in) calc(var(--hookOut) + var(--li) * .04s) forwards}
+.hk-strike-chip{position:absolute;display:flex;align-items:center;height:96px;padding:0 34px;border-radius:var(--radius-pill);background:var(--raise);
+  font-size:34px;font-weight:600;white-space:nowrap;z-index:6;transform:rotate(var(--r,0deg));
+  animation:pop .6s var(--ease-pop) var(--d) both, sink .6s var(--ease-in) var(--o) forwards}
+.hk-strike-chip::after{content:"";position:absolute;left:22px;right:22px;top:50%;height:8px;margin-top:-4px;border-radius:8px;background:var(--accent);
+  transform-origin:left;transform:scaleX(0);animation:strike .35s var(--ease-out) var(--s) both}
+@keyframes hkStrikeIn{from{transform:translateY(112%)}to{transform:none}}
+@keyframes hkStrikeOut{from{transform:none;opacity:1}to{transform:translateY(-135%);opacity:0}}
+</style>
+<!-- @html -->
+  <div class="hk-strike">
+    <h1 class="r-fit"><span style="--li:0"><i>Still doing it</i></span><span style="--li:1"><i>the slow</i></span><span style="--li:2"><i class="acc">way?</i></span></h1>
+  </div>
+  <div class="hk-strike-chip" style="left:80px;top:500px;--r:-5deg" data-in="hook+.45" data-out="hookOut-.05" data-s="hookOut-1">Old workaround one</div>
+  <div class="hk-strike-chip" style="left:470px;top:1380px;--r:4deg" data-in="hook+.65" data-out="hookOut" data-s="hookOut-.85">Old workaround two</div>
+<!-- @end html -->
+<!-- @end -->
+
+<!-- @block notification-pile -->
+<style>
+/* the question up top; notifications land on a messy pile, faster than anyone could read them, then all swipe away */
+.hk-notification-pile{position:absolute;inset:0;z-index:6;--hkLen:calc(var(--hookOut) - var(--hook))}
+.hk-notification-pile-q{position:absolute;left:60px;right:60px;top:236px;text-align:center;font-family:var(--font-display);font-weight:var(--display-weight);
+  letter-spacing:var(--display-track);text-transform:var(--display-case);font-size:112px;line-height:.98}
+.hk-notification-pile-q>span{display:block;
+  animation:hkNotificationPileQ .6s var(--ease-out) calc(var(--hook) + var(--li) * .08s) both, riseOut .4s var(--ease-in) calc(var(--hookOut) + var(--li) * .04s) forwards}
+.hk-notification-pile-stack{position:absolute;left:110px;right:150px;top:560px}
+.hk-notification-pile-card{position:absolute;left:0;right:0;top:calc(var(--i) * 124px);display:flex;align-items:center;gap:26px;padding:26px 30px;
+  border-radius:calc(var(--radius) * 1.4);background:var(--raise);box-shadow:0 0 0 2px var(--line),var(--shadow);transform:translateX(var(--x)) rotate(var(--r));
+  animation:hkNotificationPileIn .5s var(--ease-pop) calc(var(--hook) + .3s + var(--i) * var(--hkLen) * .085) both,
+            hkNotificationPileOut .3s var(--ease-in) calc(var(--hookOut) + (5 - var(--i)) * .025s) forwards}
+.hk-notification-pile-ic{flex:none;width:84px;height:84px;border-radius:var(--radius);background:var(--accent);color:var(--on-accent);display:grid;place-items:center;
+  font-family:var(--font-display);font-weight:800;font-size:44px}
+.hk-notification-pile-card:nth-child(even) .hk-notification-pile-ic{background:var(--raise-2);color:var(--ink)}
+.hk-notification-pile-txt{flex:1;min-width:0}
+.hk-notification-pile-t{display:flex;justify-content:space-between;align-items:baseline;gap:20px;font-size:32px;font-weight:700;white-space:nowrap}
+.hk-notification-pile-t em{font-style:normal;font-size:24px;font-weight:500;color:var(--ink-2)}
+.hk-notification-pile-b{margin-top:6px;font-size:28px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@keyframes hkNotificationPileQ{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+@keyframes hkNotificationPileIn{from{opacity:0;transform:translateY(-150px) scale(.86)}to{opacity:1;transform:translateX(var(--x)) rotate(var(--r))}}
+@keyframes hkNotificationPileOut{from{opacity:1;transform:translateX(var(--x)) rotate(var(--r))}to{opacity:0;transform:translateX(1100px) rotate(14deg)}}
+</style>
+<!-- @html -->
+  <div class="hk-notification-pile">
+    <h1 class="hk-notification-pile-q"><span style="--li:0">Still waiting</span><span class="acc" style="--li:1">on it?</span></h1>
+    <div class="hk-notification-pile-stack">
+      <div class="hk-notification-pile-card" style="--i:0;--x:-10px;--r:-2deg"><b class="hk-notification-pile-ic">!</b><div class="hk-notification-pile-txt"><p class="hk-notification-pile-t">Reminder<em>now</em></p><p class="hk-notification-pile-b">You still have not finished it.</p></div></div>
+      <div class="hk-notification-pile-card" style="--i:1;--x:18px;--r:1.5deg"><b class="hk-notification-pile-ic">3</b><div class="hk-notification-pile-txt"><p class="hk-notification-pile-t">3 new messages<em>now</em></p><p class="hk-notification-pile-b">Any update on this?</p></div></div>
+      <div class="hk-notification-pile-card" style="--i:2;--x:-24px;--r:-1deg"><b class="hk-notification-pile-ic">!</b><div class="hk-notification-pile-txt"><p class="hk-notification-pile-t">Upload failed<em>now</em></p><p class="hk-notification-pile-b">Tap to try again.</p></div></div>
+      <div class="hk-notification-pile-card" style="--i:3;--x:12px;--r:2.5deg"><b class="hk-notification-pile-ic">?</b><div class="hk-notification-pile-txt"><p class="hk-notification-pile-t">Still processing<em>now</em></p><p class="hk-notification-pile-b">This may take a while.</p></div></div>
+      <div class="hk-notification-pile-card" style="--i:4;--x:-6px;--r:-2.5deg"><b class="hk-notification-pile-ic">9+</b><div class="hk-notification-pile-txt"><p class="hk-notification-pile-t">12 new messages<em>now</em></p><p class="hk-notification-pile-b">Still waiting on you.</p></div></div>
+      <div class="hk-notification-pile-card" style="--i:5;--x:20px;--r:1deg"><b class="hk-notification-pile-ic">!</b><div class="hk-notification-pile-txt"><p class="hk-notification-pile-t">Something went wrong<em>now</em></p><p class="hk-notification-pile-b">Please try again later.</p></div></div>
+    </div>
+  </div>
+<!-- @end html -->
+<!-- @end -->
+
+<!-- @block loading-hell -->
+<style>
+/* the question, then a spinner and a bar that races to 99% and sticks there */
+.hk-loading-hell{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:140px;
+  --hkLen:calc(var(--hookOut) - var(--hook))}
+.hk-loading-hell-q{font-family:var(--font-display);font-weight:var(--display-weight);letter-spacing:var(--display-track);text-transform:var(--display-case);
+  font-size:124px;line-height:.98;text-align:center}
+.hk-loading-hell-q>span{display:block;
+  animation:hkLoadingHellQ .7s var(--ease-out) calc(var(--hook) + var(--li) * .1s) both, riseOut .4s var(--ease-in) calc(var(--hookOut) + var(--li) * .04s) forwards}
+.hk-loading-hell-box{margin-top:110px;display:flex;flex-direction:column;align-items:center;
+  animation:pop .5s var(--ease-pop) calc(var(--hook) + .15s) both, sink .42s var(--ease-in) calc(var(--hookOut) + .05s) forwards}
+.hk-loading-hell-spin{width:170px;height:170px;border-radius:50%;border:16px solid var(--raise-2);border-top-color:var(--accent);
+  animation:hkLoadingHellSpin .9s linear var(--hook) infinite}
+.hk-loading-hell-bar{margin-top:80px;width:760px;height:30px;border-radius:var(--radius-pill);background:var(--raise);overflow:hidden}
+.hk-loading-hell-bar i{display:block;height:100%;border-radius:inherit;background:var(--accent);transform-origin:left;transform:scaleX(0);
+  animation:hkLoadingHellFill calc(var(--hkLen) * .55) linear calc(var(--hook) + .3s) both,
+            hkLoadingHellPulse .5s ease-in-out calc(var(--hook) + .3s + var(--hkLen) * .55) infinite alternate}
+.hk-loading-hell-row{margin-top:30px;width:760px;display:flex;justify-content:space-between;align-items:baseline;font-size:36px;color:var(--ink-2)}
+.hk-loading-hell-row b{font-family:var(--font-display);font-size:56px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+@keyframes hkLoadingHellQ{from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:none}}
+@keyframes hkLoadingHellSpin{to{transform:rotate(360deg)}}
+/* keep these stops in step with K in the script below */
+@keyframes hkLoadingHellFill{0%{transform:scaleX(0)}25%{transform:scaleX(.55)}45%{transform:scaleX(.8)}70%{transform:scaleX(.95)}85%{transform:scaleX(.98)}100%{transform:scaleX(.99)}}
+@keyframes hkLoadingHellPulse{from{opacity:1}to{opacity:.5}}
+</style>
+<!-- @html -->
+  <div class="hk-loading-hell">
+    <h1 class="hk-loading-hell-q"><span style="--li:0">Still</span><span class="acc" style="--li:1">loading?</span></h1>
+    <div class="hk-loading-hell-box">
+      <div class="hk-loading-hell-spin"></div>
+      <div class="hk-loading-hell-bar"><i></i></div>
+      <div class="hk-loading-hell-row"><span id="hk-loading-hell-msg">Loading…</span><b id="hk-loading-hell-pct">0%</b></div>
+    </div>
+  </div>
+<!-- @end html -->
+<script>
+(function(){
+  var h0 = R.at('hook'), L = R.at('hookOut') - h0, t0 = h0 + .3, dur = L * .55,
+      K = [[0, 0], [.25, 55], [.45, 80], [.7, 95], [.85, 98], [1, 99]],
+      pct = document.getElementById('hk-loading-hell-pct'), msg = document.getElementById('hk-loading-hell-msg');
+  function val(p){
+    for (var i = 1; i < K.length; i++) if (p <= K[i][0]) return K[i-1][1] + (K[i][1] - K[i-1][1]) * (p - K[i-1][0]) / (K[i][0] - K[i-1][0]);
+    return 99;
+  }
+  var steps = Math.ceil(dur * 20);
+  for (var k = 0; k <= steps; k++) (function(p){ R.beat(t0 + p * dur, function(){ pct.textContent = Math.floor(val(p)) + '%' }) })(k / steps);
+  [['Almost there…', .35], ['Any second now…', .62], ['Still 99%…', .85]].forEach(function(m){
+    R.beat(h0 + L * m[1], function(){ msg.textContent = m[0] });
+  });
+})();
+</script>
+<!-- @end -->
+
+<!-- @block question-stack -->
+<style>
+/* three short pain questions stack up; each new one dims the last; the final one is in the accent */
+.hk-question-stack{position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;padding-bottom:160px;
+  --hkLen:calc(var(--hookOut) - var(--hook))}
+.hk-question-stack-q{font-family:var(--font-display);font-weight:var(--display-weight);letter-spacing:var(--display-track);text-transform:var(--display-case);
+  font-size:116px;line-height:1.1;text-align:left}
+.hk-question-stack-q>span{display:block;white-space:nowrap;padding-left:46px;
+  animation:hkQuestionStackIn .6s var(--ease-out) calc(var(--hook) + var(--i) * var(--hkLen) * .26) both,
+            hkQuestionStackOut .36s var(--ease-in) calc(var(--hookOut) + (2 - var(--i)) * .04s) forwards}
+.hk-question-stack-q i{position:relative;display:inline-block;font-style:inherit}
+.hk-question-stack-q>span:not(:last-child) i{animation:hkQuestionStackDim .35s ease calc(var(--hook) + (var(--i) + 1) * var(--hkLen) * .26) forwards}
+.hk-question-stack-q i::before{content:"";position:absolute;left:-46px;top:.14em;bottom:.1em;width:12px;border-radius:12px;background:var(--accent);
+  transform-origin:50% 0;animation:hkQuestionStackBar .45s var(--ease-out) calc(var(--hook) + .08s + var(--i) * var(--hkLen) * .26) both}
+@keyframes hkQuestionStackIn{from{opacity:0;transform:translateX(-90px)}to{opacity:1;transform:none}}
+@keyframes hkQuestionStackOut{from{opacity:1;transform:none}to{opacity:0;transform:translateX(-140px)}}
+@keyframes hkQuestionStackDim{from{opacity:1}to{opacity:.36}}
+@keyframes hkQuestionStackBar{from{transform:scaleY(0)}to{transform:none}}
+</style>
+<!-- @html -->
+  <div class="hk-question-stack">
+    <h1 class="hk-question-stack-q">
+      <span style="--i:0"><i>Too slow?</i></span>
+      <span style="--i:1"><i>Too many steps?</i></span>
+      <span class="acc" style="--i:2"><i>Still stuck?</i></span>
+    </h1>
+  </div>
+<!-- @end html -->
+<!-- @end -->
+
+<!-- @block split-before -->
+<style>
+/* the screen splits: the old way piles up on the left, the right side is empty and waiting; the halves part like doors */
+.hk-split-before{position:absolute;inset:0;z-index:6;--hkLen:calc(var(--hookOut) - var(--hook))}
+.hk-split-before-q{position:absolute;left:60px;right:60px;top:228px;text-align:center;font-family:var(--font-display);font-weight:var(--display-weight);
+  letter-spacing:var(--display-track);text-transform:var(--display-case);font-size:104px;line-height:.98}
+.hk-split-before-q>span{display:block;
+  animation:rise .6s var(--ease-out) calc(var(--hook) + var(--li) * .08s) both, riseOut .4s var(--ease-in) calc(var(--hookOut) + var(--li) * .04s) forwards}
+.hk-split-before-half{position:absolute;top:540px;height:880px;width:450px;border-radius:calc(var(--radius) * 1.5);overflow:hidden}
+.hk-split-before-old{left:60px;background:var(--raise);
+  animation:hkSplitBeforeL .7s var(--ease-out) var(--hook) both, hkSplitBeforeLOut .42s var(--ease-in) var(--hookOut) forwards}
+.hk-split-before-new{left:570px;width:420px;border:4px dashed color-mix(in srgb,var(--ink) 28%,transparent);
+  animation:hkSplitBeforeR .7s var(--ease-out) calc(var(--hook) + .08s) both, hkSplitBeforeROut .42s var(--ease-in) var(--hookOut) forwards}
+.hk-split-before-seam{position:absolute;left:539px;top:520px;width:2px;height:920px;background:color-mix(in srgb,var(--ink) 30%,transparent);transform-origin:50% 0;
+  animation:hkSplitBeforeSeam .6s var(--ease-out) var(--hook) both, fadeOut .25s ease var(--hookOut) forwards}
+.hk-split-before-lbl{position:absolute;left:0;right:0;top:34px;text-align:center;font-size:30px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.hk-split-before-chip{position:absolute;display:flex;align-items:center;height:72px;padding:0 26px;border-radius:var(--radius-pill);background:var(--raise-2);
+  font-size:30px;font-weight:650;white-space:nowrap;transform:rotate(var(--r));
+  animation:hkSplitBeforeChip .45s var(--ease-pop) calc(var(--hook) + .3s + var(--i) * var(--hkLen) * .07) both}
+.hk-split-before-chip>span{display:block;animation:hkSplitBeforeJit .24s steps(2) calc(var(--hook) + var(--i) * .03s) infinite alternate}
+.hk-split-before-chip.hk-split-before-bad{background:var(--accent);color:var(--on-accent)}
+.hk-split-before-wait{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:160px;font-weight:800;color:var(--accent)}
+@keyframes hkSplitBeforeL{from{opacity:0;transform:translateX(-110%)}to{opacity:1;transform:none}}
+@keyframes hkSplitBeforeR{from{opacity:0;transform:translateX(110%)}to{opacity:1;transform:none}}
+@keyframes hkSplitBeforeLOut{from{opacity:1;transform:none}to{opacity:0;transform:translateX(-115%)}}
+@keyframes hkSplitBeforeROut{from{opacity:1;transform:none}to{opacity:0;transform:translateX(115%)}}
+@keyframes hkSplitBeforeSeam{from{opacity:0;transform:scaleY(0)}to{opacity:1;transform:none}}
+@keyframes hkSplitBeforeChip{from{opacity:0;transform:rotate(var(--r)) scale(.3)}to{opacity:1;transform:rotate(var(--r))}}
+@keyframes hkSplitBeforeJit{from{transform:translate(-2px,1px)}to{transform:translate(2px,-1px)}}
+</style>
+<!-- @html -->
+  <div class="hk-split-before">
+    <h1 class="hk-split-before-q"><span style="--li:0">Still doing it</span><span class="acc" style="--li:1">the old way?</span></h1>
+    <div class="hk-split-before-half hk-split-before-old">
+      <p class="hk-split-before-lbl">The old way</p>
+      <div class="hk-split-before-chip" style="--i:0;left:40px;top:150px;--r:-6deg"><span>Step 1 of 9</span></div>
+      <div class="hk-split-before-chip" style="--i:1;left:170px;top:250px;--r:5deg"><span>Export</span></div>
+      <div class="hk-split-before-chip" style="--i:2;left:30px;top:350px;--r:3deg"><span>Re-upload</span></div>
+      <div class="hk-split-before-chip hk-split-before-bad" style="--i:3;left:190px;top:440px;--r:-8deg"><span>Error</span></div>
+      <div class="hk-split-before-chip" style="--i:4;left:50px;top:540px;--r:-3deg"><span>Copy, paste</span></div>
+      <div class="hk-split-before-chip" style="--i:5;left:200px;top:630px;--r:7deg"><span>Wait…</span></div>
+      <div class="hk-split-before-chip" style="--i:6;left:40px;top:730px;--r:-5deg"><span>Try again</span></div>
+    </div>
+    <div class="hk-split-before-seam"></div>
+    <div class="hk-split-before-half hk-split-before-new">
+      <p class="hk-split-before-lbl">The new way</p>
+      <div class="hk-split-before-wait"><span class="caret"></span></div>
+    </div>
+  </div>
+<!-- @end html -->
+<!-- @end -->
+
+<!-- @block stat-slam -->
+<style>
+/* a huge number counts up and slams; the pain it measures sits under it, with its source */
+.hk-stat-slam{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:150px;
+  text-align:center;--hkLen:calc(var(--hookOut) - var(--hook))}
+.hk-stat-slam-num{font-family:var(--font-display);font-weight:800;letter-spacing:-.05em;font-size:360px;line-height:.86;color:var(--accent);
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+  animation:pop .45s var(--ease-pop) var(--hook) both, hkStatSlamOut .4s var(--ease-in) var(--hookOut) forwards}
+.hk-stat-slam-num>span{display:inline-block;animation:hkStatSlamHit .5s linear calc(var(--hook) + var(--hkLen) * .42) both}
+.hk-stat-slam-pain{margin-top:50px;font-family:var(--font-display);font-weight:var(--display-weight);letter-spacing:var(--display-track);
+  text-transform:var(--display-case);font-size:88px;line-height:1;
+  animation:rise .6s var(--ease-out) calc(var(--hook) + .3s) both, sink .38s var(--ease-in) var(--hookOut) forwards}
+.hk-stat-slam-src{margin-top:44px;font-size:26px;color:var(--ink-2);
+  animation:fadeIn .5s ease calc(var(--hook) + .6s) both, fadeOut .25s ease var(--hookOut) forwards}
+@keyframes hkStatSlamHit{0%,100%{transform:none}22%{transform:scale(1.16)}45%{transform:scale(.95) translateX(-10px)}62%{transform:translateX(8px)}80%{transform:translateX(-4px)}}
+@keyframes hkStatSlamOut{from{opacity:1;transform:none}to{opacity:0;transform:scale(1.5)}}
+</style>
+<!-- @html -->
+  <!-- PLACEHOLDER NUMBER. 73% is NOT a real figure: replace data-to / data-suffix with a TRUE number from a source you
+       can cite, put that source in .hk-stat-slam-src, and make the line under it say exactly what the number measures.
+       No true, sourced number for this product's pain? Replace this hook with another. Never invent a statistic. -->
+  <div class="hk-stat-slam">
+    <div class="hk-stat-slam-num"><span id="hk-stat-slam-n" data-to="73" data-suffix="%">0%</span></div>
+    <p class="hk-stat-slam-pain">of the job is<br><span class="acc">the boring part.</span></p>
+    <p class="hk-stat-slam-src">Source: replace with the real one</p>
+  </div>
+<!-- @end html -->
+<script>
+(function(){
+  /* count up (ease-out) from the hook to the slam; the slam keyframes run at the same moment (hook + 42%) */
+  var el = document.getElementById('hk-stat-slam-n'), to = +el.dataset.to, suf = el.dataset.suffix || '',
+      dec = (String(el.dataset.to).split('.')[1] || '').length, h0 = R.at('hook'), dur = (R.at('hookOut') - h0) * .42, steps = Math.ceil(dur * 30);
+  for (var k = 0; k <= steps; k++) (function(p){
+    R.beat(h0 + p * dur, function(){ el.textContent = (to * (1 - Math.pow(1 - p, 3))).toFixed(dec) + suf });
+  })(k / steps);
+})();
+</script>
+<!-- @end -->
+
+<!-- @block tab-chaos -->
+<style>
+/* a browser window whose tabs keep multiplying (faster and faster) until they are unreadable slivers */
+.hk-tab-chaos{position:absolute;inset:0;z-index:6;--hkLen:calc(var(--hookOut) - var(--hook))}
+.hk-tab-chaos-q{position:absolute;left:60px;right:60px;top:236px;text-align:center;font-family:var(--font-display);font-weight:var(--display-weight);
+  letter-spacing:var(--display-track);text-transform:var(--display-case);font-size:112px;line-height:.98}
+.hk-tab-chaos-q>span{display:block;
+  animation:rise .6s var(--ease-out) calc(var(--hook) + var(--li) * .08s) both, riseOut .4s var(--ease-in) calc(var(--hookOut) + var(--li) * .04s) forwards}
+.hk-tab-chaos-win{position:absolute;left:80px;right:130px;top:570px;height:720px;
+  animation:hkTabChaosIn .7s var(--ease-out) calc(var(--hook) + .05s) both, hkTabChaosOut .42s var(--ease-in) var(--hookOut) forwards}
+.hk-tab-chaos-in{height:100%;display:flex;flex-direction:column;border-radius:calc(var(--radius) * 1.3);background:var(--raise-2);overflow:hidden;
+  box-shadow:0 0 0 2px var(--line),var(--shadow)}
+.hk-tab-chaos-strip{display:flex;height:86px;padding:18px 18px 0}
+.hk-tab-chaos-tab{flex:1 1 0;min-width:0;max-width:0;overflow:hidden;animation:hkTabChaosGrow .28s var(--ease-out) var(--t) both}
+.hk-tab-chaos-tab>div{display:flex;align-items:center;gap:12px;height:68px;margin-right:4px;padding:0 18px;border-radius:16px 16px 0 0;background:var(--raise);
+  font-size:24px;color:var(--ink-2);white-space:nowrap;overflow:hidden}
+.hk-tab-chaos-tab i{flex:none;width:26px;height:26px;border-radius:7px;background:var(--ink-2)}
+.hk-tab-chaos-tab:nth-child(3n+1) i{background:var(--accent)}
+.hk-tab-chaos-tab span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.hk-tab-chaos-page{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--raise)}
+.hk-tab-chaos-page b{font-family:var(--font-display);font-size:210px;font-weight:800;line-height:.9;color:var(--accent);font-variant-numeric:tabular-nums}
+.hk-tab-chaos-page span{font-size:44px;font-weight:600;color:var(--ink-2)}
+@keyframes hkTabChaosIn{from{opacity:0;transform:translateY(120px)}to{opacity:1;transform:none}}
+@keyframes hkTabChaosOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(320px) rotate(7deg)}}
+@keyframes hkTabChaosGrow{from{max-width:0}to{max-width:340px}}
+</style>
+<!-- @html -->
+  <div class="hk-tab-chaos">
+    <h1 class="hk-tab-chaos-q"><span style="--li:0">One more tab</span><span class="acc" style="--li:1">for this?</span></h1>
+    <div class="hk-tab-chaos-win"><div class="hk-tab-chaos-in">
+      <div class="hk-tab-chaos-strip" id="hk-tab-chaos-strip"></div>
+      <div class="hk-tab-chaos-page"><b id="hk-tab-chaos-n">2</b><span>tabs open</span></div>
+    </div></div>
+  </div>
+<!-- @end html -->
+<script>
+(function(){
+  /* placeholder tab titles: the agent may swap them for the product's real workarounds */
+  var names = ['How to do it faster', 'Untitled', 'Converter (free?)', 'Forum: same question', 'Tutorial, part 3', 'Sign in to continue',
+               'Another tool', 'Docs', 'Pricing', 'Untitled', 'Search results', 'Video: 14 min'];
+  var strip = document.getElementById('hk-tab-chaos-strip'), count = document.getElementById('hk-tab-chaos-n'),
+      h0 = R.at('hook'), L = R.at('hookOut') - h0, N = 40;
+  for (var k = 0; k < N; k++) (function(k){
+    /* the first two are already open; the rest arrive faster and faster (sqrt spacing) */
+    var t = k < 2 ? h0 : h0 + .25 + L * .62 * Math.sqrt((k - 1) / (N - 2));
+    var tab = document.createElement('div'); tab.className = 'hk-tab-chaos-tab'; tab.style.setProperty('--t', t.toFixed(3) + 's');
+    tab.innerHTML = '<div><i></i><span></span></div>'; tab.querySelector('span').textContent = names[k % names.length];
+    strip.appendChild(tab);
+    if (k >= 2) R.beat(t, function(){ count.textContent = k + 1 });
+  })(k);
+})();
+</script>
+<!-- @end -->
+
+<!-- @block search-fail -->
+<style>
+/* a search box types a desperate query; useless results flicker in, the box shakes "no", everything dims */
+.hk-search-fail{position:absolute;inset:0;z-index:6;--hkLen:calc(var(--hookOut) - var(--hook))}
+.hk-search-fail-q{position:absolute;left:60px;right:60px;top:236px;text-align:center;font-family:var(--font-display);font-weight:var(--display-weight);
+  letter-spacing:var(--display-track);text-transform:var(--display-case);font-size:108px;line-height:.98}
+.hk-search-fail-q>span{display:block;
+  animation:rise .6s var(--ease-out) calc(var(--hook) + var(--li) * .08s) both, riseOut .4s var(--ease-in) calc(var(--hookOut) + var(--li) * .04s) forwards}
+.hk-search-fail-box{position:absolute;left:90px;right:150px;top:560px;
+  animation:pop .5s var(--ease-pop) calc(var(--hook) + .08s) both, riseOut .4s var(--ease-in) calc(var(--hookOut) + .04s) forwards}
+.hk-search-fail-field{display:flex;align-items:center;gap:24px;height:124px;padding:0 40px;border-radius:var(--radius-pill);background:var(--raise);
+  box-shadow:0 0 0 3px var(--accent);font-size:42px;font-weight:550;white-space:nowrap;overflow:hidden;
+  animation:hkSearchFailShake .45s linear calc(var(--hook) + var(--hkLen) * .8) both}
+.hk-search-fail-field svg{flex:none;width:52px;height:52px;color:var(--ink-2)}
+.hk-search-fail-res{position:absolute;left:90px;right:150px;top:730px;display:flex;flex-direction:column;gap:18px;
+  animation:sink .4s var(--ease-in) calc(var(--hookOut) + .02s) forwards}
+.hk-search-fail-r{padding:28px 34px;border-radius:calc(var(--radius) * 1.2);background:var(--raise);
+  animation:hkSearchFailFlick .5s linear calc(var(--hook) + var(--hkLen) * .45 + var(--i) * var(--hkLen) * .07) both,
+            hkSearchFailDim .3s ease calc(var(--hook) + var(--hkLen) * .82) forwards}
+.hk-search-fail-r b{display:block;font-size:34px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hk-search-fail-r span{display:block;margin-top:8px;font-size:26px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@keyframes hkSearchFailFlick{0%{opacity:0}18%{opacity:1}30%{opacity:.12}46%{opacity:1}62%{opacity:.3}78%,100%{opacity:1}}
+@keyframes hkSearchFailDim{from{opacity:1}to{opacity:.32}}
+@keyframes hkSearchFailShake{0%,100%{transform:none}15%{transform:translateX(-22px)}35%{transform:translateX(18px)}55%{transform:translateX(-12px)}75%{transform:translateX(6px)}}
+</style>
+<!-- @html -->
+  <div class="hk-search-fail">
+    <h1 class="hk-search-fail-q"><span style="--li:0">Still searching</span><span class="acc" style="--li:1">for a fix?</span></h1>
+    <div class="hk-search-fail-box"><div class="hk-search-fail-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+      <span><span id="hk-search-fail-typed"></span><span class="caret"></span></span>
+    </div></div>
+    <div class="hk-search-fail-res">
+      <div class="hk-search-fail-r" style="--i:0"><b>No results found</b><span>Try different keywords.</span></div>
+      <div class="hk-search-fail-r" style="--i:1"><b>Did you mean: something else?</b><span>Showing results for something else.</span></div>
+      <div class="hk-search-fail-r" style="--i:2"><b>Sponsored: not what you need</b><span>Ad · Sign up to see more</span></div>
+      <div class="hk-search-fail-r" style="--i:3"><b>Same question, no answer</b><span>Forum thread · 0 replies · 2014</span></div>
+    </div>
+  </div>
+<!-- @end html -->
+<script>
+(function(){
+  /* the query is placeholder copy; typing always finishes before the results flicker in (hook + 45%) */
+  var q = 'how to do this faster', h0 = R.at('hook'), L = R.at('hookOut') - h0;
+  R.type(document.getElementById('hk-search-fail-typed'), q, h0 + .2, Math.max(22, q.length / (L * .38)));
+})();
+</script>
+<!-- @end -->

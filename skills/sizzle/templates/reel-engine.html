@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>REEL TITLE</title>
+<!--
+  Reel engine. It has NO look, NO scenes and NO story: everything inside #reel is written from scratch for
+  this reel, from its approved script and its direction (see SKILL.md). Copy this file to
+  promo/<name>-reel.html and build on it. Keep the engine parts (marked ENGINE) as they are.
+
+  Contract with tools/render.js: window.reelReady (promise), window.startReel(), window.REEL
+  { duration, width, height, cues }, and no autoplay when the URL has ?render.
+  Preview: serve the repo root over HTTP and open the page.
+-->
+<!-- Load the product's own stylesheet here if you reuse its classes: <link rel="stylesheet" href="../styles.css"> -->
+<style>
+/* ================= ENGINE (keep) ================= */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;background:#000;overflow:hidden}
+#reel{position:absolute;left:0;top:0;width:calc(var(--W) * 1px);height:calc(var(--H) * 1px);overflow:hidden;transform-origin:0 0;
+  -webkit-font-smoothing:antialiased}
+/* Nothing moves until fonts are in; then every animation starts from 0 together */
+body.hold *,body.hold *::before,body.hold *::after{animation-play-state:paused !important}
+/* Measuring switches every animation off, so positions are the final, untransformed layout */
+#reel.measure,#reel.measure *{animation:none !important;transition:none !important}
+.r-clock{position:absolute;width:1px;height:1px;animation:r-clock var(--end) linear 0s both}
+@keyframes r-clock{from{opacity:0}to{opacity:0}}
+.r-ui{position:fixed;right:16px;bottom:16px;display:flex;gap:8px;align-items:center;z-index:99;font:600 14px/1 system-ui;color:#eee}
+.r-ui button{min-height:40px;padding:0 16px;border:0;border-radius:999px;background:#eee;color:#111;font:inherit;cursor:pointer}
+.r-ui span{padding:12px 14px;border-radius:999px;background:#222;font-variant-numeric:tabular-nums}
+.render .r-ui{display:none}
+
+/* ================= THIS REEL (write it all) =================
+   Tokens first (from the direction: palette, fonts, easing, radii), then scenes. Every animation reads its
+   time from a cue: animation: myIn .8s var(--ease) var(--d) both  with  data-in="cueName+.2" on the element,
+   or var(--cueName) directly. No raw times in CSS. */
+:root{
+  --bg:#111; --ink:#f4f4f4;
+}
+#reel{background:var(--bg);color:var(--ink);font-family:system-ui,sans-serif}
+</style>
+</head>
+<body class="hold">
+<div id="reel">
+  <div class="r-clock" id="clk"></div>
+
+  <!-- THIS REEL: scenes go here -->
+
+</div>
+<div class="r-ui"><span id="clock">0.0s</span><button type="button" id="replay">Replay</button></div>
+
+<script>
+/*
+  ENGINE config. SIZE is the canvas in CSS pixels; it must match "width"/"height" in reel.json
+  (9:16 1080x1920, 4:5 1080x1350, 1:1 1080x1080, 16:9 1920x1080). The renderer scales it 2x for 4K.
+  CUES is the whole timeline in seconds. Only `end` (the length) is required; name the rest after your
+  script's beats. Every cue becomes a CSS variable (--name) and can be used as "name+.2" in data-in /
+  data-out / data-at / data-s, in R.beat() and in reel.json's sound cues.
+*/
+var SIZE = { w: 1080, h: 1920 };
+var CUES = {
+  end: 20
+};
+</script>
+<script>
+/* ENGINE helpers (keep). Your scripts run after this and before the boot script. */
+window.R = (function(){
+  var C = CUES, render = new URLSearchParams(location.search).has('render'), beats = [], measures = [];
+  function at(expr){
+    if (typeof expr === 'number') return expr;
+    var m = String(expr).trim().match(/^([a-zA-Z_][a-zA-Z0-9_]*|[\d.]+)([+-][.\d]+)?$/);
+    if (!m) throw new Error('bad cue expression: ' + expr);
+    var base = isNaN(+m[1]) ? C[m[1]] : +m[1];
+    if (base === undefined) throw new Error('unknown cue: ' + m[1]);
+    return base + (m[2] ? +m[2] : 0);
+  }
+  /* wrap the text of el into spans (one per char or word), each with --i; spaces stay as text.
+     Walks nested elements (an accent span inside a line keeps its colour); sets --n on el. */
+  function split(el, by){
+    var out = [];
+    (function walk(node){
+      Array.prototype.slice.call(node.childNodes).forEach(function(n){
+        if (n.nodeType === 1){ walk(n); return }
+        if (n.nodeType !== 3) return;
+        var frag = document.createDocumentFragment();
+        (by === 'words' ? n.textContent.split(/(\s+)/) : Array.from(n.textContent)).forEach(function(part){
+          if (part === '') return;
+          if (/^\s+$/.test(part)){ frag.appendChild(document.createTextNode(part)); return }
+          var s = document.createElement('span'); s.className = by === 'words' ? 'w' : 'c'; s.textContent = part;
+          s.style.setProperty('--i', out.length); frag.appendChild(s); out.push(s);
+        });
+        node.replaceChild(frag, n);
+      });
+    })(el);
+    el.style.setProperty('--n', out.length);
+    return out;
+  }
+  /* an element's box in reel pixels (use inside R.onMeasure) */
+  function box(el){
+    var reel = document.getElementById('reel'), r = el.getBoundingClientRect(), Rr = reel.getBoundingClientRect(), s = Rr.width / SIZE.w;
+    return { x: (r.left - Rr.left) / s, y: (r.top - Rr.top) / s, w: r.width / s, h: r.height / s,
+             cx: (r.left - Rr.left + r.width / 2) / s, cy: (r.top - Rr.top + r.height / 2) / s };
+  }
+  /* type text into el from time t0 (seconds or cue expression), cps characters per second */
+  function type(el, text, t0, cps){
+    cps = cps || 30; t0 = at(t0);
+    for (var i = 1; i <= text.length; i++) (function(i){ beats.push([t0 + i / cps, function(){ el.textContent = text.slice(0, i) }]) })(i);
+  }
+  return { C: C, W: SIZE.w, H: SIZE.h, render: render, at: at, split: split, box: box, type: type,
+           beat: function(t, fn){ beats.push([at(t), fn]) },
+           onMeasure: function(fn){ measures.push(fn) },
+           _beats: beats, _measures: measures };
+})();
+</script>
+<script>
+/* THIS REEL: scene scripts (R.split, R.type, R.beat, R.onMeasure ...) */
+</script>
+<script>
+/* ENGINE boot (keep) */
+(function(){
+  var C = CUES, $ = function(id){ return document.getElementById(id) };
+  var reel = $('reel'), render = R.render, root = document.documentElement.style;
+  if (render) document.documentElement.classList.add('render');
+  root.setProperty('--W', SIZE.w); root.setProperty('--H', SIZE.h);
+
+  /* every cue is a CSS variable */
+  for (var k in C) root.setProperty('--' + k, C[k].toFixed(3) + 's');
+  /* data-in / data-out / data-s / data-at: a cue name with an optional +offset ("demo+.12"), or a number */
+  document.querySelectorAll('[data-in]').forEach(function(el){
+    el.style.setProperty('--d', R.at(el.dataset.in).toFixed(3) + 's');
+    el.style.setProperty('--o', R.at(el.dataset.out || 'end+1').toFixed(3) + 's');
+  });
+  document.querySelectorAll('[data-s]').forEach(function(el){ el.style.setProperty('--s', R.at(el.dataset.s).toFixed(3) + 's') });
+  document.querySelectorAll('[data-at]').forEach(function(el){ el.style.setProperty('--at', R.at(el.dataset.at).toFixed(3) + 's') });
+
+  /* Preview: fit the canvas into the window */
+  function fit(){
+    if (render) return;
+    var s = Math.min(innerWidth / SIZE.w, innerHeight / SIZE.h);
+    reel.style.transform = 'translate(' + ((innerWidth - SIZE.w * s) / 2) + 'px,' + ((innerHeight - SIZE.h * s) / 2) + 'px) scale(' + s + ')';
+  }
+  fit(); addEventListener('resize', fit);
+
+  /* Positions in reel pixels: measured unscaled and with animations off.
+     .r-fit: big text that must not overflow; its direct child spans are lines (else it is one line). It is
+     shrunk to its parent's width (or the canvas minus 48 px a side). Cut words first; this is a safety net. */
+  function measure(){
+    var keep = reel.style.transform; reel.style.transform = 'none';
+    reel.classList.add('measure');
+    document.querySelectorAll('.r-fit').forEach(function(h){
+      var room = Math.min(h.parentNode.clientWidth || SIZE.w, SIZE.w - 96), widest = 0;
+      var lines = Array.prototype.filter.call(h.children, function(c){
+        return c.tagName === 'SPAN' && !c.classList.contains('c') && !c.classList.contains('w') });
+      if (!lines.length) lines = [h];
+      lines.forEach(function(s){ widest = Math.max(widest, s.scrollWidth) });
+      if (widest > room) h.style.fontSize = (parseFloat(getComputedStyle(h).fontSize) * room / widest * .98).toFixed(1) + 'px';
+    });
+    R._measures.forEach(function(fn){ fn() });
+    reel.classList.remove('measure');
+    reel.style.transform = keep;
+  }
+
+  /* load every @font-face declared (even ones no element uses yet), then wait for the rest */
+  var fonts = []; document.fonts.forEach(function(f){ fonts.push(f.load().catch(function(){})) });
+  window.reelReady = Promise.all(fonts).then(function(){ return document.fonts.ready }).then(function(){
+    measure();
+    window.REEL = { cues: C, duration: C.end, width: SIZE.w, height: SIZE.h };
+  });
+  window.startReel = function(){
+    document.body.classList.remove('hold');
+    var BEATS = R._beats;
+    if (render){ BEATS.forEach(function(b){ setTimeout(b[1], b[0] * 1000) }); return }
+    // Preview follows the CSS clock, so beats never drift from the animation (a hidden tab pauses CSS, not timers)
+    var ref = $('clk').getAnimations()[0], left = BEATS.slice().sort(function(x, y){ return x[0] - y[0] });
+    (function tick(){
+      var t = (ref.currentTime || 0) / 1000;
+      while (left.length && left[0][0] <= t) left.shift()[1]();
+      $('clock').textContent = Math.min(t, C.end).toFixed(1) + 's';
+      if (t < C.end) requestAnimationFrame(tick);
+    })();
+  };
+  $('replay').onclick = function(){ location.reload() };
+  if (!render) window.reelReady.then(window.startReel);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!--
+  Backgrounds: the surface behind everything. Never busy enough to compete with text.
+  Sits first inside #reel, so later layers cover it. z-index 0-1 only. Prefix: bg-<id>-.
+-->
+
+<!-- @block dots-glow -->
+<style>
+.bg-dots-glow-dots{position:absolute;inset:0;background-image:radial-gradient(color-mix(in srgb,var(--ink) 10%,transparent) 2px,transparent 2.5px);background-size:44px 44px;
+  -webkit-mask-image:radial-gradient(70% 55% at 50% 50%,#000 20%,transparent 80%);mask-image:radial-gradient(70% 55% at 50% 50%,#000 20%,transparent 80%)}
+.bg-dots-glow-glow{position:absolute;width:1300px;height:1300px;border-radius:50%;filter:blur(20px);
+  background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 14%,transparent),transparent);animation:bgDotsDrift 14s ease-in-out 0s infinite alternate both}
+.bg-dots-glow-g1{right:-560px;top:-300px}
+.bg-dots-glow-g2{left:-600px;bottom:-340px;opacity:.6;animation-delay:-7s}
+.bg-dots-glow-rings{position:absolute;left:540px;top:1000px;width:0;height:0}
+.bg-dots-glow-rings b{position:absolute;left:0;top:0;width:1900px;height:1900px;border-radius:50%;border:3px solid color-mix(in srgb,var(--accent) 35%,transparent);opacity:0;
+  animation:bgDotsRing 4.2s cubic-bezier(.2,.7,.3,1) var(--rd) infinite both}
+@keyframes bgDotsRing{from{opacity:.5;transform:translate(-50%,-50%) scale(.2)}to{opacity:0;transform:translate(-50%,-50%) scale(1)}}
+@keyframes bgDotsDrift{from{transform:translate(0,0)}to{transform:translate(-120px,90px)}}
+</style>
+<!-- @html -->
+  <div class="bg-dots-glow-glow bg-dots-glow-g1"></div><div class="bg-dots-glow-glow bg-dots-glow-g2"></div>
+  <div class="bg-dots-glow-dots"></div>
+  <div class="bg-dots-glow-rings"><b style="--rd:0s"></b><b style="--rd:1.4s"></b><b style="--rd:2.8s"></b></div>
+<!-- @end html -->
+<!-- @end -->
+
+<!-- @block grid-lines -->
+<style>
+/* blueprint: minor + major grid, faded at the edges, one slow scan line passing down */
+.bg-grid-lines-g{position:absolute;inset:0;
+  background-image:linear-gradient(color-mix(in srgb,var(--ink) 11%,transparent) 2px,transparent 2px),linear-gradient(90deg,color-mix(in srgb,var(--ink) 11%,transparent) 2px,transparent 2px),
+    linear-gradient(color-mix(in srgb,var(--ink) 5%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--ink) 5%,transparent) 1px,transparent 1px);
+  background-size:360px 360px,360px 360px,90px 90px,90px 90px;background-position:0 60px,0 0,0 60px,0 0;
+  -webkit-mask-image:radial-gradient(85% 70% at 50% 50%,#000 35%,transparent 100%);mask-image:radial-gradient(85% 70% at 50% 50%,#000 35%,transparent 100%)}
+.bg-grid-lines-scan{position:absolute;left:0;right:0;top:0;height:300px;
+  background:linear-gradient(transparent,color-mix(in srgb,var(--accent) 6%,transparent) 80%,color-mix(in srgb,var(--accent) 30%,transparent) 99%,transparent);
+  animation:bgGridScan 8s linear 0s infinite both}
+.bg-grid-lines-tick{position:absolute;width:44px;height:44px;border:solid color-mix(in srgb,var(--accent) 55%,transparent);border-width:3px 0 0 3px}
+.bg-grid-lines-t1{left:40px;top:150px}
+.bg-grid-lines-t2{right:40px;bottom:150px;transform:rotate(180deg)}
+@keyframes bgGridScan{from{transform:translateY(-300px)}to{transform:translateY(1920px)}}
+</style>
+<!-- @html -->
+  <div class="bg-grid-lines-g"></div>
+  <div class="bg-grid-lines-scan"></div>
+  <div class="bg-grid-lines-tick bg-grid-lines-t1"></div><div class="bg-grid-lines-tick bg-grid-lines-t2"></div>
+<!-- @end html -->
+<!-- @end -->
+
+<!-- @block film-grain -->
+<style>
+/* flat colour, a soft pool of light, grain that jumps every few frames, a heavy vignette */
+.bg-film-grain-flat{position:absolute;inset:0;background:radial-gradient(110% 70% at 50% 42%,color-mix(in srgb,var(--ink) 7%,var(--bg)),var(--bg) 75%)}
+.bg-film-grain-noise{position:absolute;inset:-200px;opacity:.1;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:bgFilmGrainJump .4s steps(1,end) 0s infinite both}
+.bg-film-grain-vig{position:absolute;inset:0;background:radial-gradient(95% 70% at 50% 46%,transparent 40%,color-mix(in srgb,var(--ink) 22%,rgba(0,0,0,.3)) 100%);
+  animation:bgFilmGrainFlicker 3.1s steps(1,end) 0s infinite both}
+@keyframes bgFilmGrainJump{0%{transform:translate(0,0)}25%{transform:translate(-110px,60px)}50%{transform:translate(80px,-90px)}75%{transform:translate(-40px,-130px)}100%{transform:translate(0,0)}}
+@keyframes bgFilmGrainFlicker{0%{opacity:1}31%{opacity:.86}34%{opacity:1}72%{opacity:.92}75%{opacity:1}}
+</style>
+<!-- @html -->
+  <div class="bg-film-grain-flat"></div>
+  <div class="bg-film-grain-noise"></div>
+  <div class="bg-film-grain-vig"></div>
+<!-- @end html -->
+<!-- @end -->
+
+<!-- @block gradient-mesh -->
+<style>
+/* three big soft colour blobs drifting slowly (radial gradients, no blur filter) */
+.bg-gradient-mesh-b{position:absolute;width:1500px;height:1500px;border-radius:50%;
+  background:radial-gradient(closest-side,var(--c),transparent);animation:bgMeshDrift var(--t) ease-in-out var(--dl) infinite alternate both}
+.bg-gradient-mesh-b1{--c:color-mix(in srgb,var(--accent) 34%,transparent);left:-620px;top:-460px;--t:11s;--dl:0s;--mx:180px;--my:220px}
+.bg-gradient-mesh-b2{--c:color-mix(in srgb,var(--accent-2) 30%,transparent);right:-700px;top:420px;--t:13s;--dl:-4s;--mx:-200px;--my:140px}
+.bg-gradient-mesh-b3{--c:color-mix(in srgb,color-mix(in srgb,var(--accent) 50%,var(--accent-2)) 28%,transparent);left:-380px;bottom:-700px;--t:9s;--dl:-2s;--mx:240px;--my:-160px}
+@keyframes bgMeshDrift{from{transform:translate(0,0) scale(1)}to{transform:translate(var(--mx),var(--my)) scale(1.12)}}
+</style>
+<!-- @html -->
+  <div class="bg-gradient-mesh-b bg-gradient-mesh-b1"></div>
+  <div class="bg-gradient-mesh-b bg-gradient-mesh-b2"></div>
+  <div class="bg-gradient-mesh-b bg-gradient-mesh-b3"></div>
+<!-- @end html -->
+<!-- @end -->
+
+<!-- @block halftone -->
+<style>
+/* two halftone fields in the accent: dots shrink from each corner outwards (three dot sizes, ring masks) */
+.bg-halftone-f{position:absolute;width:1400px;height:1400px;animation:bgHalftoneDrift 16s ease-in-out 0s infinite alternate both}
+.bg-halftone-f1{right:-620px;top:-640px;--hc:color-mix(in srgb,var(--accent) 30%,transparent)}
+.bg-halftone-f2{left:-640px;bottom:-560px;--hc:color-mix(in srgb,var(--accent) 20%,transparent);animation-delay:-8s}
+.bg-halftone-f i{position:absolute;inset:0;transform:rotate(15deg);background-size:34px 34px;
+  background-image:radial-gradient(circle,var(--hc) var(--r),transparent calc(var(--r) + .6px))}
+.bg-halftone-f i:nth-child(1){--r:13px;-webkit-mask-image:radial-gradient(closest-side,#000 22%,transparent 34%);mask-image:radial-gradient(closest-side,#000 22%,transparent 34%)}
+.bg-halftone-f i:nth-child(2){--r:9px;-webkit-mask-image:radial-gradient(closest-side,transparent 30%,#000 36%,#000 54%,transparent 62%);mask-image:radial-gradient(closest-side,transparent 30%,#000 36%,#000 54%,transparent 62%)}
+.bg-halftone-f i:nth-child(3){--r:5px;-webkit-mask-image:radial-gradient(closest-side,transparent 58%,#000 64%,#000 80%,transparent 100%);mask-image:radial-gradient(closest-side,transparent 58%,#000 64%,#000 80%,transparent 100%)}
+@keyframes bgHalftoneDrift{from{transform:translate(0,0)}to{transform:translate(-60px,50px)}}
+</style>
+<!-- @html -->
+  <div class="bg-halftone-f bg-halftone-f1"><i></i><i></i><i></i></div>
+  <div class="bg-halftone-f bg-halftone-f2"><i></i><i></i><i></i></div>
+<!-- @end html -->
+<!-- @end -->
+
+<!-- @block scanlines -->
+<style>
+/* CRT: fine scanlines with a slight flicker, a soft bar rolling down, a glow in the middle */
+.bg-scanlines-glow{position:absolute;inset:0;background:radial-gradient(70% 45% at 50% 45%,color-mix(in srgb,var(--accent) 10%,transparent),transparent 75%)}
+.bg-scanlines-l{position:absolute;inset:0;background:repeating-linear-gradient(180deg,color-mix(in srgb,var(--ink) 7%,transparent) 0 2px,transparent 2px 6px);
+  animation:bgScanFlicker .3s steps(1,end) 0s infinite both}
+.bg-scanlines-bar{position:absolute;left:0;right:0;top:0;height:360px;
+  background:linear-gradient(transparent,color-mix(in srgb,var(--ink) 6%,transparent) 45%,color-mix(in srgb,var(--ink) 9%,transparent) 55%,transparent);
+  animation:bgScanRoll 6s linear 0s infinite both}
+.bg-scanlines-vig{position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 50%,transparent 55%,rgba(0,0,0,.4) 100%)}
+@keyframes bgScanFlicker{0%{opacity:1}34%{opacity:.7}67%{opacity:.88}}
+@keyframes bgScanRoll{from{transform:translateY(-360px)}to{transform:translateY(1920px)}}
+</style>
+<!-- @html -->
+  <div class="bg-scanlines-glow"></div>
+  <div class="bg-scanlines-l"></div>
+  <div class="bg-scanlines-bar"></div>
+  <div class="bg-scanlines-vig"></div>
+<!-- @end html -->
+<!-- @end -->
+
+<!-- @block paper-grain -->
+<style>
+/* a paper page: fibre texture, faint ruled lines with a margin rule, slightly darker edges */
+.bg-paper-grain-rule{position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 118px,color-mix(in srgb,var(--accent) 45%,transparent) 118px 121px,transparent 121px),
+    repeating-linear-gradient(180deg,transparent 0 70px,color-mix(in srgb,var(--ink) 8%,transparent) 70px 72px);
+  background-position:0 0,0 22px;
+  -webkit-mask-image:linear-gradient(transparent 4%,#000 14%,#000 90%,transparent);mask-image:linear-gradient(transparent 4%,#000 14%,#000 90%,transparent)}
+.bg-paper-grain-fibre{position:absolute;inset:0;opacity:.3;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .55' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -.9 .52'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.2 .62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E")}
+.bg-paper-grain-edge{position:absolute;inset:0;box-shadow:inset 0 0 220px color-mix(in srgb,var(--ink) 9%,transparent)}
+</style>
+<!-- @html -->
+  <div class="bg-paper-grain-fibre"></div>
+  <div class="bg-paper-grain-rule"></div>
+  <div class="bg-paper-grain-edge"></div>
+<!-- @end html -->
+<!-- @end -->
+
+<!-- @block starfield -->
+<style>
+/* three layers of star specks drifting up at different speeds (parallax); each layer loops by one tile */
+.bg-starfield-l{position:absolute;left:0;right:0;top:0;height:calc(1920px + var(--th));animation:bgStarRise var(--t) linear 0s infinite both;
+  background-size:var(--tw) var(--th);
+  background-image:radial-gradient(circle at 12% 18%,var(--sc) var(--sr),transparent calc(var(--sr) + 1px)),radial-gradient(circle at 63% 9%,var(--sc) var(--sr),transparent calc(var(--sr) + 1px)),
+    radial-gradient(circle at 37% 47%,var(--sc) var(--sr),transparent calc(var(--sr) + 1px)),radial-gradient(circle at 88% 38%,var(--sc) var(--sr),transparent calc(var(--sr) + 1px)),
+    radial-gradient(circle at 21% 79%,var(--sc) var(--sr),transparent calc(var(--sr) + 1px)),radial-gradient(circle at 74% 71%,var(--sc) var(--sr),transparent calc(var(--sr) + 1px)),
+    radial-gradient(circle at 51% 93%,var(--sc) var(--sr),transparent calc(var(--sr) + 1px))}
+.bg-starfield-far{--tw:300px;--th:340px;--sr:1.2px;--t:48s;--sc:color-mix(in srgb,var(--ink) 30%,transparent)}
+.bg-starfield-mid{--tw:520px;--th:560px;--sr:2px;--t:30s;--sc:color-mix(in srgb,var(--ink) 45%,transparent);background-position:130px 70px}
+.bg-starfield-near{--tw:760px;--th:900px;--sr:3px;--t:18s;--sc:color-mix(in srgb,var(--ink) 65%,transparent);background-position:300px 200px}
+.bg-starfield-tw{position:absolute;inset:0;animation:bgStarTwinkle 2.4s steps(1,end) 0s infinite both;
+  background-image:radial-gradient(circle at 18% 22%,color-mix(in srgb,var(--accent) 70%,transparent) 3px,transparent 4px),radial-gradient(circle at 82% 61%,color-mix(in srgb,var(--accent) 70%,transparent) 3px,transparent 4px),
+    radial-gradient(circle at 66% 86%,color-mix(in srgb,var(--ink) 70%,transparent) 2.5px,transparent 3.5px)}
+.bg-starfield-glow{position:absolute;inset:0;background:radial-gradient(80% 50% at 50% 100%,color-mix(in srgb,var(--accent) 9%,transparent),transparent 70%)}
+@keyframes bgStarRise{from{transform:translateY(0)}to{transform:translateY(calc(-1 * var(--th)))}}
+@keyframes bgStarTwinkle{0%{opacity:1}40%{opacity:.25}55%{opacity:.8}80%{opacity:.4}}
+</style>
+<!-- @html -->
+  <div class="bg-starfield-glow"></div>
+  <div class="bg-starfield-l bg-starfield-far"></div>
+  <div class="bg-starfield-l bg-starfield-mid"></div>
+  <div class="bg-starfield-l bg-starfield-near"></div>
+  <div class="bg-starfield-tw"></div>
+<!-- @end html -->
+<!-- @end -->
+
+<!-- @block diagonal-stripes -->
+<style>
+/* wide 45deg stripes sliding sideways, low contrast; one plane, moved by transform only */
+.bg-diagonal-stripes-s{position:absolute;left:-480px;top:-200px;width:2040px;height:2320px;
+  background:repeating-linear-gradient(45deg,color-mix(in srgb,var(--accent) 7%,transparent) 0 110px,transparent 110px 220px);
+  animation:bgDiagSlide 10s linear 0s infinite both}
+.bg-diagonal-stripes-fade{position:absolute;inset:0;background:radial-gradient(70% 45% at 50% 42%,color-mix(in srgb,var(--bg) 70%,transparent),transparent 80%)}
+@keyframes bgDiagSlide{from{transform:translateX(0)}to{transform:translateX(311.13px)}}
+</style>
+<!-- @html -->
+  <div class="bg-diagonal-stripes-s"></div>
+  <div class="bg-diagonal-stripes-fade"></div>
+<!-- @end html -->
+<!-- @end -->
+
+<!-- @block colorblock-shift -->
+<style>
+/* the surface swaps colour on each act: every field wipes in on its cue and covers the one before */
+.bg-colorblock-shift-f{position:absolute;inset:0}
+.bg-colorblock-shift-f1{top:auto;height:46%;background:color-mix(in srgb,var(--accent-2) 16%,var(--bg));
+  animation:bgCbsUp .7s var(--ease-out) var(--hook) both}
+.bg-colorblock-shift-f2{background:color-mix(in srgb,var(--accent) 13%,var(--bg));animation:bgCbsLeft .65s var(--ease-out) var(--revealOut) both}
+.bg-colorblock-shift-f3{bottom:auto;height:38%;background:color-mix(in srgb,var(--accent-2) 18%,var(--bg));animation:bgCbsDown .8s var(--ease-out) calc(var(--demo) + .4s) both}
+.bg-colorblock-shift-f4{background:color-mix(in srgb,var(--accent-2) 20%,var(--bg));animation:bgCbsRight .65s var(--ease-out) var(--demoOut) both}
+.bg-colorblock-shift-f5{background:color-mix(in srgb,var(--accent) 16%,var(--bg));animation:bgCbsIris .8s var(--ease-out) calc(var(--cta) - .1s) both}
+@keyframes bgCbsUp{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes bgCbsDown{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes bgCbsLeft{from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0 0 0 0)}}
+@keyframes bgCbsRight{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes bgCbsIris{from{clip-path:circle(0% at 50% 45%)}to{clip-path:circle(75% at 50% 45%)}}
+</style>
+<!-- @html -->
+  <div class="bg-colorblock-shift-f bg-colorblock-shift-f1"></div>
+  <div class="bg-colorblock-shift-f bg-colorblock-shift-f2"></div>
+  <div class="bg-colorblock-shift-f bg-colorblock-shift-f3"></div>
+  <div class="bg-colorblock-shift-f bg-colorblock-shift-f4"></div>
+  <div class="bg-colorblock-shift-f bg-colorblock-shift-f5"></div>
+<!-- @end html -->
+<!-- @end -->

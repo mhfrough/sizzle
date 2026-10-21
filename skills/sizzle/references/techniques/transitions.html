@@ -1,0 +1,503 @@
+<!--
+  Transitions: the brand reveal. Covers the screen from var(--reveal), shows the mark, the name and the
+  tagline, and is fully gone by var(--revealOut) + ~.6s. z-index 20. Prefix: tr-<id>-.
+  The reveal is where the music's hit lands, so the first big change must happen exactly at var(--reveal).
+  Uses {{mark}} {{brand}} {{tagline}}. Split the name with R.split for letter animation if wanted.
+-->
+
+<!-- @block circle-wipe -->
+<style>
+.tr-circle{position:absolute;inset:0;z-index:20;background:var(--accent);color:var(--on-accent);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  clip-path:circle(0% at 50% 52%);animation:trCircleIn .62s cubic-bezier(.7,0,.25,1) var(--reveal) both, trCircleOut .6s cubic-bezier(.7,0,.25,1) var(--revealOut) forwards}
+.tr-circle-in{display:flex;flex-direction:column;align-items:center;animation:popOut .35s var(--ease-in) calc(var(--revealOut) - .12s) forwards}
+.tr-circle-big{width:240px;height:240px;border-radius:calc(var(--radius) * 3.3);background:var(--on-accent);color:var(--accent);display:grid;place-items:center;
+  font-family:var(--font-display);font-size:140px;font-weight:var(--display-weight);margin-bottom:46px;animation:pop .7s var(--ease-pop) calc(var(--reveal) + .22s) both}
+.tr-circle-word{display:flex;font-family:var(--font-display);font-size:250px;font-weight:var(--display-weight);letter-spacing:var(--display-track);text-transform:var(--display-case);line-height:.8;padding-bottom:.08em;overflow:hidden;white-space:nowrap}
+.tr-circle-word .c{display:inline-block;animation:trCircleChar .8s var(--ease-out) calc(var(--reveal) + .4s + var(--i) * .06s) both}
+.tr-circle-tag{margin-top:36px;max-width:900px;text-align:center;font-size:56px;font-weight:650;letter-spacing:-.02em;animation:rise .7s var(--ease-out) calc(var(--reveal) + .95s) both}
+@keyframes trCircleIn{from{clip-path:circle(0% at 50% 52%)}to{clip-path:circle(80% at 50% 52%)}}
+@keyframes trCircleOut{from{clip-path:circle(80% at 50% 52%)}to{clip-path:circle(0% at 50% 12.7%)}}
+@keyframes trCircleChar{from{transform:translateY(105%)}to{transform:none}}
+</style>
+<!-- @html -->
+  <div class="tr-circle"><div class="tr-circle-in">
+    <div class="tr-circle-big">{{mark}}</div>
+    <div class="tr-circle-word" id="tr-circle-word">{{brand}}</div>
+    <p class="tr-circle-tag">{{tagline}}</p>
+  </div></div>
+<!-- @end html -->
+<script>
+(function(){
+  var w = document.getElementById('tr-circle-word');
+  R.split(w, 'chars');
+  /* split into letters, so .r-fit can't measure it: fit the word here (long names) */
+  R.onMeasure(function(){
+    var b = R.box(w).w, max = 980;
+    if (b > max) w.style.fontSize = (parseFloat(getComputedStyle(w).fontSize) * max / b * .98).toFixed(1) + 'px';
+  });
+})();
+</script>
+<!-- @end -->
+
+<!-- @block blinds -->
+<style>
+/* inverted card: --ink slats, --bg type; mark and name side by side, a rule, the tagline */
+.tr-blinds{position:absolute;inset:0;z-index:20;pointer-events:none;
+  animation:fadeIn .01s linear var(--reveal) both, fadeOut .01s linear calc(var(--revealOut) + .7s) forwards}
+.tr-blinds-slats{position:absolute;inset:0;display:flex}
+.tr-blinds-slats i{flex:1 1 0;margin-right:-1px;background:var(--ink);
+  animation:trBlindsIn .42s var(--ease-out) calc(var(--reveal) + var(--i) * .035s) both, trBlindsOut .32s var(--ease-in) calc(var(--revealOut) + var(--i) * .03s) forwards}
+.tr-blinds-card{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--bg);
+  animation:fadeOut .22s var(--ease-in) calc(var(--revealOut) - .12s) forwards}
+.tr-blinds-row{display:flex;align-items:center;gap:40px}
+.tr-blinds-mark{flex:none;width:190px;height:190px;border-radius:var(--radius);background:var(--accent);color:var(--on-accent);display:grid;place-items:center;
+  font-family:var(--font-display);font-weight:var(--display-weight);font-size:116px;animation:trBlindsChar .5s var(--ease-out) calc(var(--reveal) + .3s) both}
+.tr-blinds-name{flex:none;font-family:var(--font-display);font-weight:var(--display-weight);letter-spacing:var(--display-track);text-transform:var(--display-case);
+  font-size:210px;line-height:1;white-space:nowrap}
+.tr-blinds-name .c{display:inline-block;animation:trBlindsChar .5s var(--ease-out) calc(var(--reveal) + .38s + var(--i) * .045s) both}
+.tr-blinds-rule{width:760px;height:5px;margin:54px 0 40px;background:var(--accent);transform-origin:left;animation:strike .6s var(--ease-out) calc(var(--reveal) + .7s) both}
+.tr-blinds-tag{max-width:880px;text-align:center;font-size:52px;font-weight:600;letter-spacing:-.01em;animation:rise .6s var(--ease-out) calc(var(--reveal) + .85s) both}
+@keyframes trBlindsIn{0%{opacity:0;transform:perspective(1600px) rotateY(-90deg)}25%{opacity:1}100%{opacity:1;transform:perspective(1600px) rotateY(0)}}
+@keyframes trBlindsOut{from{opacity:1;transform:perspective(1600px) rotateY(0)}to{opacity:0;transform:perspective(1600px) rotateY(90deg)}}
+@keyframes trBlindsChar{from{opacity:0;transform:perspective(700px) rotateY(-90deg)}to{opacity:1;transform:none}}
+</style>
+<!-- @html -->
+  <div class="tr-blinds">
+    <div class="tr-blinds-slats" id="tr-blinds-slats"></div>
+    <div class="tr-blinds-card">
+      <div class="tr-blinds-row"><div class="tr-blinds-mark">{{mark}}</div><div class="tr-blinds-name" id="tr-blinds-name">{{brand}}</div></div>
+      <div class="tr-blinds-rule"></div>
+      <p class="tr-blinds-tag">{{tagline}}</p>
+    </div>
+  </div>
+<!-- @end html -->
+<script>
+(function(){
+  var slats = document.getElementById('tr-blinds-slats'), name = document.getElementById('tr-blinds-name');
+  for (var i = 0; i < 8; i++){ var s = document.createElement('i'); s.style.setProperty('--i', i); slats.appendChild(s) }
+  R.split(name, 'chars');
+  R.onMeasure(function(){
+    var w = R.box(name).w, max = 720;
+    if (w > max) name.style.fontSize = (parseFloat(getComputedStyle(name).fontSize) * max / w * .98).toFixed(1) + 'px';
+  });
+})();
+</script>
+<!-- @end -->
+
+<!-- @block split-doors -->
+<style>
+/* two accent doors slam shut; each carries half of the same card, so the name assembles on the seam */
+.tr-split-doors{position:absolute;inset:0;z-index:20;pointer-events:none;
+  animation:fadeIn .01s linear var(--reveal) both, fadeOut .01s linear calc(var(--revealOut) + .7s) forwards}
+.tr-split-doors-shake{position:absolute;inset:0;animation:trSplitDoorsShake .34s linear calc(var(--reveal) + .2s) both}
+.tr-split-doors-door{position:absolute;top:0;bottom:0;width:540px;overflow:hidden;background:var(--accent);color:var(--on-accent)}
+.tr-split-doors-l{left:0;animation:trSplitDoorsInL .2s cubic-bezier(.3,0,.8,.6) var(--reveal) both, trSplitDoorsOutL .55s var(--ease-in) var(--revealOut) forwards}
+.tr-split-doors-r{right:0;animation:trSplitDoorsInR .2s cubic-bezier(.3,0,.8,.6) var(--reveal) both, trSplitDoorsOutR .55s var(--ease-in) var(--revealOut) forwards}
+.tr-split-doors-in{position:absolute;top:0;bottom:0;width:1080px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.tr-split-doors-l .tr-split-doors-in{left:0}
+.tr-split-doors-r .tr-split-doors-in{right:0}
+.tr-split-doors-tag{font-family:var(--font-mono);font-size:34px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;max-width:900px;text-align:center;
+  margin-bottom:34px;animation:fadeIn .5s var(--ease-out) calc(var(--reveal) + .45s) both}
+.tr-split-doors-name{font-family:var(--font-display);font-weight:var(--display-weight);letter-spacing:var(--display-track);text-transform:var(--display-case);
+  font-size:250px;line-height:.9;white-space:nowrap;padding:0 .04em}
+.tr-split-doors-mark{width:150px;height:150px;margin-top:52px;border-radius:50%;background:var(--on-accent);color:var(--accent);display:grid;place-items:center;
+  font-family:var(--font-display);font-weight:var(--display-weight);font-size:84px;animation:pop .55s var(--ease-pop) calc(var(--reveal) + .3s) both}
+.tr-split-doors-seam{position:absolute;left:537px;top:0;bottom:0;width:6px;background:var(--on-accent);
+  animation:trSplitDoorsSeam .7s var(--ease-out) calc(var(--reveal) + .2s) both, fadeOut .1s linear var(--revealOut) forwards}
+@keyframes trSplitDoorsInL{from{transform:translateX(-100%)}to{transform:none}}
+@keyframes trSplitDoorsInR{from{transform:translateX(100%)}to{transform:none}}
+@keyframes trSplitDoorsOutL{from{transform:none}to{transform:translateX(-101%)}}
+@keyframes trSplitDoorsOutR{from{transform:none}to{transform:translateX(101%)}}
+@keyframes trSplitDoorsSeam{from{opacity:0}1%{opacity:.9}to{opacity:.12}}
+@keyframes trSplitDoorsShake{0%,100%{transform:none}20%{transform:translateX(-14px)}40%{transform:translateX(10px)}60%{transform:translateX(-6px)}80%{transform:translateX(3px)}}
+</style>
+<!-- @html -->
+  <div class="tr-split-doors"><div class="tr-split-doors-shake">
+    <div class="tr-split-doors-door tr-split-doors-l"><div class="tr-split-doors-in">
+      <p class="tr-split-doors-tag">{{tagline}}</p><div class="tr-split-doors-name r-fit">{{brand}}</div><div class="tr-split-doors-mark">{{mark}}</div>
+    </div></div>
+    <div class="tr-split-doors-door tr-split-doors-r"><div class="tr-split-doors-in">
+      <p class="tr-split-doors-tag">{{tagline}}</p><div class="tr-split-doors-name">{{brand}}</div><div class="tr-split-doors-mark">{{mark}}</div>
+    </div></div>
+    <div class="tr-split-doors-seam"></div>
+  </div></div>
+<!-- @end html -->
+<script>
+R.onMeasure(function(){
+  var names = document.querySelectorAll('.tr-split-doors-name'), w = R.box(names[0]).w, max = 980;
+  if (w > max){ var fs = (parseFloat(getComputedStyle(names[0]).fontSize) * max / w * .98).toFixed(1) + 'px'; names.forEach(function(n){ n.style.fontSize = fs }) }
+});
+</script>
+<!-- @end -->
+
+<!-- @block zoom-through -->
+<style>
+/* speed lines burst, the camera dives into the mark tile; the brand screen comes out of it, the mark a ghost behind the name */
+.tr-zoom-through{position:absolute;inset:0;z-index:20;pointer-events:none;overflow:hidden;
+  animation:fadeIn .01s linear var(--reveal) both, fadeOut .01s linear calc(var(--revealOut) + .7s) forwards}
+.tr-zoom-through-cam{position:absolute;inset:0;animation:trZoomThroughOut .55s var(--ease-in) var(--revealOut) forwards}
+.tr-zoom-through-lines{position:absolute;left:-460px;top:-460px;right:-460px;bottom:-460px;
+  background:repeating-conic-gradient(from 0deg at 50% 50%,color-mix(in srgb,var(--accent) 70%,transparent) 0deg 1.6deg,transparent 1.6deg 7.5deg);
+  -webkit-mask-image:radial-gradient(closest-side,transparent 22%,#000 70%);mask-image:radial-gradient(closest-side,transparent 22%,#000 70%);
+  animation:trZoomThroughLines .7s var(--ease-out) var(--reveal) both}
+.tr-zoom-through-tile{position:absolute;left:390px;top:810px;width:300px;height:300px;border-radius:calc(var(--radius) * 3);background:var(--accent);color:var(--on-accent);
+  display:grid;place-items:center;font-family:var(--font-display);font-weight:var(--display-weight);font-size:190px;
+  animation:trZoomThroughDive .7s linear var(--reveal) both}
+.tr-zoom-through-tile b{font-weight:inherit;animation:trZoomThroughLetter .7s linear var(--reveal) both}
+.tr-zoom-through-card{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--on-accent);
+  animation:trZoomThroughCard .8s var(--ease-out) calc(var(--reveal) + .5s) both}
+.tr-zoom-through-ghost{position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);font-family:var(--font-display);font-weight:var(--display-weight);font-size:1500px;line-height:1;
+  color:color-mix(in srgb,var(--on-accent) 9%,transparent);white-space:nowrap}
+.tr-zoom-through-tag{position:relative;max-width:900px;text-align:center;font-size:40px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;margin-bottom:26px}
+.tr-zoom-through-name{position:relative;font-family:var(--font-display);font-weight:var(--display-weight);letter-spacing:var(--display-track);text-transform:var(--display-case);
+  font-size:260px;line-height:.9;white-space:nowrap;padding-bottom:.06em}
+@keyframes trZoomThroughLines{0%{opacity:0;transform:scale(.5) rotate(0)}12%{opacity:1}70%{opacity:1}100%{opacity:0;transform:scale(2.2) rotate(8deg)}}
+@keyframes trZoomThroughDive{0%{opacity:0;transform:scale(.55);animation-timing-function:cubic-bezier(.2,.9,.3,1)}
+  14%{opacity:1;transform:scale(1);animation-timing-function:cubic-bezier(.8,0,.9,.5)}100%{opacity:1;transform:scale(34)}}
+@keyframes trZoomThroughLetter{0%,30%{opacity:1}55%,100%{opacity:0}}
+@keyframes trZoomThroughCard{from{opacity:0;transform:scale(2.4);filter:blur(16px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes trZoomThroughOut{from{opacity:1;transform:none}to{opacity:0;transform:scale(2.6)}}
+</style>
+<!-- @html -->
+  <div class="tr-zoom-through"><div class="tr-zoom-through-cam">
+    <div class="tr-zoom-through-lines"></div>
+    <div class="tr-zoom-through-tile"><b>{{mark}}</b></div>
+    <div class="tr-zoom-through-card">
+      <div class="tr-zoom-through-ghost">{{mark}}</div>
+      <p class="tr-zoom-through-tag">{{tagline}}</p>
+      <div class="tr-zoom-through-name r-fit" id="tr-zoom-through-name">{{brand}}</div>
+    </div>
+  </div></div>
+<!-- @end html -->
+<script>
+R.onMeasure(function(){
+  var n = document.getElementById('tr-zoom-through-name'), w = R.box(n).w, max = 980;
+  if (w > max) n.style.fontSize = (parseFloat(getComputedStyle(n).fontSize) * max / w * .98).toFixed(1) + 'px';
+});
+</script>
+<!-- @end -->
+
+<!-- @block glitch-cut -->
+<style>
+/* RGB-split jitter bars, then a flush-left card: the name snaps together from three offset slices with colour fringes */
+.tr-glitch-cut{position:absolute;inset:0;z-index:20;pointer-events:none;overflow:hidden;
+  animation:fadeIn .01s linear var(--reveal) both, fadeOut .01s linear calc(var(--revealOut) + .34s) forwards}
+.tr-glitch-cut-bg{position:absolute;inset:0;background:var(--bg);
+  animation:trGlitchCutFlicker .36s linear var(--reveal) both, trGlitchCutFlicker .34s linear var(--revealOut) forwards}
+.tr-glitch-cut-bar{position:absolute;left:-60px;right:-60px;height:var(--h);top:var(--y);background:var(--c);
+  animation:trGlitchCutBar .42s linear calc(var(--reveal) + var(--k) * .02s) both, trGlitchCutBar .34s linear calc(var(--revealOut) + var(--k) * .02s) forwards}
+.tr-glitch-cut-card{position:absolute;left:96px;right:60px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;color:var(--ink);
+  animation:fadeIn .01s linear calc(var(--reveal) + .16s) both, trGlitchCutJolt .3s linear calc(var(--reveal) + 1.25s) both, trGlitchCutJolt .34s linear var(--revealOut) forwards}
+.tr-glitch-cut-mark{width:128px;height:128px;border-radius:calc(var(--radius) * .6);background:var(--accent);color:var(--on-accent);display:grid;place-items:center;
+  font-family:var(--font-display);font-weight:var(--display-weight);font-size:80px;margin-bottom:34px;animation:trGlitchCutSnap .3s linear calc(var(--reveal) + .2s) both}
+.tr-glitch-cut-word{display:grid;font-family:var(--font-display);font-weight:var(--display-weight);letter-spacing:var(--display-track);text-transform:var(--display-case);
+  font-size:230px;line-height:.92;white-space:nowrap}
+.tr-glitch-cut-word>span{grid-area:1/1;padding-bottom:.06em}
+.tr-glitch-cut-r{color:var(--accent);--fx:-1;animation:trGlitchCutFringe .5s linear calc(var(--reveal) + .16s) both}
+.tr-glitch-cut-g{color:var(--accent-2);--fx:1;animation:trGlitchCutFringe .5s linear calc(var(--reveal) + .16s) both}
+.tr-glitch-cut-s{clip-path:inset(calc(var(--k) * 33.3%) -10% calc((2 - var(--k)) * 33.3%) -10%);
+  animation:trGlitchCutSlice .5s linear calc(var(--reveal) + .16s) both}
+.tr-glitch-cut-tag{margin-top:40px;font-family:var(--font-mono);font-size:40px;font-weight:600;color:var(--ink-2);max-width:900px;
+  animation:trGlitchCutSnap .3s linear calc(var(--reveal) + .45s) both}
+.tr-glitch-cut-tag::before{content:"> ";color:var(--accent)}
+.tr-glitch-cut-tag::after{content:"";display:inline-block;width:.55em;height:1em;margin-left:.2em;vertical-align:-.15em;background:var(--accent);animation:blink 1s linear 0s infinite both}
+@keyframes trGlitchCutFlicker{0%{opacity:0}.1%{opacity:1}22%{opacity:1}23%{opacity:.25}38%{opacity:.25}39%{opacity:1}64%{opacity:1}65%{opacity:.5}78%{opacity:.5}79%{opacity:1}100%{opacity:1}}
+@keyframes trGlitchCutBar{0%{opacity:0;transform:translateX(0)}.1%{opacity:1;transform:translateX(var(--dx))}24%{transform:translateX(var(--dx))}25%{opacity:0}
+  44%{opacity:0}45%{opacity:1;transform:translateX(calc(var(--dx) * -1.4))}68%{opacity:1;transform:translateX(calc(var(--dx) * -1.4))}69%{opacity:0}100%{opacity:0}}
+@keyframes trGlitchCutSlice{0%{opacity:0}.1%{opacity:1;transform:translateX(calc(var(--dx) * 1px))}24%{transform:translateX(calc(var(--dx) * 1px))}
+  25%{transform:translateX(calc(var(--dx) * -.6px))}49%{transform:translateX(calc(var(--dx) * -.6px))}50%{transform:translateX(calc(var(--dx) * .25px))}74%{transform:translateX(calc(var(--dx) * .25px))}75%,100%{opacity:1;transform:none}}
+@keyframes trGlitchCutFringe{0%{opacity:0}.1%{opacity:.85;transform:translate(calc(var(--fx) * 26px),calc(var(--fx) * -6px))}49%{transform:translate(calc(var(--fx) * 26px),calc(var(--fx) * -6px))}
+  50%{transform:translate(calc(var(--fx) * -12px),4px)}74%{transform:translate(calc(var(--fx) * -12px),4px)}75%,100%{opacity:.85;transform:translate(calc(var(--fx) * 5px),0)}}
+@keyframes trGlitchCutSnap{0%{opacity:0}.1%{opacity:1;transform:translateX(-40px)}33%{transform:translateX(-40px)}34%{transform:translateX(18px)}66%{transform:translateX(18px)}67%,100%{opacity:1;transform:none}}
+@keyframes trGlitchCutJolt{0%,100%{transform:none;clip-path:none}10%{transform:translateX(-24px);clip-path:inset(0 0 52% 0)}
+  30%{transform:translateX(30px);clip-path:inset(40% 0 0 0)}50%{transform:translateX(-10px);clip-path:inset(10% 0 30% 0)}70%{transform:none;clip-path:none}}
+</style>
+<!-- @html -->
+  <div class="tr-glitch-cut">
+    <div class="tr-glitch-cut-bg"></div>
+    <div class="tr-glitch-cut-bar" style="--y:240px;--h:120px;--dx:-90px;--c:var(--accent);--k:0"></div>
+    <div class="tr-glitch-cut-bar" style="--y:610px;--h:34px;--dx:140px;--c:var(--accent-2);--k:1"></div>
+    <div class="tr-glitch-cut-bar" style="--y:880px;--h:210px;--dx:-60px;--c:var(--ink);--k:2"></div>
+    <div class="tr-glitch-cut-bar" style="--y:1210px;--h:60px;--dx:110px;--c:var(--accent);--k:1"></div>
+    <div class="tr-glitch-cut-bar" style="--y:1480px;--h:150px;--dx:-130px;--c:var(--accent-2);--k:0"></div>
+    <div class="tr-glitch-cut-card">
+      <div class="tr-glitch-cut-mark">{{mark}}</div>
+      <div class="tr-glitch-cut-word r-fit" id="tr-glitch-cut-word">
+        <span class="tr-glitch-cut-r" aria-hidden="true">{{brand}}</span><span class="tr-glitch-cut-g" aria-hidden="true">{{brand}}</span>
+        <span class="tr-glitch-cut-s" style="--k:0;--dx:-70">{{brand}}</span><span class="tr-glitch-cut-s" style="--k:1;--dx:110">{{brand}}</span><span class="tr-glitch-cut-s" style="--k:2;--dx:-40">{{brand}}</span>
+      </div>
+      <p class="tr-glitch-cut-tag">{{tagline}}</p>
+    </div>
+  </div>
+<!-- @end html -->
+<script>
+R.onMeasure(function(){
+  var w = document.getElementById('tr-glitch-cut-word'), b = R.box(w.lastElementChild).w, max = 900;
+  if (b > max) w.style.fontSize = (parseFloat(getComputedStyle(w).fontSize) * max / b * .98).toFixed(1) + 'px';
+});
+</script>
+<!-- @end -->
+
+<!-- @block ink-blob -->
+<style>
+/* an organic accent blob swells from the bottom-left corner, swallowing droplets; tilted, bouncy card */
+.tr-ink-blob{position:absolute;inset:0;z-index:20;pointer-events:none;overflow:hidden;
+  animation:fadeIn .01s linear var(--reveal) both, fadeOut .01s linear calc(var(--revealOut) + .7s) forwards}
+.tr-ink-blob-drop{position:absolute;width:var(--s);height:var(--s);left:var(--x);top:var(--y);border-radius:46% 54% 50% 50% / 55% 45% 55% 45%;background:var(--accent);
+  animation:trInkBlobDrop .45s var(--ease-pop) calc(var(--reveal) + var(--k) * .07s) both, trInkBlobDropOut .3s var(--ease-in) calc(var(--revealOut) + var(--k) * .05s) forwards}
+.tr-ink-blob-blob{position:absolute;left:-2700px;top:calc(1920px - 2700px);width:5400px;height:5400px;background:var(--accent);
+  animation:trInkBlobGrow .95s cubic-bezier(.15,.75,.3,1) var(--reveal) both, trInkBlobShrink .62s cubic-bezier(.6,0,.4,1) calc(var(--revealOut) - .02s) forwards}
+.tr-ink-blob-card{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--on-accent);
+  animation:popOut .32s var(--ease-in) calc(var(--revealOut) - .12s) forwards}
+.tr-ink-blob-mark{width:200px;height:190px;border-radius:58% 42% 55% 45% / 48% 60% 40% 52%;background:var(--on-accent);color:var(--accent);display:grid;place-items:center;
+  font-family:var(--font-display);font-weight:var(--display-weight);font-size:110px;margin-bottom:30px;rotate:-8deg;
+  animation:trInkBlobBounce .7s var(--ease-pop) calc(var(--reveal) + .35s) both}
+.tr-ink-blob-name{font-family:var(--font-display);font-weight:var(--display-weight);letter-spacing:var(--display-track);text-transform:var(--display-case);
+  font-size:230px;line-height:1;white-space:nowrap;rotate:-4deg;padding-bottom:.08em}
+.tr-ink-blob-name .c{display:inline-block;animation:trInkBlobChar .6s var(--ease-pop) calc(var(--reveal) + .45s + var(--i) * .05s) both}
+.tr-ink-blob-tag{margin-top:40px;max-width:900px;padding:22px 40px;border-radius:var(--radius-pill);background:var(--on-accent);color:var(--accent);text-align:center;
+  font-size:48px;font-weight:700;rotate:2deg;animation:trInkBlobBounce .6s var(--ease-pop) calc(var(--reveal) + .9s) both}
+@keyframes trInkBlobDrop{from{opacity:0;transform:scale(0)}to{opacity:1;transform:none}}
+@keyframes trInkBlobDropOut{from{opacity:1;transform:none}to{opacity:0;transform:scale(0)}}
+@keyframes trInkBlobGrow{0%{opacity:0;transform:scale(0) rotate(0);border-radius:42% 58% 63% 37% / 41% 44% 56% 59%}
+  1%{opacity:1}60%{border-radius:58% 42% 38% 62% / 55% 61% 39% 45%}100%{opacity:1;transform:scale(1) rotate(50deg);border-radius:50% 50% 47% 53% / 52% 48% 52% 48%}}
+@keyframes trInkBlobShrink{from{transform:scale(1) rotate(50deg)}to{transform:scale(0) rotate(110deg)}}
+@keyframes trInkBlobBounce{from{opacity:0;transform:scale(.2) rotate(-30deg)}to{opacity:1;transform:none}}
+@keyframes trInkBlobChar{from{opacity:0;transform:translateY(80px) scale(.3) rotate(12deg)}to{opacity:1;transform:none}}
+</style>
+<!-- @html -->
+  <div class="tr-ink-blob">
+    <div class="tr-ink-blob-drop" style="--s:110px;--x:770px;--y:380px;--k:0"></div>
+    <div class="tr-ink-blob-drop" style="--s:70px;--x:880px;--y:720px;--k:1"></div>
+    <div class="tr-ink-blob-drop" style="--s:48px;--x:640px;--y:250px;--k:2"></div>
+    <div class="tr-ink-blob-blob"></div>
+    <div class="tr-ink-blob-card">
+      <div class="tr-ink-blob-mark">{{mark}}</div>
+      <div class="tr-ink-blob-name" id="tr-ink-blob-name">{{brand}}</div>
+      <p class="tr-ink-blob-tag">{{tagline}}</p>
+    </div>
+  </div>
+<!-- @end html -->
+<script>
+(function(){
+  var n = document.getElementById('tr-ink-blob-name');
+  R.split(n, 'chars');
+  R.onMeasure(function(){
+    var w = R.box(n).w, max = 880;
+    if (w > max) n.style.fontSize = (parseFloat(getComputedStyle(n).fontSize) * max / w * .98).toFixed(1) + 'px';
+  });
+})();
+</script>
+<!-- @end -->
+
+<!-- @block highlighter-sweep -->
+<style>
+/* the page wipes in under one giant translucent marker stroke; the name is written letter by letter on a second stroke,
+   the mark is circled by hand, the tagline gets a scribbled underline; the strokes lift off */
+.tr-highlighter-sweep{position:absolute;inset:0;z-index:20;pointer-events:none;overflow:hidden;
+  animation:fadeIn .01s linear var(--reveal) both, fadeOut .01s linear calc(var(--revealOut) + .7s) forwards}
+.tr-highlighter-sweep-paper{position:absolute;inset:0;background:var(--bg);
+  animation:trHighlighterSweepWipe .42s cubic-bezier(.2,.7,.3,1) var(--reveal) both, trHighlighterSweepWipeOut .45s var(--ease-in) calc(var(--revealOut) + .08s) forwards}
+.tr-highlighter-sweep-stroke{position:absolute;left:-160px;width:1400px;top:var(--y);height:var(--h);background-color:color-mix(in srgb,var(--accent) var(--a),transparent);
+  background-image:repeating-linear-gradient(180deg,transparent 0 34px,color-mix(in srgb,var(--accent) 16%,transparent) 34px 40px,transparent 40px 61px,color-mix(in srgb,var(--accent) 10%,transparent) 61px 64px);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 90px,#000 calc(100% - 140px),transparent);mask-image:linear-gradient(90deg,transparent 0,#000 90px,#000 calc(100% - 140px),transparent);
+  border-radius:40% 60% 50% 70% / 30% 22% 26% 34%;rotate:var(--r);
+  animation:trHighlighterSweepWipe var(--t) cubic-bezier(.2,.7,.3,1) calc(var(--reveal) + var(--d0)) both, trHighlighterSweepLift .4s var(--ease-in) var(--revealOut) forwards}
+.tr-highlighter-sweep-card{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink);
+  animation:trHighlighterSweepLift .4s var(--ease-in) calc(var(--revealOut) - .08s) forwards}
+.tr-highlighter-sweep-mark{position:relative;width:170px;height:150px;display:grid;place-items:center;margin:0 0 6px -420px;rotate:-8deg;
+  font-family:var(--font-display);font-weight:var(--display-weight);font-size:96px;animation:fadeIn .25s ease calc(var(--reveal) + .45s) both}
+.tr-highlighter-sweep-mark svg,.tr-highlighter-sweep-line svg{position:absolute;overflow:visible;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.tr-highlighter-sweep-mark svg{left:-14px;top:-10px;width:198px;height:170px}
+.tr-highlighter-sweep-mark path,.tr-highlighter-sweep-line path{stroke-dasharray:1 2}
+.tr-highlighter-sweep-mark path{stroke:var(--ink);stroke-width:7;animation:draw .5s var(--ease-out) calc(var(--reveal) + .55s) both}
+.tr-highlighter-sweep-name{font-family:var(--font-display);font-weight:var(--display-weight);letter-spacing:var(--display-track);text-transform:var(--display-case);
+  font-size:240px;line-height:1;white-space:nowrap;rotate:-4deg;padding:0 .06em .08em;color:var(--on-accent)}
+.tr-highlighter-sweep-name .c{display:inline-block;clip-path:inset(-20% 100% -20% -20%);animation:trHighlighterSweepWrite .16s linear calc(var(--reveal) + .5s + var(--i) * .08s) both}
+.tr-highlighter-sweep-line{position:relative;margin-top:58px;font-size:52px;font-weight:600;max-width:900px;text-align:center;animation:rise .6s var(--ease-out) calc(var(--reveal) + .95s) both}
+.tr-highlighter-sweep-line svg{left:-2%;bottom:-30px;width:104%;height:30px}
+.tr-highlighter-sweep-line path{stroke:var(--ink);stroke-width:6;animation:draw .55s var(--ease-out) calc(var(--reveal) + 1.3s) both}
+@keyframes trHighlighterSweepWipe{from{clip-path:inset(0 100% 0 0);visibility:hidden}.1%{visibility:visible}to{clip-path:inset(0 0 0 0);visibility:visible}}
+@keyframes trHighlighterSweepWipeOut{from{clip-path:inset(0 0 0 0)}to{clip-path:inset(0 0 0 100%)}}
+@keyframes trHighlighterSweepLift{from{opacity:1;translate:0 0}to{opacity:0;translate:0 -70px}}
+@keyframes trHighlighterSweepWrite{from{clip-path:inset(-20% 100% -20% -20%)}to{clip-path:inset(-20% -20% -20% -20%)}}
+</style>
+<!-- @html -->
+  <div class="tr-highlighter-sweep">
+    <div class="tr-highlighter-sweep-paper"></div>
+    <div class="tr-highlighter-sweep-stroke" style="--y:120px;--h:600px;--r:-5deg;--a:40%;--t:.36s;--d0:0s"></div>
+    <div class="tr-highlighter-sweep-stroke" style="--y:640px;--h:640px;--r:-2.5deg;--a:40%;--t:.36s;--d0:.07s"></div>
+    <div class="tr-highlighter-sweep-stroke" style="--y:1200px;--h:620px;--r:-6deg;--a:40%;--t:.36s;--d0:.14s"></div>
+    <div class="tr-highlighter-sweep-stroke" style="--y:840px;--h:250px;--r:-4deg;--a:92%;--t:.32s;--d0:.32s"></div>
+    <div class="tr-highlighter-sweep-card">
+      <div class="tr-highlighter-sweep-mark">{{mark}}<svg viewBox="0 0 198 170"><path pathLength="1" d="M120 12 C60 2 8 40 14 92 C20 148 110 172 160 132 C200 100 190 30 130 16 C112 12 96 14 84 20"/></svg></div>
+      <div class="tr-highlighter-sweep-name" id="tr-highlighter-sweep-name">{{brand}}</div>
+      <p class="tr-highlighter-sweep-line">{{tagline}}<svg viewBox="0 0 400 30" preserveAspectRatio="none"><path pathLength="1" d="M4 18 C80 6 160 26 240 14 C300 6 350 10 396 16"/></svg></p>
+    </div>
+  </div>
+<!-- @end html -->
+<script>
+(function(){
+  var n = document.getElementById('tr-highlighter-sweep-name');
+  R.split(n, 'chars');
+  R.onMeasure(function(){
+    var w = R.box(n).w, max = 940;
+    if (w > max) n.style.fontSize = (parseFloat(getComputedStyle(n).fontSize) * max / w * .98).toFixed(1) + 'px';
+  });
+})();
+</script>
+<!-- @end -->
+
+<!-- @block flash-cut -->
+<style>
+/* a white flash, hard cut to a viewfinder card (REC, corner brackets, slow push-in); out with a shutter blink.
+   The flash is the lighter of --ink/--bg and the shutter the darker (blend modes), so it works on any palette */
+.tr-flash-cut{position:absolute;inset:0;z-index:20;pointer-events:none;overflow:hidden;
+  animation:fadeIn .01s linear var(--reveal) both, fadeOut .01s linear calc(var(--revealOut) + .62s) forwards}
+.tr-flash-cut-card{position:absolute;inset:0;background:var(--bg);color:var(--ink);animation:fadeOut .01s linear calc(var(--revealOut) + .14s) forwards}
+.tr-flash-cut-push{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  animation:trFlashCutPush 2.4s cubic-bezier(.2,.6,.3,1) var(--reveal) both}
+.tr-flash-cut-br{position:absolute;width:120px;height:120px;border:0 solid var(--accent)}
+.tr-flash-cut-br.a{left:70px;top:230px;border-width:8px 0 0 8px}
+.tr-flash-cut-br.b{right:70px;top:230px;border-width:8px 8px 0 0}
+.tr-flash-cut-br.c{left:70px;bottom:420px;border-width:0 0 8px 8px}
+.tr-flash-cut-br.d{right:70px;bottom:420px;border-width:0 8px 8px 0}
+.tr-flash-cut-rec{position:absolute;left:118px;top:278px;display:flex;align-items:center;gap:16px;font-family:var(--font-mono);font-size:34px;font-weight:700;letter-spacing:.12em}
+.tr-flash-cut-rec i{width:26px;height:26px;border-radius:50%;background:var(--accent);animation:blink 1s linear calc(var(--reveal) + .2s) infinite both}
+.tr-flash-cut-mark{position:absolute;right:118px;top:262px;width:84px;height:84px;border-radius:calc(var(--radius) * .7);background:var(--accent);color:var(--on-accent);
+  display:grid;place-items:center;font-family:var(--font-display);font-weight:var(--display-weight);font-size:50px}
+.tr-flash-cut-name{font-family:var(--font-display);font-weight:var(--display-weight);letter-spacing:var(--display-track);text-transform:var(--display-case);
+  font-size:250px;line-height:.92;white-space:nowrap;padding-bottom:.06em}
+.tr-flash-cut-tag{margin-top:34px;max-width:860px;text-align:center;font-size:54px;font-weight:600;color:var(--ink-2);animation:fadeIn .5s ease calc(var(--reveal) + .55s) both}
+.tr-flash-cut-flash{position:absolute;inset:0;isolation:isolate;filter:brightness(1.25);animation:trFlashCutFlash .5s cubic-bezier(.3,0,.4,1) var(--reveal) both}
+.tr-flash-cut-flash i,.tr-flash-cut-blade i{position:absolute;inset:0}
+.tr-flash-cut-flash i:first-child,.tr-flash-cut-blade i:first-child{background:var(--ink)}
+.tr-flash-cut-flash i:last-child{background:var(--bg);mix-blend-mode:lighten}
+.tr-flash-cut-blade i:last-child{background:var(--bg);mix-blend-mode:darken}
+.tr-flash-cut-blade{position:absolute;left:0;right:0;height:50.5%;isolation:isolate;filter:brightness(.3)}
+.tr-flash-cut-blade.t{top:0;animation:trFlashCutShutT .5s linear var(--revealOut) both}
+.tr-flash-cut-blade.u{bottom:0;animation:trFlashCutShutB .5s linear var(--revealOut) both}
+@keyframes trFlashCutFlash{0%{opacity:0}.1%{opacity:1}18%{opacity:1}100%{opacity:0}}
+@keyframes trFlashCutPush{from{transform:scale(1.12)}to{transform:scale(1)}}
+@keyframes trFlashCutShutT{0%{transform:translateY(-100%);animation-timing-function:cubic-bezier(.6,0,.9,.6)}28%,36%{transform:none;animation-timing-function:cubic-bezier(.2,.6,.4,1)}100%{transform:translateY(-100%)}}
+@keyframes trFlashCutShutB{0%{transform:translateY(100%);animation-timing-function:cubic-bezier(.6,0,.9,.6)}28%,36%{transform:none;animation-timing-function:cubic-bezier(.2,.6,.4,1)}100%{transform:translateY(100%)}}
+</style>
+<!-- @html -->
+  <div class="tr-flash-cut">
+    <div class="tr-flash-cut-card"><div class="tr-flash-cut-push">
+      <div class="tr-flash-cut-br a"></div><div class="tr-flash-cut-br b"></div><div class="tr-flash-cut-br c"></div><div class="tr-flash-cut-br d"></div>
+      <div class="tr-flash-cut-rec"><i></i>REC</div>
+      <div class="tr-flash-cut-mark">{{mark}}</div>
+      <div class="tr-flash-cut-name r-fit" id="tr-flash-cut-name">{{brand}}</div>
+      <p class="tr-flash-cut-tag">{{tagline}}</p>
+    </div></div>
+    <div class="tr-flash-cut-flash"><i></i><i></i></div>
+    <div class="tr-flash-cut-blade t"><i></i><i></i></div>
+    <div class="tr-flash-cut-blade u"><i></i><i></i></div>
+  </div>
+<!-- @end html -->
+<script>
+R.onMeasure(function(){
+  var n = document.getElementById('tr-flash-cut-name'), w = R.box(n).w, max = 880;
+  if (w > max) n.style.fontSize = (parseFloat(getComputedStyle(n).fontSize) * max / w * .98).toFixed(1) + 'px';
+});
+</script>
+<!-- @end -->
+
+<!-- @block iris-letterbox -->
+<style>
+/* near-black bars close to a letterbox; a quiet title card: ringed mark, the name tracking in, hairlines, a small-caps tagline.
+   The bars are the darker of --ink/--bg (blend mode), so they read as black on light and dark palettes */
+.tr-iris-letterbox{position:absolute;inset:0;z-index:20;pointer-events:none;overflow:hidden;
+  animation:fadeIn .01s linear var(--reveal) both, fadeOut .01s linear calc(var(--revealOut) + .66s) forwards}
+.tr-iris-letterbox-back{position:absolute;inset:0;background:radial-gradient(60% 18% at 50% 50%,color-mix(in srgb,var(--accent) 16%,transparent),transparent),var(--raise);animation:fadeOut .01s linear calc(var(--revealOut) + .27s) forwards}
+.tr-iris-letterbox-band{position:absolute;left:0;right:0;top:680px;height:560px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink);
+  animation:fadeOut .3s var(--ease-in) calc(var(--revealOut) - .18s) forwards}
+.tr-iris-letterbox-band::before,.tr-iris-letterbox-band::after{content:"";position:absolute;left:150px;right:150px;height:2px;background:color-mix(in srgb,var(--ink) 35%,transparent);
+  animation:strike 1.2s var(--ease-out) calc(var(--reveal) + .55s) both}
+.tr-iris-letterbox-band::before{top:56px}
+.tr-iris-letterbox-band::after{bottom:56px}
+.tr-iris-letterbox-mark{width:92px;height:92px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--ink);display:grid;place-items:center;margin-bottom:26px;
+  font-family:var(--font-display);font-weight:var(--display-weight);font-size:46px;animation:fadeIn .8s ease calc(var(--reveal) + .5s) both}
+.tr-iris-letterbox-name{font-family:var(--font-display);font-weight:var(--display-weight);letter-spacing:calc(var(--display-track) + .07em);text-transform:var(--display-case);
+  font-size:180px;line-height:1;white-space:nowrap;animation:trIrisLetterboxTrack 2.1s cubic-bezier(.2,.7,.2,1) calc(var(--reveal) + .35s) both}
+.tr-iris-letterbox-tag{margin-top:30px;max-width:860px;text-align:center;font-size:36px;font-weight:600;font-variant:small-caps;text-transform:lowercase;letter-spacing:.26em;color:var(--ink-2);
+  animation:fadeIn 1s ease calc(var(--reveal) + .95s) both}
+.tr-iris-letterbox-bar{position:absolute;left:0;right:0;height:1000px;isolation:isolate;filter:brightness(.3)}
+.tr-iris-letterbox-bar i{position:absolute;inset:0;background:var(--ink)}
+.tr-iris-letterbox-bar i+i{background:var(--bg);mix-blend-mode:darken}
+.tr-iris-letterbox-bar.t{top:-320px;animation:trIrisLetterboxInT .55s var(--ease-out) var(--reveal) both, trIrisLetterboxOutT .64s linear var(--revealOut) forwards}
+.tr-iris-letterbox-bar.u{top:1240px;animation:trIrisLetterboxInB .55s var(--ease-out) var(--reveal) both, trIrisLetterboxOutB .64s linear var(--revealOut) forwards}
+@keyframes trIrisLetterboxTrack{from{opacity:0;letter-spacing:.4em;filter:blur(8px)}35%{opacity:1;filter:blur(0)}to{opacity:1;letter-spacing:calc(var(--display-track) + .07em)}}
+@keyframes trIrisLetterboxInT{from{transform:translateY(-100%)}to{transform:none}}
+@keyframes trIrisLetterboxInB{from{transform:translateY(100%)}to{transform:none}}
+@keyframes trIrisLetterboxOutT{0%{transform:none;animation-timing-function:cubic-bezier(.6,0,.9,.5)}40%,46%{transform:translateY(282px);animation-timing-function:cubic-bezier(.3,0,.2,1)}100%{transform:translateY(-100%)}}
+@keyframes trIrisLetterboxOutB{0%{transform:none;animation-timing-function:cubic-bezier(.6,0,.9,.5)}40%,46%{transform:translateY(-282px);animation-timing-function:cubic-bezier(.3,0,.2,1)}100%{transform:translateY(100%)}}
+</style>
+<!-- @html -->
+  <div class="tr-iris-letterbox">
+    <div class="tr-iris-letterbox-back"></div>
+    <div class="tr-iris-letterbox-band">
+      <div class="tr-iris-letterbox-mark">{{mark}}</div>
+      <div class="tr-iris-letterbox-name r-fit" id="tr-iris-letterbox-name">{{brand}}</div>
+      <p class="tr-iris-letterbox-tag">{{tagline}}</p>
+    </div>
+    <div class="tr-iris-letterbox-bar t"><i></i><i></i></div>
+    <div class="tr-iris-letterbox-bar u"><i></i><i></i></div>
+  </div>
+<!-- @end html -->
+<script>
+R.onMeasure(function(){
+  var n = document.getElementById('tr-iris-letterbox-name'), w = R.box(n).w, max = 860;
+  if (w > max) n.style.fontSize = (parseFloat(getComputedStyle(n).fontSize) * max / w * .98).toFixed(1) + 'px';
+});
+</script>
+<!-- @end -->
+
+<!-- @block tile-flip -->
+<style>
+/* a 6x10 grid of accent tiles flips over in a diagonal wave; the name sits on its own split-flap tiles */
+.tr-tile-flip{position:absolute;inset:0;z-index:20;pointer-events:none;
+  animation:fadeIn .01s linear var(--reveal) both, fadeOut .01s linear calc(var(--revealOut) + .7s) forwards}
+.tr-tile-flip-grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(10,1fr)}
+.tr-tile-flip-grid i{background:var(--accent);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--on-accent) 12%,transparent);
+  animation:trTileFlipIn .36s var(--ease-out) calc(var(--reveal) + var(--w) * .028s) both, trTileFlipOut .28s var(--ease-in) calc(var(--revealOut) + var(--w) * .022s) forwards}
+.tr-tile-flip-grid i:nth-child(odd){background:color-mix(in srgb,var(--accent) 92%,var(--on-accent))}
+.tr-tile-flip-card{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--on-accent);
+  animation:fadeOut .2s var(--ease-in) calc(var(--revealOut) - .1s) forwards}
+.tr-tile-flip-mark{width:150px;height:150px;border-radius:calc(var(--radius) * .8);box-shadow:inset 0 0 0 7px var(--on-accent);display:grid;place-items:center;margin-bottom:44px;
+  font-family:var(--font-display);font-weight:var(--display-weight);font-size:84px;animation:trTileFlipChar .45s var(--ease-out) calc(var(--reveal) + .45s) both}
+.tr-tile-flip-word{display:flex;gap:.06em;font-family:var(--font-display);font-weight:var(--display-weight);letter-spacing:var(--display-track);text-transform:var(--display-case);font-size:170px;line-height:1;white-space:pre}
+.tr-tile-flip-word .c{display:grid;place-items:center;min-width:.82em;height:1.12em;padding:0 .06em;border-radius:calc(var(--radius) * .6);background:var(--on-accent);color:var(--accent);
+  animation:trTileFlipChar .42s var(--ease-out) calc(var(--reveal) + .55s + var(--i) * .06s) both}
+.tr-tile-flip-tag{margin-top:46px;max-width:900px;text-align:center;font-size:52px;font-weight:700;letter-spacing:-.01em;animation:rise .6s var(--ease-out) calc(var(--reveal) + 1s) both}
+@keyframes trTileFlipIn{0%{opacity:0;transform:perspective(900px) rotate3d(1,-1,0,90deg)}20%{opacity:1}100%{opacity:1;transform:none}}
+@keyframes trTileFlipOut{from{opacity:1;transform:none}to{opacity:0;transform:perspective(900px) rotate3d(1,-1,0,-90deg)}}
+@keyframes trTileFlipChar{from{opacity:0;transform:perspective(600px) rotateX(-90deg)}to{opacity:1;transform:none}}
+</style>
+<!-- @html -->
+  <div class="tr-tile-flip">
+    <div class="tr-tile-flip-grid" id="tr-tile-flip-grid"></div>
+    <div class="tr-tile-flip-card">
+      <div class="tr-tile-flip-mark">{{mark}}</div>
+      <div class="tr-tile-flip-word" id="tr-tile-flip-word">{{brand}}</div>
+      <p class="tr-tile-flip-tag">{{tagline}}</p>
+    </div>
+  </div>
+<!-- @end html -->
+<script>
+(function(){
+  var g = document.getElementById('tr-tile-flip-grid'), word = document.getElementById('tr-tile-flip-word');
+  for (var r = 0; r < 10; r++) for (var c = 0; c < 6; c++){ var t = document.createElement('i'); t.style.setProperty('--w', r + c); g.appendChild(t) }
+  /* one tile per letter; spaces become empty gaps */
+  var text = word.textContent; word.textContent = '';
+  Array.from(text).forEach(function(ch, i){
+    var s = document.createElement('span'); s.className = /\s/.test(ch) ? 'gap' : 'c'; s.textContent = ch; s.style.setProperty('--i', i); word.appendChild(s);
+  });
+  R.onMeasure(function(){
+    var w = R.box(word).w, max = 960;
+    if (w > max) word.style.fontSize = (parseFloat(getComputedStyle(word).fontSize) * max / w * .98).toFixed(1) + 'px';
+  });
+})();
+</script>
+<!-- @end -->

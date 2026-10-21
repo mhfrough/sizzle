@@ -1,0 +1,356 @@
+<!--
+  Styles: the reel's palette, type, radii, easing and texture. One per reel.
+  Every style sets ALL tokens below. The colours are a starting mood: swap them for the product's own
+  (keep the roles: --accent is the brand colour, --on-accent is text on it).
+  Fonts shipped with the skill (OFL, copied next to the page by recipe.py): fonts/BebasNeue-Regular.woff2,
+  fonts/EBGaramond-latin.woff2, fonts/EBGaramond-Italic-latin.woff2, fonts/JetBrainsMono-latin.woff2.
+  Anything else: the product's own font files, or a system stack.
+  A style may also restyle shared parts (.r-brand-in, .r-pill, .r-mark, .hl, .acc) and block parts by prefix.
+
+  Token list: --bg --raise --raise-2 --ink --ink-2 --accent --accent-2 --on-accent --line
+              --font-display --font-body --font-mono --display-weight --display-track --display-lead --display-case
+              --radius --radius-pill --shadow --ease-in --ease-out --ease-pop
+  Optional: --hs (base headline size, default 110px; condensed faces want more, wide mono faces less).
+  Textures over the whole reel use #reel::before / #reel::after (z-index 30+, pointer-events:none).
+-->
+
+<!-- @block midnight-electric -->
+<style>
+:root{
+  --bg:#0f110e; --raise:#1b1e19; --raise-2:#282c25; --line:#33382f;
+  --ink:#eceee6; --ink-2:#b2b7aa; --accent:#d4f84b; --accent-2:#7cf2c8; --on-accent:#11130f;
+  --font-display:"Bricolage Grotesque","Segoe UI",ui-sans-serif,system-ui,sans-serif;
+  --font-body:"Segoe UI",ui-sans-serif,system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --display-weight:800; --display-track:-.045em; --display-lead:.98; --display-case:none;
+  --radius:20px; --radius-pill:999px; --shadow:0 50px 100px -30px rgba(0,0,0,.95);
+  --ease-in:cubic-bezier(.55,0,.75,.2); --ease-out:cubic-bezier(.16,1,.3,1); --ease-pop:cubic-bezier(.34,1.56,.64,1);
+}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/JetBrainsMono-latin.woff2) format("woff2");font-weight:100 800}
+</style>
+<!-- @end -->
+
+<!-- @block paper-ink -->
+<style>
+/* warm dotted paper, black ink, highlighter yellow; hand-lettered display, wobbly hand-drawn outlines */
+:root{
+  --bg:#f5efe1; --raise:#fffaf0; --raise-2:#e9e0cc; --line:#d8cdb6;
+  --ink:#1c1a16; --ink-2:#5f584b; --accent:#ffd83a; --accent-2:#ff8a5c; --on-accent:#1c1a16;
+  --font-display:"Segoe Print","Ink Free","Bradley Hand","Comic Sans MS",cursive;
+  --font-body:"Segoe UI","Helvetica Neue",Arial,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --display-weight:700; --display-track:-.02em; --display-lead:1.12; --display-case:none; --hs:100px;
+  --radius:14px; --radius-pill:999px; --shadow:7px 9px 0 rgba(28,26,22,.14);
+  --ease-in:cubic-bezier(.5,0,.75,0); --ease-out:cubic-bezier(.2,.9,.3,1.04); --ease-pop:cubic-bezier(.3,1.7,.55,1);
+}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/JetBrainsMono-latin.woff2) format("woff2");font-weight:100 800}
+body #reel{background-image:radial-gradient(color-mix(in srgb,var(--ink) 13%,transparent) 1.6px,transparent 2.2px);background-size:38px 38px;background-position:19px 19px}
+/* highlighter: lines shrink-wrap so the marker only covers the words */
+#reel .hl{display:flex;flex-direction:column;align-items:var(--hl-justify,center)}
+#reel .acc:not(.hl>span),#reel .hl>.acc>*{background:linear-gradient(176deg,transparent 46%,color-mix(in srgb,var(--accent) 92%,transparent) 47% 90%,transparent 91%);
+  -webkit-box-decoration-break:clone;box-decoration-break:clone}
+#reel .acc{color:var(--ink)}
+#reel .r-brand-in,#reel .r-pill,#reel .fr-card{border:3px solid var(--ink);border-radius:255px 18px 225px 18px/18px 225px 18px 255px}
+#reel .r-brand-in{background:var(--raise)}
+#reel .r-brand-in b{font-weight:var(--display-weight);letter-spacing:var(--display-track)}
+#reel .r-mark{border:3px solid var(--ink);border-radius:46% 54% 50% 50%/52% 46% 54% 48%;font-family:var(--font-display)}
+#reel .r-pill{background:var(--raise);box-shadow:5px 6px 0 var(--ink)}
+#reel .r-pill:nth-child(2){rotate:-2deg}
+#reel .r-pill:nth-child(3){background:var(--accent)}
+#reel .fr-card{border-width:2.5px}
+</style>
+<!-- @end -->
+
+<!-- @block swiss-grid -->
+<style>
+/* white, black, one red; strict grid, no shadows, square everything, hard expo moves */
+:root{
+  --bg:#f7f7f4; --raise:#ffffff; --raise-2:#e4e4e0; --line:#111111;
+  --ink:#0d0d0d; --ink-2:#55554f; --accent:#e5261c; --accent-2:#0d0d0d; --on-accent:#ffffff;
+  --font-display:"Helvetica Neue",Helvetica,Arial,"Nimbus Sans",sans-serif;
+  --font-body:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --display-weight:700; --display-track:-.045em; --display-lead:.92; --display-case:none; --hs:118px;
+  --radius:0px; --radius-pill:0px; --shadow:none;
+  --ease-in:cubic-bezier(.7,0,1,.5); --ease-out:cubic-bezier(.8,0,.1,1); --ease-pop:cubic-bezier(.8,0,.1,1);
+}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/JetBrainsMono-latin.woff2) format("woff2");font-weight:100 800}
+/* a 6-column hairline grid printed on the page */
+body #reel{background-image:linear-gradient(90deg,color-mix(in srgb,var(--ink) 9%,transparent) 2px,transparent 2px);background-size:180px 100%;background-position:-1px 0}
+#reel .r-brand-in{background:var(--ink);color:var(--bg);padding:0 34px 0 0;gap:24px}
+#reel .r-brand-in span:last-child{color:color-mix(in srgb,var(--bg) 70%,transparent);box-shadow:inset 2px 0 0 color-mix(in srgb,var(--bg) 35%,transparent)}
+#reel .r-brand-in b{font-weight:700;letter-spacing:-.04em}
+#reel .r-mark{width:84px;height:84px}
+#reel .r-pill{background:transparent;border-top:6px solid var(--ink);height:auto;padding:18px 26px 0 0;font-weight:700;letter-spacing:-.02em}
+#reel .r-pill:last-child{border-top-color:var(--accent);color:var(--accent)}
+#reel .fr-card{border-left:8px solid var(--ink)}
+#reel .fr-card.hi{border-left-color:var(--ink)}
+</style>
+<!-- @end -->
+
+<!-- @block brutalist -->
+<style>
+/* raw primaries, thick black borders, hard offset shadows, condensed uppercase */
+:root{
+  --bg:#f3eee2; --raise:#ffffff; --raise-2:#d9d2c2; --line:#000000;
+  --ink:#000000; --ink-2:#2b2b2b; --accent:#ff3d14; --accent-2:#ffd600; --on-accent:#000000;
+  --font-display:"Bebas Neue",Impact,"Arial Narrow",sans-serif;
+  --font-body:"Arial Black","Arial",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --display-weight:400; --display-track:.005em; --display-lead:.88; --display-case:uppercase; --hs:128px;
+  --radius:0px; --radius-pill:0px; --shadow:16px 16px 0 #000;
+  --ease-in:cubic-bezier(.8,0,1,1); --ease-out:cubic-bezier(.1,.95,.1,1); --ease-pop:cubic-bezier(.25,2.1,.5,.95);
+}
+@font-face{font-family:"Bebas Neue";src:url(fonts/BebasNeue-Regular.woff2) format("woff2");font-weight:400}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/JetBrainsMono-latin.woff2) format("woff2");font-weight:100 800}
+#reel{font-synthesis:none}   /* Bebas has one weight: blocks asking for 800 get the real face, not a smeared fake bold */
+#reel .r-brand-in,#reel .r-pill,#reel .fr-card{border:5px solid var(--ink);box-shadow:9px 9px 0 var(--ink)}
+#reel .r-brand-in{background:var(--accent-2);border-radius:0}
+#reel .r-brand-in b{font-weight:400;letter-spacing:.02em;text-transform:uppercase;font-size:52px}
+#reel .r-brand-in span:last-child{color:var(--ink);font-weight:700;box-shadow:inset 4px 0 0 var(--ink)}
+#reel .r-mark{border:4px solid var(--ink);font-weight:400}
+#reel .r-pill{background:var(--raise);font-family:var(--font-display);font-weight:400;font-size:44px;letter-spacing:.03em;text-transform:uppercase}
+#reel .r-pill:nth-child(2){background:var(--accent-2)}
+#reel .r-pill:nth-child(3){background:var(--accent)}
+#reel .fr-card{border-width:3px;box-shadow:5px 5px 0 var(--ink)}
+</style>
+<!-- @end -->
+
+<!-- @block editorial-serif -->
+<style>
+/* cream paper, big serif with italic accents, hairline rules, unhurried */
+:root{
+  --bg:#f2ebdd; --raise:#e9e0cd; --raise-2:#d9cdb5; --line:#bdb19a;
+  --ink:#1f1a15; --ink-2:#6d6457; --accent:#8e2c1c; --accent-2:#b8913f; --on-accent:#f6efe1;
+  --font-display:"EB Garamond",Garamond,Georgia,"Times New Roman",serif;
+  --font-body:"EB Garamond",Georgia,"Times New Roman",serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --display-weight:500; --display-track:-.025em; --display-lead:.98; --display-case:none; --hs:128px;
+  --radius:3px; --radius-pill:0px; --shadow:0 40px 70px -34px rgba(48,34,20,.45);
+  --ease-in:cubic-bezier(.45,0,.7,.25); --ease-out:cubic-bezier(.25,.65,.12,1); --ease-pop:cubic-bezier(.2,.75,.2,1);
+}
+@font-face{font-family:"EB Garamond";src:url(fonts/EBGaramond-latin.woff2) format("woff2");font-weight:400 800;font-style:normal}
+@font-face{font-family:"EB Garamond";src:url(fonts/EBGaramond-Italic-latin.woff2) format("woff2");font-weight:400 800;font-style:italic}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/JetBrainsMono-latin.woff2) format("woff2");font-weight:100 800}
+#reel .acc{font-style:italic;font-weight:500;color:var(--accent)}
+#reel .acc *{font-style:italic}
+#reel .r-brand-in{background:transparent;border-radius:0;padding:10px 6px 14px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+#reel .r-brand-in b{font-weight:600;letter-spacing:-.01em;font-size:48px}
+#reel .r-brand-in span:last-child{font-style:italic;font-size:32px}
+#reel .r-mark{border-radius:50%;font-weight:600;font-style:italic;width:64px;height:64px}
+#reel .r-pill{background:transparent;height:auto;padding:12px 6px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);font-style:italic;font-weight:500;font-size:40px}
+#reel .fr-card{border-radius:0;background:transparent;border-bottom:1.5px solid var(--line);font-weight:500;font-size:22px}
+#reel .fr-card.hi{background:var(--accent);border:0}
+</style>
+<!-- @end -->
+
+<!-- @block terminal-mono -->
+<style>
+/* black screen, phosphor green, monospace everywhere, fine scanlines, a block caret */
+:root{
+  --bg:#040904; --raise:#0b170c; --raise-2:#143018; --line:#1f4a25;
+  --ink:#b9f7bf; --ink-2:#5aa865; --accent:#39ff6a; --accent-2:#ffb43a; --on-accent:#021204;
+  --font-display:"JetBrains Mono",ui-monospace,Consolas,"Courier New",monospace;
+  --font-body:"JetBrains Mono",ui-monospace,Consolas,"Courier New",monospace;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --display-weight:700; --display-track:-.04em; --display-lead:1.06; --display-case:none; --hs:90px;
+  --radius:2px; --radius-pill:2px; --shadow:0 0 0 2px #143018,0 0 80px rgba(57,255,106,.14);
+  --ease-in:cubic-bezier(.9,0,1,1); --ease-out:cubic-bezier(0,.9,.1,1); --ease-pop:cubic-bezier(0,1,0,1);
+}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/JetBrainsMono-latin.woff2) format("woff2");font-weight:100 800}
+#reel{text-shadow:0 0 14px color-mix(in srgb,var(--accent) 40%,transparent)}
+#reel::after{content:"";position:absolute;inset:0;z-index:30;pointer-events:none;
+  background:repeating-linear-gradient(180deg,rgba(0,0,0,.28) 0 2px,transparent 2px 5px),radial-gradient(120% 80% at 50% 50%,transparent 60%,rgba(0,0,0,.45))}
+#reel .caret{width:.56em;vertical-align:-.14em}
+#reel .r-brand-in{background:transparent;border:2px solid var(--line);border-radius:0;padding:10px 30px 10px 10px}
+#reel .r-brand-in b{font-weight:700;letter-spacing:-.03em;font-size:40px;color:var(--accent)}
+#reel .r-brand-in span:last-child{font-size:24px}
+#reel .r-mark{border-radius:0;font-weight:800}
+#reel .r-pill{background:transparent;border:2px solid var(--accent);color:var(--accent);font-weight:600;font-size:30px;height:72px}
+#reel .fr-card{border-radius:0;border:1.5px solid var(--line);background:transparent;font-weight:500;font-size:18px}
+#reel .fr-card.hi{border:0;background:var(--accent);color:var(--on-accent);text-shadow:none}
+</style>
+<!-- @end -->
+
+<!-- @block pastel-soft -->
+<style>
+/* pastel gradients, very round corners, bouncy friendly motion */
+:root{
+  --bg:#fcf3f6; --raise:#ffffff; --raise-2:#f2e4f0; --line:#ead7e6;
+  --ink:#3a2848; --ink-2:#8b779b; --accent:#8f63ff; --accent-2:#5fd3b8; --on-accent:#ffffff;
+  --font-display:ui-rounded,"SF Pro Rounded","Nunito","Varela Round","Trebuchet MS","Segoe UI",system-ui,sans-serif;
+  --font-body:ui-rounded,"SF Pro Rounded","Nunito","Trebuchet MS","Segoe UI",system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --display-weight:700; --display-track:-.035em; --display-lead:1.02; --display-case:none; --hs:112px;
+  --radius:38px; --radius-pill:999px; --shadow:0 40px 90px -30px rgba(143,99,255,.5);
+  --ease-in:cubic-bezier(.5,-.4,.7,.2); --ease-out:cubic-bezier(.2,1.25,.4,1); --ease-pop:cubic-bezier(.34,2,.5,1);
+}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/JetBrainsMono-latin.woff2) format("woff2");font-weight:100 800}
+body #reel{background-image:radial-gradient(85% 45% at 0% 0%,#ffbfd9,transparent 75%),
+  radial-gradient(90% 50% at 100% 50%,#c9dafe,transparent 75%),
+  radial-gradient(90% 45% at 0% 100%,#c8f1e1,transparent 75%)}
+#reel .r-brand-in{box-shadow:0 18px 40px -18px rgba(143,99,255,.45)}
+#reel .r-brand-in b{font-weight:700}
+#reel .r-mark{border-radius:50%}
+#reel .r-pill{background:var(--raise);box-shadow:0 16px 34px -16px rgba(143,99,255,.5)}
+#reel .r-pill:nth-child(1){background:#ffe1ee}
+#reel .r-pill:nth-child(2){background:#dcecff}
+#reel .r-pill:nth-child(3){background:#d6f5ea}
+#reel .fr-card{box-shadow:0 8px 20px -12px rgba(143,99,255,.35)}
+</style>
+<!-- @end -->
+
+<!-- @block riso-print -->
+<style>
+/* risograph: blue + fluorescent pink spot inks on paper, multiply, slight misregistration, grain */
+:root{
+  --bg:#f3ecdb; --raise:#e9dfc8; --raise-2:#d8ccb0; --line:#c9bc9f;
+  --ink:#2242a8; --ink-2:#5b6fae; --accent:#ff4fa7; --accent-2:#ffd23a; --on-accent:#1b3797;
+  --font-display:Georgia,"Iowan Old Style","Times New Roman",serif;
+  --font-body:"Trebuchet MS","Segoe UI",Arial,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --display-weight:700; --display-track:-.035em; --display-lead:.98; --display-case:none; --hs:116px;
+  --radius:10px; --radius-pill:999px; --shadow:12px 14px 0 rgba(255,79,167,.55);
+  --ease-in:cubic-bezier(.6,0,.8,.3); --ease-out:cubic-bezier(.3,1.2,.4,1); --ease-pop:cubic-bezier(.4,1.6,.5,1);
+}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/JetBrainsMono-latin.woff2) format("woff2");font-weight:100 800}
+/* paper grain over everything, printed in multiply */
+#reel::after{content:"";position:absolute;inset:0;z-index:30;pointer-events:none;mix-blend-mode:multiply;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .5 0 0 0 0 .42 0 0 0 -1.4 .9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* the second ink drum is a few pixels off */
+#reel .hl,#reel .r-brand-in b{text-shadow:5px 4px 0 color-mix(in srgb,var(--accent) 70%,transparent)}
+#reel .hl-zone,#reel .r-pill,#reel .r-brand-in,#reel .r-mark{mix-blend-mode:multiply}
+#reel .acc{color:var(--accent);text-shadow:-5px -3px 0 color-mix(in srgb,var(--ink) 55%,transparent)}
+#reel .r-brand-in{background:color-mix(in srgb,var(--accent) 30%,var(--bg))}
+#reel .r-brand-in b{font-weight:700}
+#reel .r-mark{border-radius:50%}
+#reel .r-pill{background:color-mix(in srgb,var(--accent) 45%,var(--bg));color:var(--ink);font-family:var(--font-display);font-style:italic;font-weight:700}
+#reel .r-pill:nth-child(2){background:color-mix(in srgb,var(--ink) 25%,var(--bg))}
+#reel .fr-card.hi{background:var(--ink);color:var(--bg)}
+</style>
+<!-- @end -->
+
+<!-- @block glass-gradient -->
+<style>
+/* deep mesh gradient, frosted glass cards, glowing edges, light airy type */
+:root{
+  --bg:#0c0a24; --raise:rgba(255,255,255,.09); --raise-2:rgba(255,255,255,.16); --line:rgba(255,255,255,.18);
+  --ink:#f3f0ff; --ink-2:#bdb6e2; --accent:#9d86ff; --accent-2:#4fe0ff; --on-accent:#0c0a24;
+  --font-display:"SF Pro Display","Helvetica Neue","Segoe UI",system-ui,sans-serif;
+  --font-body:"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --display-weight:300; --display-track:-.035em; --display-lead:1.0; --display-case:none; --hs:118px;
+  --radius:30px; --radius-pill:999px; --shadow:0 0 0 1.5px rgba(255,255,255,.2),0 40px 120px -30px rgba(157,134,255,.75);
+  --ease-in:cubic-bezier(.4,0,.6,.3); --ease-out:cubic-bezier(.22,1,.36,1); --ease-pop:cubic-bezier(.25,1.35,.4,1);
+}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/JetBrainsMono-latin.woff2) format("woff2");font-weight:100 800}
+body #reel{background-image:radial-gradient(80% 45% at 5% 8%,color-mix(in srgb,var(--accent) 62%,transparent),transparent 72%),
+  radial-gradient(75% 45% at 100% 52%,color-mix(in srgb,var(--accent-2) 42%,transparent),transparent 72%),
+  radial-gradient(85% 45% at 15% 100%,rgba(255,95,181,.42),transparent 72%)}
+#reel .acc{font-weight:600;color:var(--ink);text-shadow:0 0 40px color-mix(in srgb,var(--accent) 90%,transparent),0 0 12px color-mix(in srgb,var(--accent-2) 60%,transparent)}
+#reel .r-brand-in,#reel .r-pill,#reel .fr-card{background:rgba(255,255,255,.09);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+  box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.22),inset 0 1.5px 0 rgba(255,255,255,.35)}
+#reel .r-brand-in b{font-weight:600}
+#reel .r-mark{border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 0 30px color-mix(in srgb,var(--accent) 70%,transparent)}
+#reel .r-pill{font-weight:500}
+#reel .fr-card.hi{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:var(--on-accent)}
+</style>
+<!-- @end -->
+
+<!-- @block colorblock-pop -->
+<style>
+/* full-bleed colour fields that swap each beat, giant heavy type, black ink that reads on every field */
+@property --bg{syntax:"<color>";inherits:true;initial-value:#ffd43b}
+:root{
+  --bg:#ffd43b; --raise:#ffffff; --raise-2:#f0eee8; --line:#111111;
+  --ink:#111111; --ink-2:#2e2e2e; --accent:#2436ff; --accent-2:#ff4fa3; --on-accent:#ffffff;
+  --font-display:"Arial Black","Helvetica Neue",Arial,sans-serif;
+  --font-body:"Helvetica Neue",Arial,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --display-weight:900; --display-track:-.055em; --display-lead:.9; --display-case:uppercase; --hs:128px;
+  --radius:26px; --radius-pill:999px; --shadow:0 0 0 0 transparent;
+  --ease-in:cubic-bezier(.7,0,.9,.3); --ease-out:cubic-bezier(.2,1.3,.3,1); --ease-pop:cubic-bezier(.3,2.1,.45,1);
+}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/JetBrainsMono-latin.woff2) format("woff2");font-weight:100 800}
+/* each beat swaps the field (--bg is registered so it animates); later animations win once they start */
+#reel{animation:stCbpA .01s linear var(--revealOut) forwards,stCbpB .01s linear var(--tap2) forwards,stCbpC .01s linear var(--demoOut) forwards,stCbpD .01s linear var(--cta) forwards}
+@keyframes stCbpA{from,to{--bg:#7fe3bd}}
+@keyframes stCbpB{from,to{--bg:#c4b5ff}}
+@keyframes stCbpC{from,to{--bg:#ff9cc9}}
+@keyframes stCbpD{from,to{--bg:#ff9f45}}
+#reel .r-brand-in{background:var(--ink);color:var(--raise)}
+#reel .r-brand-in span:last-child{color:color-mix(in srgb,var(--raise) 70%,transparent);box-shadow:inset 2px 0 0 color-mix(in srgb,var(--raise) 30%,transparent)}
+#reel .r-brand-in b{font-weight:900;letter-spacing:-.05em;text-transform:uppercase}
+#reel .r-mark{border-radius:50%;font-weight:900}
+#reel .r-pill{background:var(--ink);color:var(--raise);font-family:var(--font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.03em;font-size:32px}
+#reel .r-pill:nth-child(2){background:var(--accent)}
+#reel .r-pill:nth-child(3){background:var(--raise);color:var(--ink)}
+</style>
+<!-- @end -->
+
+<!-- @block noir-film -->
+<style>
+/* black and white with one red, letterbox bars, film grain over everything, slow and dramatic */
+:root{
+  --bg:#0b0b0b; --raise:#171717; --raise-2:#262626; --line:#3a3a3a;
+  --ink:#f1efea; --ink-2:#9b9893; --accent:#d8202e; --accent-2:#f1efea; --on-accent:#ffffff;
+  --font-display:"EB Garamond",Garamond,Georgia,serif;
+  --font-body:"Helvetica Neue",Arial,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --display-weight:500; --display-track:.04em; --display-lead:1.1; --display-case:uppercase; --hs:84px;
+  --radius:0px; --radius-pill:0px; --shadow:0 60px 120px -20px rgba(0,0,0,1);
+  --ease-in:cubic-bezier(.5,0,.75,.2); --ease-out:cubic-bezier(.35,0,.05,1); --ease-pop:cubic-bezier(.3,0,.1,1);
+}
+@font-face{font-family:"EB Garamond";src:url(fonts/EBGaramond-latin.woff2) format("woff2");font-weight:400 800;font-style:normal}
+@font-face{font-family:"EB Garamond";src:url(fonts/EBGaramond-Italic-latin.woff2) format("woff2");font-weight:400 800;font-style:italic}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/JetBrainsMono-latin.woff2) format("woff2");font-weight:100 800}
+/* letterbox bars */
+#reel::before{content:"";position:absolute;inset:0;z-index:31;pointer-events:none;
+  background:linear-gradient(#000 0 110px,transparent 110px calc(100% - 110px),#000 calc(100% - 110px))}
+/* grain over everything, jumping position */
+#reel::after{content:"";position:absolute;inset:-200px;z-index:30;pointer-events:none;opacity:.09;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:stNoirGrain .5s steps(1,end) 0s infinite both}
+@keyframes stNoirGrain{0%{transform:translate(0,0)}20%{transform:translate(-90px,40px)}40%{transform:translate(60px,-110px)}60%{transform:translate(-30px,120px)}80%{transform:translate(110px,70px)}100%{transform:translate(0,0)}}
+#reel .hl{letter-spacing:.13em}
+#reel .acc{color:var(--accent);font-style:italic}
+#reel .acc *{font-style:italic}
+#reel .r-brand-in{background:transparent;border-radius:0;padding:8px 4px}
+#reel .r-brand-in b{font-weight:500;letter-spacing:.16em;text-transform:uppercase;font-size:40px}
+#reel .r-brand-in span:last-child{letter-spacing:.12em;text-transform:uppercase;font-size:22px}
+#reel .r-mark{background:transparent;color:var(--ink);border:2px solid var(--ink);font-weight:500}
+#reel .r-pill{background:transparent;border:1.5px solid color-mix(in srgb,var(--ink) 55%,transparent);text-transform:uppercase;letter-spacing:.18em;font-size:24px;font-weight:600;height:70px}
+#reel .fr-card{border-radius:0}
+</style>
+<!-- @end -->
+
+<!-- @block arcade-crt -->
+<style>
+/* CRT glow, magenta and cyan, chunky uppercase mono, everything moves in pixel steps */
+:root{
+  --bg:#0d0420; --raise:#1d0c3a; --raise-2:#2d1657; --line:#3d1f73;
+  --ink:#fbf2ff; --ink-2:#b39ad6; --accent:#ff2bd6; --accent-2:#22e8ff; --on-accent:#0d0420;
+  --font-display:"JetBrains Mono",ui-monospace,Consolas,"Courier New",monospace;
+  --font-body:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --display-weight:800; --display-track:-.03em; --display-lead:1.0; --display-case:uppercase; --hs:96px;
+  --radius:0px; --radius-pill:0px; --shadow:0 0 0 4px #ff2bd6,0 0 60px rgba(255,43,214,.45);
+  --ease-in:steps(4,end); --ease-out:steps(7,end); --ease-pop:steps(4,end);
+}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/JetBrainsMono-latin.woff2) format("woff2");font-weight:100 800}
+/* CRT: chunky scanlines, a curved-glass vignette */
+#reel::after{content:"";position:absolute;inset:0;z-index:30;pointer-events:none;
+  background:repeating-linear-gradient(180deg,rgba(0,0,0,.32) 0 3px,transparent 3px 6px),radial-gradient(110% 75% at 50% 50%,transparent 55%,rgba(0,0,0,.7) 100%)}
+/* RGB fringe on display type */
+#reel .hl,#reel .r-brand-in b,#reel .r-pill{text-shadow:-4px 0 0 color-mix(in srgb,var(--accent) 85%,transparent),4px 0 0 color-mix(in srgb,var(--accent-2) 85%,transparent),0 0 24px color-mix(in srgb,var(--accent) 50%,transparent)}
+#reel .acc{color:var(--accent-2)}
+/* pixel corners */
+#reel .r-brand-in,#reel .r-pill,#reel .r-mark{border-radius:0;clip-path:polygon(0 10px,10px 10px,10px 0,calc(100% - 10px) 0,calc(100% - 10px) 10px,100% 10px,100% calc(100% - 10px),calc(100% - 10px) calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,10px calc(100% - 10px),0 calc(100% - 10px))}
+#reel .r-brand-in b{font-weight:800;text-transform:uppercase;letter-spacing:-.02em}
+#reel .r-brand-in span:last-child{text-transform:uppercase;font-size:22px}
+#reel .r-pill{background:var(--raise-2);font-weight:800;text-transform:uppercase;font-size:30px}
+#reel .r-pill:nth-child(2){background:var(--accent);color:var(--on-accent);text-shadow:none}
+#reel .fr-card{border-radius:0;font-weight:700;text-transform:uppercase;font-size:18px}
+#reel .caret{width:.6em}
+</style>
+<!-- @end -->

@@ -22,10 +22,19 @@ anyone.
 | Screenshots show a real device or person | Live discovery features pick up real things on the network. | Never ship raw screenshots of live sessions. Rebuild the UI with invented data. |
 | Frames render but the video looks different from the preview | Animations created after `startReel` (class toggles) weren't seeked. | The renderer seeks every animation each frame and times late-born ones from their birth frame: keep that logic, and create nothing on `requestAnimationFrame` alone. |
 | Fonts swap mid-video | Rendering started before web fonts loaded. | `reelReady` waits on `document.fonts.load(...)` for every weight used, then `document.fonts.ready`. |
+| Typed text, counters and timers run ahead of the CSS in the video (~0.5 s by 25 s) | The fake clock was advanced in fractional-millisecond steps, which Playwright rounds up. | Fixed in `tools/render.js` (whole-millisecond steps from absolute times). Re-render reels made with an older copy. |
+| A headline comes out much smaller than its neighbours | The engine shrinks any line wider than its zone (the safety net), and the copy was too long. | Cut words until each line is 16 characters or fewer; don't rely on the shrink. |
+| Every reel ends up looking like the last one | Building from habit: the same opening, the same device frame, the same wipe, the same type scale. | Write the direction first and pass `fingerprint.py check`; after stills, run `fingerprint.py look` and rework the scenes it matches. |
+| `page canvas is WxH but the render size is ...` | `SIZE` in the page and `width`/`height` in `reel.json` differ. | Set both to the same canvas. |
+| A layout built for 1080x1920 breaks at 4:5 or 16:9 | Positions hard-coded for one canvas. | Position from `R.W` / `R.H` or percentages of `#reel`; never use `vw`/`vh` (the preview scales the reel). |
+| `sfx cue 'x' is not in the page's CUES` | A sound cue names a cue that was renamed, or the frames were rendered before the cue existed. | Fix the name in `reel.json`, or re-render stills/frames so `cues.json` is current. |
+| A riser or swell lands late | `at` was set to the moment itself. | Swells end on the moment: `at` = cue minus the sound's length (see `kit.json`). |
+| Sound effects swamp the music or feel cheap | Too many events, all at the same level. | Sound the story only; keep SFX 6-14 dB under the music except the one hit; one SFX palette per reel. |
 
 ## Self-check routine
 
 1. Render stills at the start, middle and end of every scene, plus just before each reveal.
 2. Scan for colour that shouldn't be there (a pixel scan for the accent colour in a region is quick).
 3. Open the preview in a browser, read the console for errors.
-4. After muxing, decode two frames from the MP4 and check duration and loudness in the mux summary.
+4. Run `fingerprint.py look` on the stills.
+5. After muxing, decode two frames from the MP4 and check duration, loudness and the SFX count in the mux summary.

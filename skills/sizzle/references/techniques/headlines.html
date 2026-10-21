@@ -1,0 +1,348 @@
+<!--
+  Headlines: how every headline (.hl, placed by the structure with data-in / data-out) enters and leaves.
+  .hl sets --d (in) and --o (out). Each line .hl>span has --li (index); .hl has --ln (line count).
+  A line enters at calc(var(--d) + var(--li) * .12s) and must be fully gone by calc(var(--o) + .5s).
+  Before --d nothing may show (fill both, hidden first keyframe). Prefix keyframes with hl<Id>.
+  Only one headline block is in a reel, so these rules may target .hl directly.
+  Several .hl share one zone and swap in turn (the next one usually starts ~.3 s after the last one's out),
+  so exits finish by ~--o + .3 s and entries start invisible.
+  Never set font-size on .hl: the engine shrinks it while measuring when a line is too wide.
+
+  Lines may hold a nested <span class="acc">. Blocks that animate words or letters split every text node
+  inside the line (not el.textContent, which would drop the .acc colour) into .hl-w / .hl-c spans with
+  --i (index in the line) and --g (index in the whole headline); the line gets --n, the .hl gets --gn.
+-->
+
+<!-- @block line-mask -->
+<style>
+.hl>span{overflow:hidden;padding:0 .05em .1em}
+.hl>span>i{display:inline-block;font-style:inherit;
+  animation:hlMaskIn 1s var(--ease-out) calc(var(--d) + var(--li) * .12s) both, hlMaskOut .45s var(--ease-in) calc(var(--o) + var(--li) * .04s) forwards}
+@keyframes hlMaskIn{from{transform:translateY(112%)}to{transform:none}}
+@keyframes hlMaskOut{from{transform:none;opacity:1}to{transform:translateY(-135%);opacity:0}}
+</style>
+<script>
+/* wrap each line's content in an <i> so the line can be the mask */
+document.querySelectorAll('.hl>span').forEach(function(s){
+  var i = document.createElement('i'); while (s.firstChild) i.appendChild(s.firstChild); s.appendChild(i);
+});
+</script>
+<!-- @end -->
+
+<!-- @block word-pop -->
+<style>
+.hl .hl-w{display:inline-block;transform-origin:50% 85%;
+  animation:hlWordPopIn .6s var(--ease-pop) calc(var(--d) + var(--li) * .12s + var(--g) * .08s) both,
+            hlWordPopOut .22s var(--ease-in) calc(var(--o) + var(--g) * min(.02s, .08s / var(--gn))) forwards}
+@keyframes hlWordPopIn{0%{opacity:0;transform:translateY(.3em) scale(.25)}35%{opacity:1}100%{opacity:1;transform:none}}
+@keyframes hlWordPopOut{from{opacity:1;transform:none}to{opacity:0;transform:scale(.55)}}
+</style>
+<script>
+(function(){
+  /* split every text node of each line into words (keeps nested .acc spans and their colour) */
+  document.querySelectorAll('.hl').forEach(function(h){
+    var g = 0;
+    Array.prototype.forEach.call(h.children, function(line){
+      if (line.tagName !== 'SPAN') return;
+      var walk = document.createTreeWalker(line, NodeFilter.SHOW_TEXT), nodes = [], i = 0;
+      while (walk.nextNode()) nodes.push(walk.currentNode);
+      nodes.forEach(function(t){
+        var frag = document.createDocumentFragment();
+        t.data.split(/(\s+)/).forEach(function(part){
+          if (!part) return;
+          if (/^\s+$/.test(part)){ frag.appendChild(document.createTextNode(part)); return }
+          var s = document.createElement('span'); s.className = 'hl-w'; s.textContent = part;
+          s.style.setProperty('--i', i++); s.style.setProperty('--g', g++); frag.appendChild(s);
+        });
+        t.parentNode.replaceChild(frag, t);
+      });
+      line.style.setProperty('--n', i);
+    });
+    h.style.setProperty('--gn', g);
+  });
+})();
+</script>
+<!-- @end -->
+
+<!-- @block char-cascade -->
+<style>
+.hl .hl-c{display:inline-block;
+  animation:hlCascIn .5s var(--ease-out) calc(var(--d) + var(--li) * .12s + var(--i) * .03s) both,
+            hlCascOut .22s var(--ease-in) calc(var(--o) + var(--li) * .02s + var(--i) * min(.008s, .06s / var(--n))) forwards}
+@keyframes hlCascIn{0%{opacity:0;transform:translateY(-.75em) rotate(-14deg)}35%{opacity:1}100%{opacity:1;transform:none}}
+@keyframes hlCascOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(.45em) rotate(10deg)}}
+</style>
+<script>
+(function(){
+  /* split every text node of each line into letters (keeps nested .acc spans and their colour) */
+  document.querySelectorAll('.hl').forEach(function(h){
+    var g = 0;
+    Array.prototype.forEach.call(h.children, function(line){
+      if (line.tagName !== 'SPAN') return;
+      var walk = document.createTreeWalker(line, NodeFilter.SHOW_TEXT), nodes = [], i = 0;
+      while (walk.nextNode()) nodes.push(walk.currentNode);
+      nodes.forEach(function(t){
+        var frag = document.createDocumentFragment();
+        Array.from(t.data).forEach(function(ch){
+          if (/\s/.test(ch)){ frag.appendChild(document.createTextNode(ch)); return }
+          var s = document.createElement('span'); s.className = 'hl-c'; s.textContent = ch;
+          s.style.setProperty('--i', i++); s.style.setProperty('--g', g++); frag.appendChild(s);
+        });
+        t.parentNode.replaceChild(frag, t);
+      });
+      line.style.setProperty('--n', Math.max(i, 1));
+    });
+    h.style.setProperty('--gn', g);
+  });
+})();
+</script>
+<!-- @end -->
+
+<!-- @block scramble -->
+<style>
+/* each letter keeps its real glyph for layout (made transparent) while a random glyph is drawn on top */
+.hl>span{animation:hlScrIn .12s linear calc(var(--d) + var(--li) * .12s) both, hlScrOut .26s var(--ease-in) calc(var(--o) + var(--li) * .03s) forwards}
+.hl .hl-c{position:relative}
+.hl .hl-c[data-g]{-webkit-text-fill-color:transparent}
+.hl .hl-c[data-g]::after{content:attr(data-g);position:absolute;left:50%;top:0;transform:translateX(-50%);color:var(--accent);
+  -webkit-text-fill-color:currentColor;font-family:var(--font-mono);font-weight:700;opacity:.85}
+.hl .acc .hl-c[data-g]::after,.hl .acc.hl-c[data-g]::after{color:var(--ink-2)}
+@keyframes hlScrIn{from{opacity:0}to{opacity:1}}
+@keyframes hlScrOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-.12em)}}
+</style>
+<script>
+(function(){
+  var GLYPHS = '#%&*+=/<>?!$@0123456789ABCDEFHKXZ', TICK = 1 / 20;
+  function rnd(n){ var x = Math.sin(n * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x) }
+  function glyph(seed){ return GLYPHS.charAt(Math.floor(rnd(seed) * GLYPHS.length)) }
+  document.querySelectorAll('.hl').forEach(function(h, hi){
+    var d = R.at(h.dataset.in), o = R.at(h.dataset.out || 'end+1');
+    Array.prototype.forEach.call(h.children, function(line, li){
+      if (line.tagName !== 'SPAN') return;
+      /* split every text node into letters (keeps nested .acc spans and their colour) */
+      var walk = document.createTreeWalker(line, NodeFilter.SHOW_TEXT), nodes = [], chars = [];
+      while (walk.nextNode()) nodes.push(walk.currentNode);
+      nodes.forEach(function(t){
+        var frag = document.createDocumentFragment();
+        Array.from(t.data).forEach(function(ch){
+          if (/\s/.test(ch)){ frag.appendChild(document.createTextNode(ch)); return }
+          var s = document.createElement('span'); s.className = 'hl-c'; s.textContent = ch;
+          s.style.setProperty('--i', chars.length); frag.appendChild(s); chars.push(s);
+        });
+        t.parentNode.replaceChild(frag, t);
+      });
+      var n = chars.length, base = hi * 997 + li * 131;
+      if (!n) return;
+      /* letters resolve left to right; until then a new random glyph every tick */
+      var t0 = d + li * .12, step = Math.min(.045, .75 / n), settle = t0 + .2;
+      function at(t, k){ return settle + k * step <= t + 1e-6 }
+      chars.forEach(function(c, k){ c.setAttribute('data-g', glyph(base + k)) });
+      var last = settle + (n - 1) * step, beat = 0;
+      for (var t = t0; t <= last + TICK; t += TICK) (function(t, b){
+        R.beat(t, function(){
+          chars.forEach(function(c, k){
+            if (at(t, k)) c.removeAttribute('data-g'); else c.setAttribute('data-g', glyph(base + k * 17 + b * 7));
+          });
+        });
+      })(t, beat++);
+      R.beat(last + TICK * 1.5, function(){ chars.forEach(function(c){ c.removeAttribute('data-g') }) });
+      /* exit: the line breaks back into glyphs from the right while it fades */
+      for (var e = 0; e < 5; e++) (function(e){
+        R.beat(o + e * .05, function(){
+          var from = Math.floor(n * (1 - (e + 1) / 3));
+          chars.forEach(function(c, k){ if (k >= from) c.setAttribute('data-g', glyph(base + k * 29 + e * 11)) });
+        });
+      })(e);
+    });
+  });
+})();
+</script>
+<!-- @end -->
+
+<!-- @block typewriter -->
+<style>
+/* letters appear one by one in their final place (so centred lines never jump); a caret rides the newest one */
+.hl .hl-c{position:relative;visibility:hidden;
+  animation:hlTypeOn .01s linear calc(var(--d) + var(--li) * .12s + var(--g) * var(--step)) forwards,
+            hlTypeOff .01s linear calc(var(--o) + (var(--gn) - 1 - var(--g)) * var(--del)) forwards}
+.hl .hl-c::after{content:"";position:absolute;right:-.07em;top:.1em;bottom:.04em;width:.07em;background:currentColor;opacity:0;
+  animation:hlTypeCaret var(--step) linear calc(var(--d) + var(--li) * .12s + var(--g) * var(--step))}
+.hl .hl-c.hl-c-last::after{animation:blink 1s linear calc(var(--d) + var(--li) * .12s + var(--g) * var(--step)) infinite}
+@keyframes hlTypeOn{from,to{visibility:visible}}
+@keyframes hlTypeOff{from,to{visibility:hidden}}
+@keyframes hlTypeCaret{from,to{opacity:1}}
+</style>
+<script>
+(function(){
+  /* split every text node of each line into letters (keeps nested .acc spans and their colour) */
+  document.querySelectorAll('.hl').forEach(function(h){
+    var g = 0, lastC = null;
+    Array.prototype.forEach.call(h.children, function(line){
+      if (line.tagName !== 'SPAN') return;
+      var walk = document.createTreeWalker(line, NodeFilter.SHOW_TEXT), nodes = [], i = 0;
+      while (walk.nextNode()) nodes.push(walk.currentNode);
+      nodes.forEach(function(t){
+        var frag = document.createDocumentFragment();
+        Array.from(t.data).forEach(function(ch){
+          if (/\s/.test(ch)){ frag.appendChild(document.createTextNode(ch)); return }
+          var s = document.createElement('span'); s.className = 'hl-c'; s.textContent = ch;
+          s.style.setProperty('--i', i++); s.style.setProperty('--g', g++); frag.appendChild(s); lastC = s;
+        });
+        t.parentNode.replaceChild(frag, t);
+      });
+    });
+    if (lastC) lastC.classList.add('hl-c-last');
+    /* typing takes at most ~1.1 s and deleting at most ~.3 s, however long the headline is */
+    h.style.setProperty('--gn', g);
+    h.style.setProperty('--step', Math.min(.05, 1.1 / Math.max(g, 1)).toFixed(4) + 's');
+    h.style.setProperty('--del', Math.min(.014, .3 / Math.max(g, 1)).toFixed(4) + 's');
+  });
+})();
+</script>
+<!-- @end -->
+
+<!-- @block outline-fill -->
+<style>
+/* the line arrives as an outline, then a filled copy on top is wiped in from the left */
+.hl-of{display:inline-block;position:relative;font-style:inherit;
+  animation:hlOfIn .5s var(--ease-out) calc(var(--d) + var(--li) * .12s) both, hlOfOut .24s var(--ease-in) calc(var(--o) + var(--li) * .03s) forwards}
+.hl-of,.hl-of *{-webkit-text-fill-color:transparent;-webkit-text-stroke:.026em currentColor}
+.hl-of-fill{position:absolute;left:0;top:0;right:0;bottom:0;font-style:inherit;white-space:nowrap;
+  clip-path:inset(-30% 100% -30% -6%);animation:hlOfFill .8s cubic-bezier(.65,0,.35,1) calc(var(--d) + var(--li) * .12s + .55s) both}
+.hl-of-fill,.hl-of-fill *{-webkit-text-fill-color:currentColor;-webkit-text-stroke:0}
+@keyframes hlOfIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+@keyframes hlOfFill{from{clip-path:inset(-30% 100% -30% -6%)}to{clip-path:inset(-30% -6% -30% -6%)}}
+@keyframes hlOfOut{from{clip-path:inset(-30% -6% -30% -6%)}to{clip-path:inset(-30% -6% -30% 100%)}}
+</style>
+<script>
+document.querySelectorAll('.hl>span').forEach(function(s){
+  var i = document.createElement('i'); i.className = 'hl-of';
+  while (s.firstChild) i.appendChild(s.firstChild);
+  var f = document.createElement('i'); f.className = 'hl-of-fill'; f.setAttribute('aria-hidden', 'true'); f.innerHTML = i.innerHTML;
+  i.appendChild(f); s.appendChild(i);
+});
+</script>
+<!-- @end -->
+
+<!-- @block echo-stack -->
+<style>
+/* the line rises in; two outlined echoes trail it and settle just below as a fading stack */
+.hl>span{position:relative;z-index:0}
+.hl-echo-m{display:inline-block;font-style:inherit;
+  animation:hlEchoIn .7s var(--ease-out) calc(var(--d) + var(--li) * .12s) both, hlEchoOut .24s var(--ease-in) calc(var(--o) + var(--li) * .02s) forwards}
+.hl-echo-e{position:absolute;left:0;top:0;right:0;bottom:0;z-index:-1;font-style:inherit;white-space:nowrap;
+  animation:hlEchoTrail .9s var(--ease-out) calc(var(--d) + var(--li) * .12s + var(--e) * .08s) both,
+            hlEchoTrailOut .2s var(--ease-in) calc(var(--o) + var(--li) * .02s + var(--e) * .02s) forwards}
+.hl-echo-e,.hl-echo-e *{-webkit-text-fill-color:transparent;-webkit-text-stroke:.022em currentColor}
+@keyframes hlEchoIn{from{opacity:0;transform:translateY(.9em)}to{opacity:1;transform:none}}
+@keyframes hlEchoOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-.5em)}}
+@keyframes hlEchoTrail{from{opacity:0;transform:translateY(1.1em)}35%{opacity:var(--eo)}to{opacity:var(--eo);transform:translateY(calc(var(--e) * .1em))}}
+@keyframes hlEchoTrailOut{from{opacity:var(--eo);transform:translateY(calc(var(--e) * .1em))}to{opacity:0;transform:translateY(-.4em)}}
+</style>
+<script>
+document.querySelectorAll('.hl>span').forEach(function(s){
+  var m = document.createElement('i'); m.className = 'hl-echo-m';
+  while (s.firstChild) m.appendChild(s.firstChild);
+  [[1, .5], [2, .22]].forEach(function(p){
+    var e = document.createElement('i'); e.className = 'hl-echo-e'; e.setAttribute('aria-hidden', 'true'); e.innerHTML = m.innerHTML;
+    e.style.setProperty('--e', p[0]); e.style.setProperty('--eo', p[1]); s.appendChild(e);
+  });
+  s.appendChild(m);
+});
+</script>
+<!-- @end -->
+
+<!-- @block highlight-swipe -->
+<style>
+/* lines fade up; on the payoff line (the one holding .acc, else the last) an accent bar swipes in behind it.
+   The bar carries its own copy of the text in --on-accent, so the payoff stays readable on the bar. */
+.hl-hs-t{display:inline-block;position:relative;font-style:inherit;
+  animation:hlHsIn .7s var(--ease-out) calc(var(--d) + var(--li) * .12s) both, hlHsOut .26s var(--ease-in) calc(var(--o) + var(--li) * .03s) forwards}
+.hl-hs-top{position:absolute;left:0;top:0;right:0;bottom:0;font-style:inherit;white-space:nowrap;color:var(--on-accent);
+  clip-path:inset(-.03em calc(100% + .14em) -.07em -.14em);
+  animation:hlHsSwipe .6s cubic-bezier(.7,0,.2,1) calc(var(--d) + var(--li) * .12s + .5s) both}
+.hl-hs-top *{color:inherit}
+.hl-hs-top::before{content:"";position:absolute;left:-.14em;right:-.14em;top:-.03em;bottom:-.07em;z-index:-1;background:var(--accent);
+  border-radius:calc(var(--radius) * .5)}
+@keyframes hlHsIn{from{opacity:0;transform:translateY(.4em)}to{opacity:1;transform:none}}
+@keyframes hlHsOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-.3em)}}
+@keyframes hlHsSwipe{from{clip-path:inset(-.03em calc(100% + .14em) -.07em -.14em)}to{clip-path:inset(-.03em -.14em -.07em -.14em)}}
+</style>
+<script>
+document.querySelectorAll('.hl').forEach(function(h){
+  var lines = Array.prototype.filter.call(h.children, function(c){ return c.tagName === 'SPAN' }), pay = null;
+  lines.forEach(function(s){
+    var t = document.createElement('i'); t.className = 'hl-hs-t';
+    while (s.firstChild) t.appendChild(s.firstChild); s.appendChild(t);
+    if (s.classList.contains('acc') || s.querySelector('.acc')) pay = t;
+  });
+  pay = pay || (lines.length && lines[lines.length - 1].firstChild);
+  if (!pay) return;
+  var top = document.createElement('i'); top.className = 'hl-hs-top'; top.setAttribute('aria-hidden', 'true'); top.innerHTML = pay.innerHTML;
+  pay.appendChild(top);
+});
+</script>
+<!-- @end -->
+
+<!-- @block flip-3d -->
+<style>
+/* each line is a panel hinged at its top edge that flips down into place, then flips away */
+.hl>span{perspective:6em;perspective-origin:50% 0}
+.hl>span>i{display:inline-block;font-style:inherit;transform-origin:50% 0;backface-visibility:hidden;
+  animation:hlFlipIn .85s linear calc(var(--d) + var(--li) * .12s) both, hlFlipOut .26s var(--ease-in) calc(var(--o) + var(--li) * .03s) forwards}
+@keyframes hlFlipIn{
+  0%{opacity:0;transform:rotateX(100deg);animation-timing-function:cubic-bezier(.3,0,.6,1)}
+  12%{opacity:1}
+  55%{opacity:1;transform:rotateX(-14deg);animation-timing-function:cubic-bezier(.4,0,.4,1)}
+  78%{transform:rotateX(5deg)}
+  100%{opacity:1;transform:none}}
+@keyframes hlFlipOut{from{opacity:1;transform:none}to{opacity:0;transform:rotateX(-90deg)}}
+</style>
+<script>
+document.querySelectorAll('.hl>span').forEach(function(s){
+  var i = document.createElement('i'); while (s.firstChild) i.appendChild(s.firstChild); s.appendChild(i);
+});
+</script>
+<!-- @end -->
+
+<!-- @block blur-focus -->
+<style>
+/* lines arrive out of a soft blur and settle sharp; they leave by blurring out */
+.hl>span>i{display:inline-block;font-style:inherit;
+  animation:hlBlurIn 1.15s var(--ease-out) calc(var(--d) + var(--li) * .12s) both, hlBlurOut .28s var(--ease-in) calc(var(--o) + var(--li) * .02s) forwards}
+@keyframes hlBlurIn{from{opacity:0;filter:blur(.3em);transform:scale(1.08)}to{opacity:1;filter:blur(0);transform:none}}
+@keyframes hlBlurOut{from{opacity:1;filter:blur(0);transform:none}to{opacity:0;filter:blur(.25em);transform:scale(.97)}}
+</style>
+<script>
+document.querySelectorAll('.hl>span').forEach(function(s){
+  var i = document.createElement('i'); while (s.firstChild) i.appendChild(s.firstChild); s.appendChild(i);
+});
+</script>
+<!-- @end -->
+
+<!-- @block stamp-slam -->
+<style>
+/* lines fall from oversize, hit, overshoot a hair, and the line shakes on impact */
+.hl>span{animation:hlStampShake .34s linear calc(var(--d) + var(--li) * .12s + .25s) both}
+.hl>span>i{display:inline-block;font-style:inherit;
+  animation:hlStampIn .5s linear calc(var(--d) + var(--li) * .12s) both, hlStampOut .24s var(--ease-in) calc(var(--o) + var(--li) * .03s) forwards}
+@keyframes hlStampIn{
+  0%{opacity:0;transform:scale(2.6);animation-timing-function:cubic-bezier(.55,0,.9,.45)}
+  20%{opacity:1}
+  50%{opacity:1;transform:scale(.93);animation-timing-function:cubic-bezier(.3,0,.5,1)}
+  72%{transform:scale(1.03)}
+  100%{opacity:1;transform:none}}
+@keyframes hlStampShake{
+  0%,100%{transform:none}
+  15%{transform:translate(-.05em,.035em) rotate(-.7deg)}
+  35%{transform:translate(.045em,-.03em) rotate(.5deg)}
+  55%{transform:translate(-.025em,.02em)}
+  75%{transform:translate(.012em,-.01em)}}
+@keyframes hlStampOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(.25em) scale(.85)}}
+</style>
+<script>
+document.querySelectorAll('.hl>span').forEach(function(s){
+  var i = document.createElement('i'); while (s.firstChild) i.appendChild(s.firstChild); s.appendChild(i);
+});
+</script>
+<!-- @end -->

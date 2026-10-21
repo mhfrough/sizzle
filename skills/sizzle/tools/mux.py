@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Mux a JPEG frame sequence + voiceover + background music into a vertical reel MP4.
+"""Mux a JPEG frame sequence + voiceover + background music + sound effects into a reel MP4.
 
 Everything runs through PyAV (no ffmpeg CLI needed):
   * video: libx264 (High profile, yuv420p, BT.709 tags, CRF, preset slow), +faststart
@@ -12,6 +12,10 @@ Audio pipeline
           --fade-out s fade-out, base gain --bgm-gain-db, sidechain-ducked by --duck-db
           whenever the VO envelope (50 ms RMS, 80 ms attack / 350 ms release) is over a
           speech threshold.
+  SFX  -> a JSON list of events [{"file", "t", "gain_db"=-6, "pan"=0, "from"=0, "len"=null, "fade"=0.01}]:
+          each file is placed at t seconds (negative t trims its head), panned equal-power (-1 left .. 1 right),
+          optionally cut to [from, from+len] with a short fade-out. The music dips by --sfx-duck-db under
+          the SFX bus (same envelope follower as the VO duck), so hits read without a loud mix.
   Mix  -> normalised to ~-14 LUFS integrated (ITU-R BS.1770-4 K-weighting with the
           -70 LUFS absolute / -10 LU relative gates) with a look-ahead true-peak limiter
           (4x oversampled peak detection) keeping the result <= -1 dBTP.
@@ -19,7 +23,7 @@ Audio pipeline
 Usage
   python -I mux.py --frames DIR --fps 30 --out out.mp4 [--vo vo.mp3] [--vo-offset 0.0] [--vo-mute 6.2-7.4,21.6-]
                    [--bgm bgm.mp3] [--bgm-offset 0.0] [--bgm-gain-db -16] [--duck-db -9]
-                   [--fade-out 1.5] [--crf 16]
+                   [--fade-out 1.5] [--sfx events.json] [--sfx-duck-db -4] [--crf 16]
 """
 import argparse
 import glob
@@ -238,6 +242,37 @@ def build_bgm(path, offset_s, n, fade_in_s, fade_out_s, xfade_s=0.5):
     return out, looped
 
 
+def build_sfx(events, n):
+    """Place every SFX event on a stereo bus. Returns (bus, placed_count)."""
+    bus = np.zeros((n, 2), np.float32)
+    cache, placed = {}, 0
+    for ev in events:
+        path = ev["file"]
+        if path not in cache:
+            cache[path] = decode_audio(path, stereo=True)
+        x = cache[path]
+        a = int(round(float(ev.get("from", 0)) * SR))
+        x = x[a:]
+        if ev.get("len"):
+            x = x[:int(round(float(ev["len"]) * SR))].copy()
+            f = min(int(float(ev.get("fade", 0.01)) * SR), len(x))
+            if f > 0:
+                x[-f:] *= np.linspace(1.0, 0.0, f, dtype=np.float32)[:, None]
+        x = x * db2lin(float(ev.get("gain_db", -6)))
+        pan = max(-1.0, min(1.0, float(ev.get("pan", 0))))
+        th = (pan + 1) * np.pi / 4                   # equal-power pan
+        x = x * np.array([np.cos(th), np.sin(th)], np.float32) * np.sqrt(2)
+        start = int(round(float(ev["t"]) * SR))
+        if start < 0:
+            x, start = x[-start:], 0
+        if start >= n or len(x) == 0:
+            continue
+        m = min(len(x), n - start)
+        bus[start:start + m] += x[:m]
+        placed += 1
+    return bus, placed
+
+
 def duck_gain(vo, duck_db, n):
     """Per-sample linear gain for the BGM driven by the VO envelope."""
     if duck_db == 0 or not np.any(vo):
@@ -300,6 +335,8 @@ def main():
     ap.add_argument("--bgm-gain-db", type=float, default=-16.0)
     ap.add_argument("--duck-db", type=float, default=-9.0)
     ap.add_argument("--fade-out", type=float, default=1.5)
+    ap.add_argument("--sfx", help="JSON file: list of {file, t, gain_db, pan, from, len, fade}")
+    ap.add_argument("--sfx-duck-db", type=float, default=-4.0, help="music dip under the SFX bus (0 = off)")
     ap.add_argument("--crf", type=float, default=16)
     args = ap.parse_args()
 
@@ -323,8 +360,15 @@ def main():
     vo = build_vo(args.vo, args.vo_offset, n, parse_mutes(args.vo_mute), args.mute_fade)
     bgm, looped = build_bgm(args.bgm, args.bgm_offset, n, 0.4, args.fade_out)
     bgm *= db2lin(args.bgm_gain_db)
+    sfx, nsfx = np.zeros((n, 2), np.float32), 0
+    if args.sfx:
+        import json
+        with open(args.sfx, encoding="utf-8") as f:
+            sfx, nsfx = build_sfx(json.load(f), n)
     gain, duck_frac = duck_gain(vo, args.duck_db, n) if args.bgm else (np.ones(n, np.float32), 0.0)
-    mix = vo + bgm * gain[:, None]
+    if args.bgm and nsfx:
+        gain = gain * duck_gain(sfx, args.sfx_duck_db, n)[0]
+    mix = vo + bgm * gain[:, None] + sfx
     pre_lufs = integrated_lufs(mix)
     mix, lufs, tp, norm_gain = normalize(mix)
     # 5 ms de-click ramps on the whole mix
@@ -402,7 +446,8 @@ def main():
     print(f"duration    : {duration:.3f} s")
     print(f"audio       : AAC 48 kHz stereo 192k | VO={'yes' if args.vo else 'no'}"
           f" BGM={'yes' + (' (looped)' if looped else '') if args.bgm else 'no'}"
-          + (f" ducked {duck_frac * 100:.0f}% of time" if args.bgm and args.vo else ""))
+          + (f" ducked {duck_frac * 100:.0f}% of time" if args.bgm and args.vo else "")
+          + f" SFX={nsfx} events")
     if args.vo_mute:
         print(f"VO muted    : {args.vo_mute} (VO-file seconds; +{args.vo_offset:g} s in the video)")
     if np.isfinite(lufs):

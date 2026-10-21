@@ -1,7 +1,9 @@
 # Case studies
 
-Two finished reels made with this skill. Use them to calibrate pace, density and how far to take
-"use the real product".
+Two finished reels made with an earlier version of this skill. Use them to calibrate pace, density and
+how far to take "use the real product". Don't copy their shape: both are problem-solution reels at 25 s
+with a hook, a reveal at ~3 s and a typed URL, which is exactly the sameness the concept and direction
+steps exist to avoid.
 
 ## Case 1: a file-sharing web app
 

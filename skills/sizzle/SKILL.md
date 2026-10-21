@@ -1,17 +1,25 @@
 ---
 name: sizzle
-description: Make short vertical promo reels (9:16, 20-25 s, Instagram Reels / TikTok / YouTube Shorts) for a software product, as a scripted HTML animation that is approved first and then rendered frame-exact to a 4K MP4 with licensed, beat-synced music. Use when someone asks for a promo video, reel, teaser, sizzle reel, launch video or product demo clip, especially for a web app whose code is available.
+description: Make short promo reels and videos (Instagram Reels, TikTok, YouTube Shorts, feeds, landing pages; 9:16, 4:5, 1:1 or 16:9, about 6-60 s) for a product, written from its brief or concept, built from scratch as a scripted HTML animation, approved first, then rendered frame-exact to a 4K MP4 with royalty-free music and sound effects. No templates: every reel gets its own concept, script, look, motion and sound, checked against every earlier reel so no two look or sound alike. Use when someone asks for a promo video, reel, teaser, sizzle reel, launch video, ad or product demo clip, especially for a web app whose code is available.
 license: MIT
 metadata:
-  version: "1.0"
-  outputs: "promo/<name>-reel.html, promo/<name>-reel-script.md, promo/reel.json, videos/<name>-reel.mp4 + .webp poster"
+  version: "3.0"
+  outputs: "promo/<name>-reel-script.md (brief, concepts, script), promo/<name>-reel.html, promo/reel.json (render config, direction, sound cues), promo/sfx/, videos/<name>-reel.mp4 + .webp poster"
 ---
 
 # Sizzle
 
-Sizzle turns a product into a 20-25 second vertical promo reel. The reel is built as an HTML page with a
-single timeline, shown to the person as a live preview and key frames, and only after they approve it is it
-rendered frame by frame to a 2160x3840 MP4 with music whose drop lands on the reel's big moment.
+Sizzle turns a product and its brief into a short promo reel. The reel is an HTML page with one
+timeline, written for this reel alone, shown to the person as a live preview and key frames. Only after
+they approve it is it rendered frame by frame to a 4K MP4, with music and sound effects placed on the
+reel's own moments.
+
+**No template, no two alike.** There is no starter look, no fixed story shape and no fixed length.
+Each reel starts from a brief, gets a concept and a script of its own, then a written *direction* (format,
+palette, type, motion, camera, composition, opening, ending, signature move, music genre, SFX palette)
+that `tools/fingerprint.py` checks against every reel made before, across all projects. If it is too close
+to an earlier reel, change the direction until it passes. The page is then built from scratch on a bare
+engine (`templates/reel-engine.html`) that only handles timing and rendering.
 
 The method works for any agent that can read files, write files and run shell commands. Where this file
 says "ask", use whatever way you have to ask the person (a question tool, or plain chat) and wait.
@@ -22,103 +30,142 @@ the product's repo. Run the commands from the product's repo root.
 
 ## What you get
 
-- `promo/<name>-reel.html`: the reel. 1080x1920 CSS, all timing in one `CUES` object, previewable in any browser.
-- `promo/<name>-reel-script.md`: copy, shot list with times, claims check, music credit.
-- `promo/reel.json`: render config. `videos/<name>-reel.mp4` (H.264 High, AAC, -14 LUFS) and a `.webp` poster.
+- `promo/<name>-reel-script.md`: brief, the concepts offered, the approved script with a sound column,
+  claims check, direction, music and SFX credits.
+- `promo/<name>-reel.html`: the reel, previewable in any browser; all timing in one `CUES` object.
+- `promo/reel.json`: render config, the direction, the sound cues. `promo/sfx/`: the sound effects used.
+- `videos/<name>-reel.mp4` (H.264 High, AAC, -14 LUFS) and a `.webp` poster.
 
 ## The workflow (with approval gates)
 
 Do these in order. Never skip a gate: each one exists because rework after rendering is expensive.
 
-### 1. Understand the product (read, don't guess)
+### 1. Brief: understand the product and what this reel is for
 
 - Read the README, the main HTML, the stylesheet and the app code. Note: the one-line promise, the 3-5 real
   features, what it does NOT do, and the claims you are allowed to make.
-- Collect the brand: colour tokens (light and dark), fonts and their files, the icon set, logo/favicon,
-  the share image (`og-image`), the tagline exactly as written, the live URL.
-- Look for code you can run inside the reel: the product's own stylesheet classes, its renderer
-  (canvas/SVG/three.js), its icon map. Real code beats screenshots: it stays sharp at 4K, animates, and
-  can't drift from the real look.
-- If you capture screenshots for reference, check them for private data first (real device names,
-  emails, file names, tokens) and never put those in the reel. Use invented, plausible demo data.
-- If the person points at reference reels, study their structure, pace and type, not their content.
+- Collect the brand: colour tokens, fonts and their files, icons, logo, the tagline exactly as written,
+  the live URL. Look for code you can run inside the reel (its stylesheet classes, its renderer, its icon
+  map): real code beats screenshots, stays sharp at 4K and can't drift from the real look.
+- Take the person's brief, concept, script idea or references if they gave any; they come first. If they
+  gave none, ask briefly (one question, with your guesses as defaults) for what matters most: who it is
+  for, where it will run (sets the format), the one thing a viewer should do after, the feeling. Don't
+  block on it: when they don't know, decide from the product and say what you decided.
+- Write the **Brief** section of `promo/<name>-reel-script.md` (from `templates/reel-script.md`):
+  audience, platform and format, length, the single message, the feeling, the call to action, must-show
+  features, claims allowed, things to avoid, brand assets.
+- Screenshots for reference: check them for private data first (real names, emails, devices, tokens) and
+  never put those in the reel. Use invented, plausible demo data.
 
-### 2. Script and storyboard
+### 2. Concepts: three different ideas
 
-Write `<name>-reel-script.md` from `templates/reel-script.md`. The proven arc for 20-25 s:
+- Run `python <skill>/tools/fingerprint.py fresh` to see what recent reels already used (concept, format,
+  tone, motion, opening, music ...).
+- Read `references/concepts.md`. Write **three concepts** for this brief that differ from each other *and*
+  from recent reels on concept type, structure and feeling. Each gets: a title, a one-line logline, the
+  opening image (first second), the shape of the middle, the ending, the signature move people will
+  remember, the format and length, and the sound idea (music genre or none, the SFX character).
+- Invent; don't fill in a pattern. A concept should only make sense for *this* product (its gesture, its
+  data, its users' day), never be a slot you could drop any app into.
+- Ask the person to pick one (or mix them). If they gave a concept in step 1, develop it and offer two
+  alternatives anyway.
 
-| Beat | Time | Job |
-|---|---|---|
-| Hook | 0-3 s | Name the pain in one line; show the old workarounds and strike them out. |
-| Reveal | 3-5 s | A full-screen brand moment: mark, name, the product's own tagline. |
-| Demo | 5-18 s | 2-4 beats, each "one headline + the real UI doing it". |
-| Proof | 18-21 s | The promise kept: privacy, speed, free, open source, whatever is true. |
-| CTA | 21-25 s | The mark, "Try X.", where to get it (URL types itself), hold ~2 s. |
+### 3. Script (gate 1: script approval)
 
-Rules: one idea per headline, 2 lines max, 16 characters per line or fewer at ~100px. Every claim must be
-true and traceable (fill the claims table). Read `references/craft.md` before writing copy.
+- Write the **Script** section from the chosen concept: one row per beat with its time, what is on screen,
+  the on-screen words, the voiceover line if any, and the **sound** (music section, SFX). The concept sets
+  how many beats there are, how long each lasts and the total length. There is no required hook, reveal,
+  demo or proof beat: use what the concept needs.
+- Copy rules (`references/craft.md`): every claim true and traceable (fill the claims check), short lines
+  people say out loud, readable time on screen (about 1 s per 3 words, never under 0.8 s).
+- Show the person the script (logline, beats table, words, sound) and **ask for approval**. Change it
+  until they approve. Nothing is built before this yes.
 
-### 3. Build the HTML
+### 4. Direction (the look, checked for freshness)
 
-Start from `templates/reel-template.html`. It already has the timeline, the renderer contract, the preview
-fit/replay controls and the motion vocabulary. Then:
+- Read `references/direction.md`. Write the reel's **direction** from the concept and the brand: format and
+  canvas size, palette roles, type pairing and scale, motion language and easing, camera, composition
+  rule, texture, how the UI appears, the opening and ending frames, the signature move, music genre and
+  BPM, SFX palette. Write it in words in the script file and as the `direction` object in `promo/reel.json`
+  (start from `templates/reel.json`; set `width` / `height` to the canvas).
+- Run `python <skill>/tools/fingerprint.py check promo/reel.json`. On **FAIL**, change the axes it names
+  (and anything else that drifts toward an earlier reel) and run it again until it passes. A WARN is a
+  prompt to push one more axis further. Don't lower the bar, and don't override the brand to pass: move
+  the treatment (type scale, composition, motion, camera, texture, palette roles) instead.
 
-- Swap in the brand tokens and fonts. Give each product its own look; if there is a sibling reel, make
-  this one visibly different (light vs dark, different motif).
-- Build the demo from the product's real parts. Link its stylesheet and use its class names inside device
-  frames, or load its renderer and drive it with scripted data (see `references/case-studies.md`).
-- Keep every time in `CUES`. Elements reference cues with `data-in="demo+.12"` / `data-out="proof"`, and
-  JS derives CSS variables from `CUES`. Text that changes inside the UI (typing, counters, states) goes in
-  `BEATS`.
-- Put anything that needs a position (taps, flight paths, beams, doodles) in `measure()`, which reads
-  layout unscaled and with animations off.
-- Respect the safe zones: keep text out of the top ~190 px and bottom ~380 px, and keep key action away
-  from the right edge below y≈1100 (platform buttons sit there).
-- Copy `templates/reel.json` to `promo/reel.json` and set `name`, `page`, `out`, `poster_t` and the port.
-  `root` is the folder served over HTTP, relative to the JSON file; the page's `../` links must resolve
-  inside it. Set `end` in `CUES` to the reel length (the renderer makes `end` x `fps` frames).
+### 5. Build the HTML from scratch
 
-### 4. Check it yourself before showing anyone
+- Copy `templates/reel-engine.html` to `promo/<name>-reel.html`. Set `SIZE` to the canvas and `CUES` to the
+  script's beats (name cues after them: `cold`, `fold1`, `drop`, `end` ...). Keep the parts marked ENGINE.
+- Write everything else for this reel: tokens from the direction, the scenes, the motion. Load the
+  product's fonts with `@font-face` (or the direction's display face; `templates/fonts/` has three OFL
+  faces). Link the product's stylesheet or load its renderer and drive it with scripted data
+  (`references/case-studies.md` shows two ways).
+- `references/techniques/` is a cookbook of worked techniques (transitions, text animation, hooks, frames,
+  endings, surfaces). Learn the mechanics there, then write this reel's own version. Never paste a
+  technique wholesale, and never repeat the last reel's signature move.
+- Timing: every time lives in `CUES`. Elements use `data-in="cue+.12"` / `data-out="cue"`, or
+  `var(--cue)` in CSS. Text that changes uses `R.beat` / `R.type`. Positions (taps, flight paths, beams)
+  go in `R.onMeasure` with `R.box(el)`.
+- Safe zones for the platform you target: on 9:16 keep text out of the top ~10% and bottom ~20%, and key
+  action away from the right edge in the lower half (platform buttons sit there). 4:5 and 1:1 feeds crop
+  less; 16:9 has none. Read `references/craft.md`.
+- In `promo/reel.json` check `name`, `page`, `width`, `height`, `out`, `poster_t` and the port. `root` is
+  the folder served over HTTP, relative to the JSON file; the page's `../` links must resolve inside it.
 
-- Serve the project root for the live preview (`python -m http.server <port>`, then open
-  `http://localhost:<port>/promo/<name>-reel.html`). `reel.py` starts its own server if nothing answers on
-  the port in `reel.json`.
-- Render key frames: `python <skill>/tools/reel.py stills promo/reel.json 1.5,4,7,10,13,16,19,23`, then
-  look at the contact sheet `promo/.reel-work/<reel.json name>/stills/sheet.jpg` and the single PNGs next
-  to it.
-- Look for: stray dots or lines before their cue, elements visible too early, overlapping headlines,
-  clipped or overflowing text, unreadable contrast, empty states that should be filled, console errors.
-- Fix, re-render the affected times, repeat. `references/pitfalls.md` lists every bug class we have hit.
+### 6. Check it yourself before showing anyone
 
-### 5. Gate: approval of the HTML
+- Render key frames: `python <skill>/tools/reel.py stills promo/reel.json <times>` (start, middle and end
+  of every beat), then look at the contact sheet `promo/.reel-work/<name>/stills/sheet.jpg` and the PNGs.
+  `reel.py` starts its own server if nothing answers on the port in `reel.json`.
+- Look for: elements visible too early, stray dots or lines, overlapping or clipped text, unreadable
+  contrast, empty states, console errors. `references/pitfalls.md` lists every bug class we have hit.
+- Run `python <skill>/tools/fingerprint.py look promo/reel.json`: it compares these stills with the stills of
+  earlier reels. On FAIL the reel *looks* like an earlier one even if its direction differs on paper: change
+  the palette roles, composition or scale of the scenes it matches, re-render, re-check.
 
-Show the person the live preview URL and the contact sheet (send the image if you can). Summarise the
-beats in a few lines and ask for approval or changes. If they ordered several reels, finish and get
-approval for one before starting the next.
+### 7. Gate 2: approval of the picture
 
-### 6. Music (after approval only)
+Show the person the live preview URL (`python -m http.server <port>`, then
+`http://localhost:<port>/promo/<name>-reel.html`) and the contact sheet. Say in a few lines how it follows
+the approved script and what makes its look its own. Ask for approval or changes. If they ordered several
+reels, finish and get approval for one before starting the next; each gets its own concept and direction.
 
-Follow `references/music.md`. In short: free-for-commercial-use licence, no Content ID registration, not
-AI-generated (unless the person is fine with that), mood that fits the brand. Shortlist 2-3 tracks with
-links, ask the person to pick and to approve the download (name the file, source and rough size). Then:
+### 8. Sound: music and sound effects (after picture approval)
+
+Follow `references/sound.md`. The music genre and SFX palette come from the direction, so they differ from
+recent reels too.
+
+- **Music**, one of: a sourced royalty-free track (shortlist 2-3 with links, licence, Content ID status;
+  ask the person to pick and to approve the download, naming the file, host and rough size), or a
+  generated bed when they prefer nothing downloaded or nothing fits:
+  `python <skill>/tools/synth.py bed promo/<name>-bed.wav --genre <genre> --length <end> --drop <cue> --outro <cue> --seed <n>`
+  (its downbeat lands exactly on the drop, so its offset is 0). For a sourced track, find the offset with
+  `python -I <skill>/tools/music_sync.py <track> --cue <big moment> --length <end>`.
+- **SFX**: make a kit in the direction's palette, `python <skill>/tools/synth.py kit promo/sfx --palette <palette> --seed <n>`,
+  or single sounds with `synth.py sfx <kind> ...`, or source them (licence rules in `references/sound.md`,
+  ask before downloading). Place each on a cue in `reel.json` `sfx`: `{"file": "promo/sfx/whoosh.wav",
+  "at": "fold1-.25", "gain_db": -9, "pan": -0.3}`. Sound only what matters: transitions, the big moment,
+  taps you want felt, typing, the ending. Silence and one well-placed hit beat a sound on every move.
+- Put music in `reel.json` (`music.file`, `music.offset`), and the credits in the script file.
+
+### 9. Render, verify, record
 
 ```sh
-python -I <skill>/tools/music_sync.py promo/<name>-bgm.mp3 --cue <reveal time> --length <reel length>
+python <skill>/tools/reel.py all promo/reel.json     # frames then MP4 (music + SFX) + poster
 ```
 
-Pick the offset that lands a hit on the reveal with a quieter build under the hook, and put it in
-`reel.json` (`music.file` and `music.offset`).
-
-### 7. Render and deliver
+After a sound change only, `python <skill>/tools/reel.py mux promo/reel.json` re-mixes the existing frames.
+Check the mux summary (duration = `end`, -14 LUFS, peak under -1 dBTP, the SFX count you expect), pull a
+couple of frames from the MP4 to confirm it decodes (PyAV: `av.open(path).decode(video=0)`), then
+**record the reel** so future reels stay away from it:
 
 ```sh
-python <skill>/tools/reel.py all promo/reel.json     # frames (2160x3840 JPEG) then MP4 + poster
+python <skill>/tools/fingerprint.py record promo/reel.json
 ```
 
-After a music change only, `python <skill>/tools/reel.py mux promo/reel.json` re-mixes the existing frames.
-Check the mux summary (25.000 s, -14 LUFS, peak under -1 dBTP), pull a couple of frames from the MP4 to
-confirm it decodes (PyAV: `av.open(path).decode(video=0)`), and hand over the MP4 path(s), the poster, the music credit and what is not committed.
-Gitignore the work folder and, if the licence forbids redistribution, the music file.
+Hand over the MP4, the poster, the concept and direction in one line each, the music and SFX credits, and
+what is not committed. Gitignore the work folder and, if a licence forbids redistribution, the audio file.
 
 ## Setup
 
@@ -132,15 +179,21 @@ Gitignore the work folder and, if the licence forbids redistribution, the music 
 | Path | What it is |
 |---|---|
 | `AGENTS.md` | Short entry point for agents that look for that file name. |
-| `templates/reel-template.html` | Starter reel: timeline, renderer contract, preview, motion vocabulary, five scenes. |
-| `templates/reel-script.md` | Script, shot list, claims check, music credit. |
-| `templates/reel.json` | Render config for `tools/reel.py`. |
+| `templates/reel-engine.html` | The bare engine: canvas size, `CUES`, `R` helpers, renderer contract, preview. No look, no scenes. |
+| `templates/reel-script.md` | Brief, concepts, script with sound column, claims check, direction, credits. |
+| `templates/reel.json` | Render config, direction and sound cues for the tools. |
+| `templates/fonts/` | Three OFL display faces (Bebas Neue, EB Garamond, JetBrains Mono) for when a direction calls for them. |
 | `tools/reel.py` | One command: `stills` (+ contact sheet), `frames`, `mux`, `all`, `poster`. Serves the root itself. |
-| `tools/render.js` | Playwright renderer with a fake clock: frame-exact CSS animations and JS beats. |
-| `tools/mux.py` | Frames + music (+ voiceover) to MP4: H.264 High crf 16, AAC 192k, -14 LUFS, true-peak limited. |
-| `tools/music_sync.py` | Finds a track's tempo and hits, and the offset that lands a hit on your cue. |
+| `tools/render.js` | Playwright renderer with a fake clock: frame-exact CSS animations and JS beats, any canvas size. |
+| `tools/mux.py` | Frames + music + SFX (+ voiceover) to MP4: H.264 High crf 16, AAC 192k, -14 LUFS, true-peak limited. |
+| `tools/synth.py` | Royalty-free sound from scratch: 20 SFX kinds, 6 kit palettes, music beds in 9 genres. |
+| `tools/music_sync.py` | A sourced track's tempo and hits, and the offset that lands a hit on your cue. |
+| `tools/fingerprint.py` | Keeps reels different: `fresh`, `check` (direction), `look` (stills), `record`. |
 | `tools/requirements.txt` | Python packages for the tools. |
-| `references/craft.md` | Story, copy, layout, motion and design rules. |
+| `references/concepts.md` | Concept types and how to invent one for this product. |
+| `references/direction.md` | Building a fresh direction: the axes, brand merge, variety rules. |
+| `references/sound.md` | Music and SFX: sources, licences, consent, the synth, placement, sync, mix. |
+| `references/craft.md` | Story, copy, layout, motion and design principles. |
+| `references/techniques/` | Cookbook of worked motion and design techniques to learn from, not to paste. |
 | `references/pitfalls.md` | Bugs we hit building real reels, with the fix for each. |
-| `references/music.md` | Sourcing, licence checks, consent, sync and mix. |
 | `references/case-studies.md` | Two finished reels: what was built and why. |

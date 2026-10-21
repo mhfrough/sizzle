@@ -3,6 +3,8 @@
   "root": "..",
   "page": "promo/product-reel.html",
   "port": 8123,
+  "width": 1080,
+  "height": 1920,
   "fps": 30,
   "scale": 2,
   "crf": 16,
@@ -10,5 +12,13 @@
   "out": "videos/product-reel.mp4",
   "poster_t": 8,
   "music": { "file": "promo/product-bgm.mp3", "offset": 0.0, "gain_db": -14, "fade_out": 1.2 },
-  "voiceover": { "file": null, "offset": 0.0, "mute": "", "duck_db": -9 }
+  "voiceover": { "file": null, "offset": 0.0, "mute": "", "duck_db": -9 },
+  "sfx": [],
+  "sfx_duck_db": -4,
+  "direction": {
+    "concept": "", "aspect": "9:16", "length": 0, "tone": "", "palette": [],
+    "display_font": "", "type": "", "motion": "", "camera": "", "composition": "",
+    "demo": "", "opening": "", "ending": "", "texture": "", "signature": "",
+    "music": "", "bpm": 0, "sfx": ""
+  }
 }
