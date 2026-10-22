@@ -356,6 +356,9 @@ body::after {
 .inst-panel:focus-visible { outline-offset: 6px; }
 .cmd-big { padding: 8px 8px 8px 20px; }
 .cmd-big code { font-size: clamp(14px, .8rem + .25vw, 16px); }
+.inst-os { margin: 0 0 8px; font: 400 var(--step-body)/1 var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.inst-os span { margin-left: .2em; font: italic 400 var(--step-small)/1 var(--text); letter-spacing: 0; text-transform: none; }
+.cmd + .inst-os { margin-top: 18px; }
 .inst-note { margin-top: 12px; font-size: var(--step-small); color: var(--muted); }
 .inst-note code, .by-hand-body p code { color: var(--ink); }
 .by-hand { margin-top: 28px; border-block: 1px solid var(--line); }

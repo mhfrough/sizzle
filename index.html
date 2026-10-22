@@ -779,26 +779,32 @@ hits, and the offset that lands each on the cue at 2.95s:
       <div class="inst" data-reveal>
         <div class="inst-tabs" role="tablist" aria-label="How to install">
           <button type="button" role="tab" id="it-any" aria-controls="ip-any" aria-selected="true">Any agent</button>
-          <button type="button" role="tab" id="it-unix" aria-controls="ip-unix" aria-selected="false" tabindex="-1">Claude Code <span>macOS / Linux</span></button>
-          <button type="button" role="tab" id="it-win" aria-controls="ip-win" aria-selected="false" tabindex="-1">Claude Code <span>Windows</span></button>
+          <button type="button" role="tab" id="it-claude" aria-controls="ip-claude" aria-selected="false" tabindex="-1">Claude Code</button>
+          <button type="button" role="tab" id="it-cursor" aria-controls="ip-cursor" aria-selected="false" tabindex="-1">Cursor</button>
         </div>
         <div class="inst-panel" id="ip-any" role="tabpanel" aria-labelledby="it-any" tabindex="0">
           <div class="cmd cmd-big"><span class="prompt" aria-hidden="true">$</span><code id="cmd-any">npx skills add mhfrough/sizzle</code><button class="copy" type="button" data-copy="#cmd-any" aria-label="Copy the command for any agent">Copy</button></div>
-          <p class="inst-note">Adds it to Claude Code, Codex, Cursor, Gemini CLI, OpenCode and the other agents the skills tool supports.</p>
+          <p class="inst-note">Adds it to Claude Code, Codex, Gemini CLI, OpenCode and the other agents the skills tool supports. For Cursor, use the Cursor tab: it puts the skill where Cursor looks.</p>
         </div>
-        <div class="inst-panel" id="ip-unix" role="tabpanel" aria-labelledby="it-unix" tabindex="0" hidden>
-          <div class="cmd cmd-big"><span class="prompt" aria-hidden="true">$</span><code id="cmd-sh">curl -fsSL https://mhfrough.github.io/sizzle/install.sh | sh</code><button class="copy" type="button" data-copy="#cmd-sh" aria-label="Copy the command for macOS and Linux">Copy</button></div>
+        <div class="inst-panel" id="ip-claude" role="tabpanel" aria-labelledby="it-claude" tabindex="0" hidden>
+          <p class="inst-os">macOS / Linux</p>
+          <div class="cmd cmd-big"><span class="prompt" aria-hidden="true">$</span><code id="cmd-sh">curl -fsSL https://mhfrough.github.io/sizzle/install.sh | sh</code><button class="copy" type="button" data-copy="#cmd-sh" aria-label="Copy the Claude Code command for macOS and Linux">Copy</button></div>
+          <p class="inst-os">Windows <span>PowerShell</span></p>
+          <div class="cmd cmd-big"><span class="prompt" aria-hidden="true">PS&gt;</span><code id="cmd-ps">irm https://mhfrough.github.io/sizzle/install.ps1 | iex</code><button class="copy" type="button" data-copy="#cmd-ps" aria-label="Copy the Claude Code command for Windows PowerShell">Copy</button></div>
           <p class="inst-note">Puts the skill in <code>~/.claude/skills/sizzle</code>. Run it again to update.</p>
         </div>
-        <div class="inst-panel" id="ip-win" role="tabpanel" aria-labelledby="it-win" tabindex="0" hidden>
-          <div class="cmd cmd-big"><span class="prompt" aria-hidden="true">PS&gt;</span><code id="cmd-ps">irm https://mhfrough.github.io/sizzle/install.ps1 | iex</code><button class="copy" type="button" data-copy="#cmd-ps" aria-label="Copy the command for Windows PowerShell">Copy</button></div>
-          <p class="inst-note">In PowerShell. Puts the skill in <code>~\.claude\skills\sizzle</code>. Run it again to update.</p>
+        <div class="inst-panel" id="ip-cursor" role="tabpanel" aria-labelledby="it-cursor" tabindex="0" hidden>
+          <p class="inst-os">macOS / Linux</p>
+          <div class="cmd cmd-big"><span class="prompt" aria-hidden="true">$</span><code id="cmd-cursor-sh">curl -fsSL https://mhfrough.github.io/sizzle/install.sh | sh -s -- cursor</code><button class="copy" type="button" data-copy="#cmd-cursor-sh" aria-label="Copy the Cursor command for macOS and Linux">Copy</button></div>
+          <p class="inst-os">Windows <span>PowerShell</span></p>
+          <div class="cmd cmd-big"><span class="prompt" aria-hidden="true">PS&gt;</span><code id="cmd-cursor-ps">$env:SIZZLE_AGENT='cursor'; irm https://mhfrough.github.io/sizzle/install.ps1 | iex</code><button class="copy" type="button" data-copy="#cmd-cursor-ps" aria-label="Copy the Cursor command for Windows PowerShell">Copy</button></div>
+          <p class="inst-note">Puts the skill in <code>~/.cursor/skills/sizzle</code>. Restart Cursor, then ask Agent for a reel, or type <code>/sizzle</code>. Cursor also loads a Claude Code install, so you only need one of the two.</p>
         </div>
 
         <details class="by-hand">
           <summary>By hand</summary>
           <div class="by-hand-body">
-            <p>Copy <code>skills/sizzle/</code> from the repository into <code>~/.claude/skills/sizzle/</code>:</p>
+            <p>Copy <code>skills/sizzle/</code> from the repository into <code>~/.claude/skills/sizzle/</code> (Claude Code) or <code>~/.cursor/skills/sizzle/</code> (Cursor):</p>
             <div class="cmd cmd-block"><code id="cmd-hand">git clone --depth 1 https://github.com/mhfrough/sizzle
 cp -R sizzle/skills/sizzle ~/.claude/skills/sizzle</code><button class="copy" type="button" data-copy="#cmd-hand" aria-label="Copy the commands to install by hand">Copy</button></div>
             <p>Any other agent: put the folder in your repo and add one line to your <code>AGENTS.md</code>: “For promo reels, follow <code>skills/sizzle/SKILL.md</code>.”</p>

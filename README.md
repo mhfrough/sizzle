@@ -23,27 +23,44 @@ Named after the *sizzle reel*, the short promo cut used to pitch a show or a pro
 
 ## Install
 
-Any agent that reads skills (Claude Code, Codex, Cursor, Gemini CLI, OpenCode and more):
+Any agent that reads skills (Claude Code, Codex, Gemini CLI, OpenCode and more):
 
 ```bash
 npx skills add mhfrough/sizzle
 ```
 
-Claude Code only, macOS / Linux:
+Claude Code, macOS / Linux:
 
 ```bash
 curl -fsSL https://mhfrough.github.io/sizzle/install.sh | sh
 ```
 
-Claude Code only, Windows (PowerShell):
+Claude Code, Windows (PowerShell):
 
 ```powershell
 irm https://mhfrough.github.io/sizzle/install.ps1 | iex
 ```
 
-By hand: copy `skills/sizzle/` to `~/.claude/skills/sizzle/` (Claude Code), or put it in your repo and add
-one line to your project's `AGENTS.md`: "For promo reels, follow `skills/sizzle/SKILL.md`." Any other agent
-or chat: paste `skills/sizzle/SKILL.md` in and give it shell access to run the tools.
+Cursor, macOS / Linux:
+
+```bash
+curl -fsSL https://mhfrough.github.io/sizzle/install.sh | sh -s -- cursor
+```
+
+Cursor, Windows (PowerShell):
+
+```powershell
+$env:SIZZLE_AGENT='cursor'; irm https://mhfrough.github.io/sizzle/install.ps1 | iex
+```
+
+The Cursor commands put the skill in `~/.cursor/skills/sizzle`. Restart Cursor, then ask Agent for a reel
+or type `/sizzle`. Cursor also loads skills from `~/.claude/skills`, so if you use both apps, one install
+is enough.
+
+By hand: copy `skills/sizzle/` to `~/.claude/skills/sizzle/` (Claude Code) or `~/.cursor/skills/sizzle/`
+(Cursor), or put it in your repo and add one line to your project's `AGENTS.md`: "For promo reels, follow
+`skills/sizzle/SKILL.md`." Any other agent or chat: paste `skills/sizzle/SKILL.md` in and give it shell
+access to run the tools.
 
 `SKILL.md` follows the open Agent Skills format: YAML front matter (`name`, `description`) then plain
 Markdown, so it also reads as ordinary instructions.
@@ -60,9 +77,9 @@ Markdown, so it also reads as ordinary instructions.
 skills/sizzle/
   SKILL.md       the playbook, with approval gates
   AGENTS.md      a short entry for agents that look for that name
-  templates/     starter reel, script template, render config
-  tools/         renderer, encoder, music sync, one-command runner
-  references/    craft, pitfalls, music, case studies
+  templates/     bare reel engine, script template, render config, reel fonts
+  tools/         renderer, encoder, sound synth, music sync, look checker, one-command runner
+  references/    concepts, direction, craft, sound, pitfalls, case studies, technique sheets
 index.html       the project page (GitHub Pages), with site.css and site.js
 screening.*      the Screening Room: a three.js cinema that plays the trailer
 studio.*         the Cutting Room: type your app's name and cut a reel in the browser
@@ -70,8 +87,8 @@ schedule.*       the production schedule: the seven steps and their two approval
 promo/           the Sizzle trailer, made with Sizzle: reel HTML, script, render config, fonts
 assets/          share image, the trailer, its poster and frames (assets/media/), three.js (assets/vendor/three/)
                  and the page fonts, Bebas Neue and EB Garamond (assets/fonts/, SIL OFL 1.1)
-install.sh       one-line installer for Claude Code (macOS / Linux)
-install.ps1      one-line installer for Claude Code (Windows)
+install.sh       one-line installer for Claude Code or Cursor (macOS / Linux)
+install.ps1      one-line installer for Claude Code or Cursor (Windows)
 ```
 
 ## The page
